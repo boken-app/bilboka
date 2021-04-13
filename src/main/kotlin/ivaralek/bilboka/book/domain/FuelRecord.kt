@@ -9,7 +9,8 @@ class FuelRecord(
         datetime: ZonedDateTime,
         odometer: Int,
         val amount: OptionalDouble = empty(),
-        val costNOK: OptionalDouble = empty()) : Record(datetime, RecordType.FUEL, odometer) {
+        val costNOK: OptionalDouble = empty(),
+        val isFull: Boolean) : Record(datetime, RecordType.FUEL, odometer) {
 
     fun pricePerLiter(): OptionalDouble {
         return if (amount.isEmpty || costNOK.isEmpty) {

@@ -28,7 +28,7 @@ internal class CarBookServiceTest {
         val bil = Vehicle("Testbil")
         carBookService.makeNewBookForVehicle(bil)
 
-        val fuelToAdd = FuelRecord(ZonedDateTime.now(), 300000, OptionalDouble.of(12.4), OptionalDouble.of(13.37))
+        val fuelToAdd = FuelRecord(ZonedDateTime.now(), 300000, OptionalDouble.of(12.4), OptionalDouble.of(13.37), false)
 
         carBookService.addRecordForVehicle(fuelToAdd, bil)
 

@@ -26,7 +26,7 @@ internal class BookIT(@Autowired val carBookService: CarBookService) {
         assertThat(bookByName).isNotNull
         assertThat(bookByName?.vehicle).isEqualTo(bil)
 
-        val record = FuelRecord(ZonedDateTime.now(), 1234, of(10.0), of(190.1))
+        val record = FuelRecord(ZonedDateTime.now(), 1234, of(10.0), of(190.1), false)
         carBookService.addRecordForVehicle(record, bil)
 
         assertThat(bookByVehicle?.records).hasSize(1)
