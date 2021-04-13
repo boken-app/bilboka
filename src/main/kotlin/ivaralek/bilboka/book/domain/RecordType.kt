@@ -1,4 +1,4 @@
-package ivaralek.bilboka.book
+package ivaralek.bilboka.book.domain
 
 enum class RecordType {
 

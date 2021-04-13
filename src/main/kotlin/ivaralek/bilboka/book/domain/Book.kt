@@ -1,8 +1,8 @@
-package ivaralek.bilboka.book
+package ivaralek.bilboka.book.domain
 
 import ivaralek.bilboka.vehicle.Vehicle
 
-class Book(private var vehicle: Vehicle) {
+class Book(var vehicle: Vehicle) {
 
     var records: ArrayList<Record> = ArrayList<Record>()
 
