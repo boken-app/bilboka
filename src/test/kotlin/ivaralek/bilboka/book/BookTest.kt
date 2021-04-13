@@ -6,17 +6,16 @@ import ivaralek.bilboka.book.domain.MaintenanceRecord
 import ivaralek.bilboka.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.ZonedDateTime
-import java.util.OptionalDouble.empty
+import java.time.LocalDate.now
 
 internal class BookTest {
 
     @Test
     fun addRecordAddsRecord() {
-        var book = Book(Vehicle(""))
+        val book = Book(Vehicle(""))
 
-        var record1 = FuelRecord(ZonedDateTime.now(), 23300, empty(), empty(), true)
-        var record2 = MaintenanceRecord(ZonedDateTime.now().minusDays(1), 40000)
+        var record1 = FuelRecord(now(), 23300, null, null, true)
+        var record2 = MaintenanceRecord(now().minusDays(1), 40000)
 
         book.addRecord(record1)
         book.addRecord(record2)

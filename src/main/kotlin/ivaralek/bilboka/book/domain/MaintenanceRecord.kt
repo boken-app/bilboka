@@ -1,7 +1,7 @@
 package ivaralek.bilboka.book.domain
 
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
-class MaintenanceRecord(datetime: ZonedDateTime, odometer: Int) : Record(datetime, RecordType.MAINTENANCE, odometer) {
+class MaintenanceRecord(date: LocalDate?, odometer: Int?) : Record(date, RecordType.MAINTENANCE, odometer) {
 
 }

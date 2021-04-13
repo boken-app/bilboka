@@ -1,14 +1,12 @@
 package ivaralek.bilboka.book.domain
 
+import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.ZonedDateTime.now
 
-open class Record(val datetime: ZonedDateTime, val type: RecordType, val odometer: Int) : Comparable<Record> {
-
-
-    // TODO denne er tentativ
-    override fun compareTo(other: Record): Int {
-        return datetime.compareTo(other.datetime)
-    }
-
-
+open class Record(
+        val date: LocalDate? = LocalDate.now(),
+        val type: RecordType,
+        val odometer: Int? = null) {
+    val creationDateTime: ZonedDateTime = now()
 }

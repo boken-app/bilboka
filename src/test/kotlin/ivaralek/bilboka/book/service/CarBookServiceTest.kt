@@ -5,8 +5,7 @@ import ivaralek.bilboka.book.repository.InMemoryStorage
 import ivaralek.bilboka.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.ZonedDateTime
-import java.util.*
+import java.time.LocalDate.now
 
 internal class CarBookServiceTest {
 
@@ -28,7 +27,7 @@ internal class CarBookServiceTest {
         val bil = Vehicle("Testbil")
         carBookService.makeNewBookForVehicle(bil)
 
-        val fuelToAdd = FuelRecord(ZonedDateTime.now(), 300000, OptionalDouble.of(12.4), OptionalDouble.of(13.37), false)
+        val fuelToAdd = FuelRecord(now(), 300000, 12.4, 13.37, false)
 
         carBookService.addRecordForVehicle(fuelToAdd, bil)
 

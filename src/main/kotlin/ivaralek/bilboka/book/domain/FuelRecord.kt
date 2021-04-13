@@ -1,23 +1,19 @@
 package ivaralek.bilboka.book.domain
 
-import java.time.ZonedDateTime
-import java.util.*
-import java.util.OptionalDouble.empty
-import java.util.OptionalDouble.of
+import java.time.LocalDate
 
 class FuelRecord(
-        datetime: ZonedDateTime,
-        odometer: Int,
-        val amount: OptionalDouble = empty(),
-        val costNOK: OptionalDouble = empty(),
-        val isFull: Boolean) : Record(datetime, RecordType.FUEL, odometer) {
+        date: LocalDate?,
+        odometer: Int? = null,
+        val amount: Double? = null,
+        val costNOK: Double? = null,
+        val isFull: Boolean) : Record(date, RecordType.FUEL, odometer) {
 
-    fun pricePerLiter(): OptionalDouble {
-        return if (amount.isEmpty || costNOK.isEmpty) {
-            empty()
-        } else {
-            of(costNOK.asDouble / amount.asDouble)
+    fun pricePerLiter(): Double? {
+        if (costNOK == null || amount == null) {
+            return null
         }
+        return costNOK / amount
     }
 
 }
