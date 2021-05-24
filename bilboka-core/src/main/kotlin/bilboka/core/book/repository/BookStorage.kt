@@ -1,7 +1,7 @@
-package ivaralek.bilboka.book.repository
+package ivaralek.bilboka.core.book.repository
 
-import ivaralek.bilboka.book.domain.Book
-import ivaralek.bilboka.vehicle.Vehicle
+import ivaralek.bilboka.core.book.domain.Book
+import ivaralek.bilboka.core.vehicle.Vehicle
 import org.springframework.stereotype.Repository
 
 @Repository

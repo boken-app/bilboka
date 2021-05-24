@@ -1,4 +1,4 @@
-package ivaralek.bilboka.book.domain
+package ivaralek.bilboka.core.book.domain
 
 import java.time.LocalDate
 

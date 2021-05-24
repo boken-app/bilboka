@@ -1,9 +1,9 @@
-package ivaralek.bilboka.book
+package ivaralek.bilboka.core.book
 
-import ivaralek.bilboka.book.domain.Book
-import ivaralek.bilboka.book.domain.FuelRecord
-import ivaralek.bilboka.book.domain.MaintenanceRecord
-import ivaralek.bilboka.vehicle.Vehicle
+import ivaralek.bilboka.core.book.domain.Book
+import ivaralek.bilboka.core.book.domain.FuelRecord
+import ivaralek.bilboka.core.book.domain.MaintenanceRecord
+import ivaralek.bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate.now

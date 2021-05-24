@@ -1,4 +1,4 @@
-package ivaralek.bilboka.vehicle
+package ivaralek.bilboka.core.vehicle
 
 interface Fuelable {
 

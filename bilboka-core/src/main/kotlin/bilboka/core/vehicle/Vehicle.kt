@@ -1,4 +1,4 @@
-package ivaralek.bilboka.vehicle
+package ivaralek.bilboka.core.vehicle
 
 class Vehicle(var name: String) : Fuelable {
 

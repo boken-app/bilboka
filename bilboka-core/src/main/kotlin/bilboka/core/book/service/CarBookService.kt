@@ -1,9 +1,9 @@
-package ivaralek.bilboka.book.service
+package ivaralek.bilboka.core.book.service
 
-import ivaralek.bilboka.book.domain.Book
-import ivaralek.bilboka.book.domain.Record
-import ivaralek.bilboka.book.repository.BookStorage
-import ivaralek.bilboka.vehicle.Vehicle
+import ivaralek.bilboka.core.book.domain.Book
+import ivaralek.bilboka.core.book.domain.Record
+import ivaralek.bilboka.core.book.repository.BookStorage
+import ivaralek.bilboka.core.vehicle.Vehicle
 import org.springframework.stereotype.Service
 
 @Service
