@@ -37,14 +37,23 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	runtimeOnly("com.h2database:h2")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation(project(":bilboka-core"))
 
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.getByName<BootJar>("bootJar") {
 	enabled = false
 }
 
-tasks.getByName<Jar>("jar") {
-	enabled = true
+tasks.getByName<Test>("test") {
+	testLogging {
+
+		showExceptions = true
+		exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+		showCauses = true
+		showStackTraces = true
+
+		showStandardStreams = false
+	}
 }
