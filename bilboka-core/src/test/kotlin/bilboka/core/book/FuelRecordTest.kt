@@ -3,6 +3,7 @@ package ivaralek.bilboka.core.book
 import ivaralek.bilboka.core.book.domain.FuelRecord
 import ivaralek.bilboka.core.book.domain.RecordType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -45,11 +46,11 @@ internal class FuelRecordTest {
     }
 
     @Test
-    @Disabled("Vet ikke hvorfor denne feiler på github..")
+    @Disabled("Denne funker ikke av en eller annen grunn.")
     fun dateTimeIsSet() {
         val fuelRecord = FuelRecord(odometer = 1000000, amount = null, costNOK = null, isFull = false, date = null)
 
         val now = ZonedDateTime.now()
-        //  assertThat(fuelRecord.creationDateTime).isAfterOrEqualTo(now)
+        assertThat(fuelRecord.creationDateTime).isAfterOrEqualTo(now)
     }
 }
