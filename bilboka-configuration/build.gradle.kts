@@ -32,3 +32,9 @@ tasks.getByName<BootJar>("bootJar") {
 	enabled = false
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict")
+		jvmTarget = "11"
+	}
+}
