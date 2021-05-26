@@ -15,7 +15,7 @@ internal class FuelRecordTest {
         val fuelRecord = FuelRecord(odometer = 250000, amount = 100.0, costNOK = 1000.0, isFull = true, date = null)
 
         assertThat(fuelRecord.pricePerLiter()).isEqualTo(10.0)
-        assertThat(fuelRecord.isFull).isTrue
+        assertThat(fuelRecord.isFull).isTrue()
     }
 
     @Test
@@ -40,7 +40,7 @@ internal class FuelRecordTest {
         assertThat(fuelRecord.odometer).isEqualTo(1000000)
         assertThat(fuelRecord.amount).isEqualTo(2.0)
         assertThat(fuelRecord.costNOK).isEqualTo(3.0)
-        assertThat(fuelRecord.isFull).isTrue
+        assertThat(fuelRecord.isFull).isTrue()
         assertThat(fuelRecord.date).isEqualTo(date)
         assertThat(fuelRecord.type).isEqualTo(RecordType.FUEL)
     }
