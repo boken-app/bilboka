@@ -1,11 +1,10 @@
 package bilboka.messenger.integration
 
+import bilboka.messenger.dto.MessengerWebhookRequest
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 object MessengerWebhookConfig {
     const val VERIFY_TOKEN = "vdfgsnmrfeiudi59fblablajvbrmeivncmq231v"
@@ -13,10 +12,11 @@ object MessengerWebhookConfig {
 }
 
 @RestController
+@RequestMapping("webhook")
 @SpringBootApplication
 class MessengerWebhook {
 
-    @GetMapping("webhook")
+    @GetMapping
     fun get(
         @RequestParam(name = "hub.verify_token") token: String,
         @RequestParam(name = "hub.challenge") challenge: String,
@@ -28,5 +28,9 @@ class MessengerWebhook {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
     }
 
+    @PostMapping
+    fun post(@RequestBody(required = false) request: MessengerWebhookRequest?) { // TODO gjør required
+
+    }
 
 }
