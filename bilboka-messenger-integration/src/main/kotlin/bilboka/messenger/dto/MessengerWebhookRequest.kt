@@ -21,7 +21,8 @@ data class FacebookMessaging(
     val timestamp: Long,
     val sender: Map<String, String>,
     val recipient: Map<String, String>,
-    val message: FacebookMessage
+    val message: FacebookMessage?,
+    val postback: FacebookPostback?
 ) : Serializable
 
 data class FacebookMessage(
@@ -29,4 +30,11 @@ data class FacebookMessage(
     val sender: Map<String, String>,
     val recipient: Map<String, String>,
     val message: Map<String, String>
+) : Serializable
+
+data class FacebookPostback(
+    val timestamp: Long,
+    val sender: Map<String, String>,
+    val recipient: Map<String, String>,
+    val payload: String
 ) : Serializable
