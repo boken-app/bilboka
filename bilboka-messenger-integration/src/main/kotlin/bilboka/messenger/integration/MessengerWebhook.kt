@@ -29,8 +29,8 @@ class MessengerWebhook {
     }
 
     @PostMapping
-    fun post(@RequestBody(required = false) request: MessengerWebhookRequest?) { // TODO gjør required
-
+    fun post(@RequestBody request: MessengerWebhookRequest) {
+        print(request)
     }
 
 }
