@@ -39,7 +39,7 @@ internal class MessengerWebhookTest {
                 get("/webhook")
                     .contentType(MediaType.TEXT_HTML)
             )
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest)
         }
 
         @Test
@@ -48,7 +48,7 @@ internal class MessengerWebhookTest {
                 get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest)
         }
 
         @Test
@@ -75,7 +75,7 @@ internal class MessengerWebhookTest {
                 get("/webhook?hub.verify_token=blah&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
-                .andExpect(status().isForbidden())
+                .andExpect(status().isForbidden)
         }
 
         @Test
@@ -84,7 +84,7 @@ internal class MessengerWebhookTest {
                 get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=unsubscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
-                .andExpect(status().isForbidden())
+                .andExpect(status().isForbidden)
         }
     }
 
@@ -95,10 +95,10 @@ internal class MessengerWebhookTest {
             postAsJson(
                 MessengerWebhookRequest(
                     requestObject = "page",
-                    entry = emptyList<FacebookEntry>()
+                    entry = emptyList()
                 )
             )
-                .andExpect(status().isOk()).andExpect(okResponseContent())
+                .andExpect(status().isOk).andExpect(okResponseContent())
         }
 
         @Test
@@ -106,40 +106,40 @@ internal class MessengerWebhookTest {
             postAsJson(
                 MessengerWebhookRequest(
                     requestObject = "Blah",
-                    entry = emptyList<FacebookEntry>()
+                    entry = emptyList()
                 )
             )
-                .andExpect(status().isNotFound())
+                .andExpect(status().isNotFound)
         }
 
         @Test
         fun postRequestSomeList_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "page", entry = listOf<FacebookEntry>(
-                        FacebookEntry(id = "123", time = 123L, messaging = emptyList<FacebookMessaging>())
+                    requestObject = "page", entry = listOf(
+                        FacebookEntry(id = "123", time = 123L, messaging = emptyList())
                     )
                 )
             )
-                .andExpect(status().isOk()).andExpect(okResponseContent())
+                .andExpect(status().isOk).andExpect(okResponseContent())
         }
 
         @Test
         fun postRequestSomeListWithMessaging_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "page", entry = listOf<FacebookEntry>(
+                    requestObject = "page", entry = listOf(
                         FacebookEntry(
-                            "123", 123L, listOf<FacebookMessaging>(
+                            "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
-                                    emptyMap<String, String>(),
-                                    emptyMap<String, String>(),
+                                    emptyMap(),
+                                    emptyMap(),
                                     FacebookMessage(
                                         1234L,
-                                        emptyMap<String, String>(),
-                                        emptyMap<String, String>(),
-                                        emptyMap<String, String>()
+                                        emptyMap(),
+                                        emptyMap(),
+                                        emptyMap()
                                     ),
                                     null
                                 )
@@ -148,25 +148,25 @@ internal class MessengerWebhookTest {
                     )
                 )
             )
-                .andExpect(status().isOk()).andExpect(okResponseContent())
+                .andExpect(status().isOk).andExpect(okResponseContent())
         }
 
         @Test
         fun postRequestSomeListWithPostback_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "page", entry = listOf<FacebookEntry>(
+                    requestObject = "page", entry = listOf(
                         FacebookEntry(
-                            "123", 123L, listOf<FacebookMessaging>(
+                            "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
-                                    emptyMap<String, String>(),
-                                    emptyMap<String, String>(),
+                                    emptyMap(),
+                                    emptyMap(),
                                     null,
                                     FacebookPostback(
                                         1234L,
-                                        emptyMap<String, String>(),
-                                        emptyMap<String, String>(),
+                                        emptyMap(),
+                                        emptyMap(),
                                         ""
                                     )
                                 )
@@ -175,7 +175,7 @@ internal class MessengerWebhookTest {
                     )
                 )
             )
-                .andExpect(status().isOk()).andExpect(okResponseContent())
+                .andExpect(status().isOk).andExpect(okResponseContent())
         }
 
         @Test
@@ -184,7 +184,7 @@ internal class MessengerWebhookTest {
                 post("/webhook")
                     .contentType(MediaType.APPLICATION_JSON)
             )
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest)
         }
 
         private fun okResponseContent() = content().string("EVENT_RECEIVED")
