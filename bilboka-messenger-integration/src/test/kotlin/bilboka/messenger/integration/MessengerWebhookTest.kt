@@ -91,33 +91,44 @@ internal class MessengerWebhookTest {
     @Nested
     inner class PostWebhookTests {
         @Test
-        fun postRequestEmptyList_returnsOk() {
+        fun postRequestEmptyListFromPageSubscription_returnsOk() {
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "page",
+                    entry = emptyList<FacebookEntry>()
+                )
+            )
+                .andExpect(status().isOk()).andExpect(okResponseContent())
+        }
+
+        @Test
+        fun postRequestEmptyListNotFromPageSubscription_returnsNotFound() {
             postAsJson(
                 MessengerWebhookRequest(
                     requestObject = "Blah",
                     entry = emptyList<FacebookEntry>()
                 )
             )
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
         }
 
         @Test
         fun postRequestSomeList_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                    requestObject = "page", entry = listOf<FacebookEntry>(
                         FacebookEntry(id = "123", time = 123L, messaging = emptyList<FacebookMessaging>())
                     )
                 )
             )
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()).andExpect(okResponseContent())
         }
 
         @Test
         fun postRequestSomeListWithMessaging_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                    requestObject = "page", entry = listOf<FacebookEntry>(
                         FacebookEntry(
                             "123", 123L, listOf<FacebookMessaging>(
                                 FacebookMessaging(
@@ -137,14 +148,14 @@ internal class MessengerWebhookTest {
                     )
                 )
             )
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()).andExpect(okResponseContent())
         }
 
         @Test
         fun postRequestSomeListWithPostback_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
-                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                    requestObject = "page", entry = listOf<FacebookEntry>(
                         FacebookEntry(
                             "123", 123L, listOf<FacebookMessaging>(
                                 FacebookMessaging(
@@ -164,7 +175,7 @@ internal class MessengerWebhookTest {
                     )
                 )
             )
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()).andExpect(okResponseContent())
         }
 
         @Test
@@ -176,7 +187,9 @@ internal class MessengerWebhookTest {
                 .andExpect(status().isBadRequest())
         }
 
-        fun postAsJson(request: MessengerWebhookRequest): ResultActions {
+        private fun okResponseContent() = content().string("EVENT_RECEIVED")
+
+        private fun postAsJson(request: MessengerWebhookRequest): ResultActions {
             return mvc.perform(
                 post("/webhook")
                     .contentType(MediaType.APPLICATION_JSON)
