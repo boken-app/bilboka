@@ -152,6 +152,57 @@ internal class MessengerWebhookTest {
         }
 
         @Test
+        fun postRequestSomeListWithMessagingWithMuchContent_returnsOk() {
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "page", entry = listOf(
+                        FacebookEntry(
+                            "123", 123L, listOf(
+                                FacebookMessaging(
+                                    1234L,
+                                    personWithId("456"),
+                                    personWithId("354"),
+                                    FacebookMessage(
+                                        1234L,
+                                        personWithId("456"),
+                                        personWithId("354"),
+                                        textMessage("Test")
+                                    ),
+                                    null
+                                ),
+                                FacebookMessaging(
+                                    1234L,
+                                    personWithId("457"),
+                                    personWithId("3565"),
+                                    FacebookMessage(
+                                        1234L,
+                                        personWithId("457"),
+                                        personWithId("3565"),
+                                        textMessage("TestMsg2")
+                                    ),
+                                    null
+                                ),
+                                FacebookMessaging(
+                                    1234L,
+                                    emptyMap(),
+                                    emptyMap(),
+                                    null,
+                                    FacebookPostback(
+                                        1234L,
+                                        personWithId("457"),
+                                        personWithId("3565"),
+                                        "yes"
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+                .andExpect(status().isOk).andExpect(okResponseContent())
+        }
+
+        @Test
         fun postRequestSomeListWithPostback_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
@@ -167,7 +218,7 @@ internal class MessengerWebhookTest {
                                         1234L,
                                         emptyMap(),
                                         emptyMap(),
-                                        ""
+                                        "no"
                                     )
                                 )
                             )
@@ -199,6 +250,14 @@ internal class MessengerWebhookTest {
                         )
                     )
             )
+        }
+
+        private fun textMessage(msg: String): Map<String, String> {
+            return mapOf(Pair("text", msg))
+        }
+
+        private fun personWithId(id: String): Map<String, String> {
+            return mapOf(Pair("id", id))
         }
     }
 

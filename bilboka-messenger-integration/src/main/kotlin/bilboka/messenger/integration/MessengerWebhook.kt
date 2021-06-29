@@ -25,7 +25,7 @@ class MessengerWebhook {
         @RequestParam(name = "hub.challenge") challenge: String,
         @RequestParam(name = "hub.mode") mode: String
     ): ResponseEntity<String> {
-        if (MessengerWebhookConfig.VERIFY_TOKEN.equals(token) && MessengerWebhookConfig.SUBSCRIBE_MODE.equals(mode)) {
+        if (MessengerWebhookConfig.VERIFY_TOKEN == token && MessengerWebhookConfig.SUBSCRIBE_MODE == mode) {
             return ResponseEntity.ok(challenge)
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
@@ -33,7 +33,7 @@ class MessengerWebhook {
 
     @PostMapping
     fun post(@RequestBody request: MessengerWebhookRequest): ResponseEntity<String> {
-        if (MessengerWebhookConfig.PAGE_SUBSCRIPTION.equals(request.requestObject)) {
+        if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             print(request)
             return ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED)
         } else {
