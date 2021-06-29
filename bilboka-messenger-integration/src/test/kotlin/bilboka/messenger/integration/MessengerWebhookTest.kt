@@ -1,20 +1,17 @@
 package bilboka.messenger.integration
 
-import bilboka.messenger.dto.FacebookEntry
-import bilboka.messenger.dto.FacebookMessage
-import bilboka.messenger.dto.FacebookMessaging
-import bilboka.messenger.dto.MessengerWebhookRequest
+import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.bind.Bindable.listOf
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -95,68 +92,77 @@ internal class MessengerWebhookTest {
     inner class PostWebhookTests {
         @Test
         fun postRequestEmptyList_returnsOk() {
-            mvc.perform(
-                post("/webhook")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        asJsonString(
-                            MessengerWebhookRequest(
-                                requestObject = "Blah",
-                                entry = emptyList<FacebookEntry>()
-                            )
-                        )
-                    )
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "Blah",
+                    entry = emptyList<FacebookEntry>()
+                )
             )
                 .andExpect(status().isOk())
         }
 
         @Test
         fun postRequestSomeList_returnsOk() {
-            mvc.perform(
-                post("/webhook")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        asJsonString(
-                            MessengerWebhookRequest(
-                                requestObject = "Blah", entry = listOf<FacebookEntry>(
-                                    FacebookEntry(id = "123", time = 123L, messaging = emptyList<FacebookMessaging>())
-                                )
-                            )
-                        )
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                        FacebookEntry(id = "123", time = 123L, messaging = emptyList<FacebookMessaging>())
                     )
+                )
             )
                 .andExpect(status().isOk())
         }
 
         @Test
         fun postRequestSomeListWithMessaging_returnsOk() {
-            mvc.perform(
-                post("/webhook")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        asJsonString(
-                            MessengerWebhookRequest(
-                                requestObject = "Blah", entry = listOf<FacebookEntry>(
-                                    FacebookEntry(
-                                        "123", 123L, listOf<FacebookMessaging>(
-                                            FacebookMessaging(
-                                                1234L,
-                                                emptyMap<String, String>(),
-                                                emptyMap<String, String>(),
-                                                FacebookMessage(
-                                                    1234L,
-                                                    emptyMap<String, String>(),
-                                                    emptyMap<String, String>(),
-                                                    emptyMap<String, String>()
-                                                ),
-                                                null
-                                            )
-                                        )
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                        FacebookEntry(
+                            "123", 123L, listOf<FacebookMessaging>(
+                                FacebookMessaging(
+                                    1234L,
+                                    emptyMap<String, String>(),
+                                    emptyMap<String, String>(),
+                                    FacebookMessage(
+                                        1234L,
+                                        emptyMap<String, String>(),
+                                        emptyMap<String, String>(),
+                                        emptyMap<String, String>()
+                                    ),
+                                    null
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+                .andExpect(status().isOk())
+        }
+
+        @Test
+        fun postRequestSomeListWithPostback_returnsOk() {
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "Blah", entry = listOf<FacebookEntry>(
+                        FacebookEntry(
+                            "123", 123L, listOf<FacebookMessaging>(
+                                FacebookMessaging(
+                                    1234L,
+                                    emptyMap<String, String>(),
+                                    emptyMap<String, String>(),
+                                    null,
+                                    FacebookPostback(
+                                        1234L,
+                                        emptyMap<String, String>(),
+                                        emptyMap<String, String>(),
+                                        ""
                                     )
                                 )
                             )
                         )
                     )
+                )
             )
                 .andExpect(status().isOk())
         }
@@ -170,6 +176,17 @@ internal class MessengerWebhookTest {
                 .andExpect(status().isBadRequest())
         }
 
+        fun postAsJson(request: MessengerWebhookRequest): ResultActions {
+            return mvc.perform(
+                post("/webhook")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        asJsonString(
+                            request
+                        )
+                    )
+            )
+        }
     }
 
     fun asJsonString(obj: Any): String {
