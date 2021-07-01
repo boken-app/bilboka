@@ -1,4 +1,4 @@
-package bilboka.messenger.integration
+package bilboka.messenger.resource
 
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -20,8 +20,8 @@ import java.util.Collections.emptyList
 import java.util.Collections.emptyMap
 
 @RunWith(SpringRunner::class)
-@WebMvcTest(MockMvc::class)
-internal class MessengerWebhookTest {
+@WebMvcTest(MockMvc::class, properties = ["messenger.verify-token = detteerettesttoken"])
+internal class MessengerWebhookResourceTest {
 
     @Autowired
     lateinit var mvc: MockMvc
@@ -45,7 +45,7 @@ internal class MessengerWebhookTest {
         @Test
         fun getRequestMissingParams_returnsBadRequest() {
             mvc.perform(
-                get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.mode=subscribe")
+                get("/webhook?hub.verify_token=detteerettesttoken&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isBadRequest)
@@ -54,7 +54,7 @@ internal class MessengerWebhookTest {
         @Test
         fun validGetRequest_returnsChallengeAccepted() {
             mvc.perform(
-                get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
+                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(content().string("CHALLENGE_ACCEPTED"))
@@ -63,7 +63,7 @@ internal class MessengerWebhookTest {
         @Test
         fun validGetRequest_returnsSomeOtherChallenge() {
             mvc.perform(
-                get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.challenge=rullekake&hub.mode=subscribe")
+                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=rullekake&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(content().string("rullekake"))
@@ -81,7 +81,7 @@ internal class MessengerWebhookTest {
         @Test
         fun invalidMode_returns403() {
             mvc.perform(
-                get("/webhook?hub.verify_token=vdfgsnmrfeiudi59fblablajvbrmeivncmq231v&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=unsubscribe")
+                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=unsubscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isForbidden)
