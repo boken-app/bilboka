@@ -14,27 +14,27 @@ data class MessengerWebhookRequest(
 data class FacebookEntry(
     val id: String,
     val time: Long,
-    val messaging: List<FacebookMessaging>
+    val messaging: List<FacebookMessaging> = listOf()
 ) : Serializable
 
 data class FacebookMessaging(
     val timestamp: Long,
-    val sender: Map<String, String>,
-    val recipient: Map<String, String>,
+    val sender: Map<String, String> = mapOf(),
+    val recipient: Map<String, String> = mapOf(),
     val message: FacebookMessage?,
     val postback: FacebookPostback?
 ) : Serializable
 
 data class FacebookMessage(
     val timestamp: Long,
-    val sender: Map<String, String>,
-    val recipient: Map<String, String>,
-    val message: Map<String, String>
+    val sender: Map<String, String> = mapOf(),
+    val recipient: Map<String, String> = mapOf(),
+    val message: Map<String, String> = mapOf()
 ) : Serializable
 
 data class FacebookPostback(
     val timestamp: Long,
-    val sender: Map<String, String>,
-    val recipient: Map<String, String>,
+    val sender: Map<String, String> = mapOf(),
+    val recipient: Map<String, String> = mapOf(),
     val payload: String
 ) : Serializable
