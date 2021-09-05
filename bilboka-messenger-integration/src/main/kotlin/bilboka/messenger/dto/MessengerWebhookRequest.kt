@@ -21,12 +21,12 @@ data class FacebookMessaging(
     val timestamp: Long,
     val sender: Map<String, String> = mapOf(),
     val recipient: Map<String, String> = mapOf(),
-    val message: FacebookMessage?,
-    val postback: FacebookPostback?
+    val message: FacebookMessage? = null,
+    val postback: FacebookPostback? = null
 ) : Serializable
 
 data class FacebookMessage(
-    val timestamp: Long?,
+    val timestamp: Long? = null,
     val sender: Map<String, String> = mapOf(),
     val recipient: Map<String, String> = mapOf(),
     val message: Map<String, String> = mapOf()

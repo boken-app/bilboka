@@ -1,7 +1,14 @@
 package bilboka.messenger.resource
 
+import bilboka.messenger.MessengerIntegrationConfig
+import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.clearAllMocks
+import io.mockk.justRun
+import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -9,6 +16,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
@@ -21,13 +29,25 @@ import java.util.Collections.emptyMap
 
 @RunWith(SpringRunner::class)
 @WebMvcTest(MockMvc::class, properties = ["messenger.verify-token = detteerettesttoken"])
-internal class MessengerWebhookResourceTest {
+@ContextConfiguration(classes = [MessengerIntegrationConfig::class])
+internal class MessengerWebhookResourceIT {
+
+    // TODO Muligens lage skille på test og IT
+
+    @MockkBean
+    lateinit var messengerWebhookConsumer: MessengerWebhookConsumer
 
     @Autowired
     lateinit var mvc: MockMvc
 
     @BeforeEach
     fun setUp() {
+        justRun { messengerWebhookConsumer.sendMessage(any()) }
+    }
+
+    @AfterEach
+    fun clear() {
+        clearAllMocks()
     }
 
     @Nested
@@ -99,6 +119,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -110,6 +132,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isNotFound)
+
+            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -122,6 +146,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -149,6 +175,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -169,7 +197,11 @@ internal class MessengerWebhookResourceTest {
                                         textMessage("Test")
                                     ),
                                     null
-                                ),
+                                )
+                            )
+                        ),
+                        FacebookEntry(
+                            "124", 124L, listOf(
                                 FacebookMessaging(
                                     1234L,
                                     personWithId("457"),
@@ -181,7 +213,11 @@ internal class MessengerWebhookResourceTest {
                                         textMessage("TestMsg2")
                                     ),
                                     null
-                                ),
+                                )
+                            )
+                        ),
+                        FacebookEntry(
+                            "125", 125L, listOf(
                                 FacebookMessaging(
                                     1234L,
                                     emptyMap(),
@@ -200,6 +236,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify(exactly = 3) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -227,6 +265,8 @@ internal class MessengerWebhookResourceTest {
                 )
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify(exactly = 1) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -236,6 +276,8 @@ internal class MessengerWebhookResourceTest {
                     .contentType(MediaType.APPLICATION_JSON)
             )
                 .andExpect(status().isBadRequest)
+
+            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
         }
 
         private fun okResponseContent() = content().string("EVENT_RECEIVED")

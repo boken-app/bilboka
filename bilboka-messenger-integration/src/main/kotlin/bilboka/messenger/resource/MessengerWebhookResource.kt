@@ -1,11 +1,13 @@
 package bilboka.messenger.resource
 
 import bilboka.messenger.dto.MessengerWebhookRequest
+import bilboka.messenger.service.MessageResponderService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.function.Consumer
 
 object MessengerWebhookConfig {
     const val SUBSCRIBE_MODE = "subscribe"
@@ -15,11 +17,13 @@ object MessengerWebhookConfig {
 
 @RestController
 @RequestMapping("webhook")
-@SpringBootApplication
 class MessengerWebhookResource {
 
     @Value("\${messenger.verify-token}")
     lateinit var verifyToken: String
+
+    @Autowired
+    lateinit var messageResponderService: MessageResponderService
 
     @GetMapping
     fun get(
@@ -36,7 +40,8 @@ class MessengerWebhookResource {
     @PostMapping
     fun post(@RequestBody request: MessengerWebhookRequest): ResponseEntity<String> {
         if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
-            print(request)
+            request.entry.stream()
+                .forEach(Consumer { facebookEntry -> messageResponderService.handleMessage(facebookEntry) })
             return ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
