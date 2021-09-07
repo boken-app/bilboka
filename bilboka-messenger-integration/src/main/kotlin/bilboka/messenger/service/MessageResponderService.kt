@@ -3,12 +3,15 @@ package bilboka.messenger.service
 import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.FacebookEntry
 import bilboka.messenger.dto.FacebookMessage
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.lang.String.format
 
 @Component
 class MessageResponderService {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     lateinit var messengerConsumer: MessengerWebhookConsumer
@@ -20,7 +23,7 @@ class MessageResponderService {
             val messageEvent = entry.messaging[0]
 
             val senderPSID = messageEvent.sender["id"]
-            print(format("Sender PSID: %s", senderPSID))
+            logger.info(format("Sender PSID: %s", senderPSID))
 
             val text = messageEvent.message?.message?.get("text")
 
@@ -33,7 +36,7 @@ class MessageResponderService {
                 )
             )
         } else {
-            print("Ugyldig lengde på Messaging.")
+            logger.warn("Ugyldig lengde på Messaging.")
         }
     }
 }

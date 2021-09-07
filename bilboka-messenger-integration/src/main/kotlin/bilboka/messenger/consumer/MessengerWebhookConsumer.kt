@@ -3,6 +3,7 @@ package bilboka.messenger.consumer
 import bilboka.messenger.dto.FacebookMessage
 import khttp.responses.Response
 import org.json.JSONObject
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import java.lang.String.format
 
@@ -14,6 +15,7 @@ class MessengerWebhookConsumer(
     var sendUrl: String,
     var pageAccessToken: String
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendMessage(message: FacebookMessage) {
         val response: Response = khttp.post(
@@ -22,9 +24,9 @@ class MessengerWebhookConsumer(
             data = JSONObject(message)
         )
         if (response.statusCode == HttpStatus.OK.value()) {
-            print("Melding sendt!")
+            logger.info("Melding sendt!")
         } else {
-            print(format("Sending gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
+            logger.error(format("Sending gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
         }
     }
 
