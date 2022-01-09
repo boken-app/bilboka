@@ -10,28 +10,27 @@ version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
-}
-
-dependencyManagement {
-    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:2.4.4") }
+    maven("https://jitpack.io") // khttp
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.flywaydb:flyway-core")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    runtimeOnly("com.h2database:h2")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation("com.github.jkcclemens:khttp:-SNAPSHOT")
+
+    runtimeOnly("com.h2database:h2") // ?
+
+    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
-    }
+    testImplementation("org.mockito:mockito-core:3.3.3")
+    testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation("com.squareup.okhttp3:okhttp:4.0.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.0.1")
 }
 
 tasks.getByName<BootJar>("bootJar") {
