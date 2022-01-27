@@ -1,7 +1,7 @@
-package ivaralek.bilboka.core.book
+package bilboka.core.book
 
-import ivaralek.bilboka.core.book.domain.FuelRecord
-import ivaralek.bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.FuelRecord
+import bilboka.core.book.domain.RecordType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

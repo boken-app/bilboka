@@ -4,5 +4,5 @@ task copyToLib(type: Copy) {
     from "$buildDir/libs"
     into "$rootProject.buildDir/libs"
 }
-copyToLib.dependsOn(shadowJar)
+copyToLib.dependsOn('shadowJar')
 stage.dependsOn(copyToLib)

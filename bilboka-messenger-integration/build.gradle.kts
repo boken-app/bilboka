@@ -1,8 +1,11 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    id("bilboka.spring-conventions")
-    id("bilboka.kotlin-conventions")
+    kotlin("jvm")
+    application
+
+    id("bilboka.plugin")
+
 }
 
 group = "ivaralek"
@@ -13,6 +16,7 @@ repositories {
     maven("https://jitpack.io") // khttp
 }
 
+// TODO rydde opp her bl.a.
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -21,9 +25,6 @@ dependencies {
 
     runtimeOnly("com.h2database:h2") // ?
 
-    testImplementation(platform("org.junit:junit-bom:5.7.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     testImplementation("org.mockito:mockito-core:3.3.3")
@@ -31,6 +32,10 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("com.squareup.okhttp3:okhttp:4.0.1")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.0.1")
+}
+
+application {
+    mainClass.set("ivaralek.bilboka.BilbokaApplicationKt")
 }
 
 tasks.getByName<BootJar>("bootJar") {

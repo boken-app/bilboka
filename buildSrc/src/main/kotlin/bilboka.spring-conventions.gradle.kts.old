@@ -1,5 +1,5 @@
 plugins {
-    id("bilboka.java-conventions")
+ //   id("bilboka.java-conventions")
 
     kotlin("plugin.spring")
     id("org.springframework.boot")
@@ -13,3 +13,7 @@ apply(plugin = "org.springframework.boot")
 
 println("Enabling Spring Boot Dependency Management in project ${project.name}...")
 apply(plugin = "io.spring.dependency-management")
+
+springBoot {
+    mainClass.set("bilboka.BilbokaApplicationKt")
+}

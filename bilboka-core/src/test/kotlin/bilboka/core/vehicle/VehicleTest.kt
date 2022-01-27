@@ -1,4 +1,4 @@
-package ivaralek.bilboka.vehicle
+package bilboka.vehicle
 
 import org.junit.jupiter.api.Test
 

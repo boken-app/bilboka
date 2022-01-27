@@ -1,8 +1,8 @@
-package ivaralek.bilboka.configuration
+package bilboka.configuration
 
-import ivaralek.bilboka.core.book.domain.FuelRecord
-import ivaralek.bilboka.core.book.service.CarBookService
-import ivaralek.bilboka.core.vehicle.Vehicle
+import bilboka.core.book.domain.FuelRecord
+import bilboka.core.book.service.CarBookService
+import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

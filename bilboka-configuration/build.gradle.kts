@@ -1,8 +1,11 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-	id("bilboka.spring-conventions")
-	id("bilboka.kotlin-conventions")
+	kotlin("jvm")
+	application
+
+	id("bilboka.plugin")
+
 }
 
 group = "ivaralek"
@@ -38,3 +41,15 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		jvmTarget = "11"
 	}
 }
+
+application {
+	mainClass.set("ivaralek.bilboka.BilbokaApplicationKt")
+}
+
+// Ser ut som det holder med den over.
+//tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
+// //   setZip64(true)  // new code
+//    manifest {
+//        attributes["Main-Class"] = "ivaralek.bilboka.BilbokaApplicationKt"
+//    }
+//}

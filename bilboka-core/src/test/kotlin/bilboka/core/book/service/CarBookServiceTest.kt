@@ -1,8 +1,8 @@
-package ivaralek.bilboka.core.book.service
+package bilboka.core.book.service
 
-import ivaralek.bilboka.core.book.domain.FuelRecord
-import ivaralek.bilboka.core.book.repository.InMemoryStorage
-import ivaralek.bilboka.core.vehicle.Vehicle
+import bilboka.core.book.domain.FuelRecord
+import bilboka.core.book.repository.InMemoryStorage
+import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate.now

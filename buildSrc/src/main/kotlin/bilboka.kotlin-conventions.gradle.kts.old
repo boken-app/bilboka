@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("bilboka.java-conventions")
 
@@ -10,13 +12,12 @@ repositories {
 }
 
 dependencies {
-
-    implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("ch.qos.logback:logback-core:1.2.3")
+    "compileOnly"("org.slf4j:slf4j-api:1.7.30")
+    "compileOnly"("ch.qos.logback:logback-classic:1.2.3")
+    "compileOnly"("ch.qos.logback:logback-core:1.2.3")
 }
 
-tasks.compileKotlin {
+tasks.withType<KotlinCompile>() {
     println("Configuring KotlinCompile  $name in project ${project.name}...")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -26,6 +27,34 @@ tasks.compileKotlin {
         //   apiVersion = "1.5"
     }
 }
+
+
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "bilboka.BilbokaApplicationKt" // Tror Heroku trenger denne
+    }
+
+    // This line of code recursively collects and copies all of a project"s files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from(configurations.compileClasspath.get()
+        .onEach { println("add from dependencies: ${it.name}") }
+        .map { if (it.isDirectory()) it else zipTree(it) })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+//    val sourcesMain = sourceSets.main.get()
+//    sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
+//    from(sourcesMain.output)
+}
+
+//tasks.withType<ShadowJar>() {
+//    setZip64(true)  // new code
+//    manifest {
+//        attributes["Main-Class"] = "ivaralek.bilboka.BilbokaApplication"
+//    }
+//}
+
 
 
 //

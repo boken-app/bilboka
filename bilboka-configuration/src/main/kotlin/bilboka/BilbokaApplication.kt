@@ -1,4 +1,4 @@
-package ivaralek.bilboka
+package bilboka
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

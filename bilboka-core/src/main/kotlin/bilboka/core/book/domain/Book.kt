@@ -1,6 +1,6 @@
-package ivaralek.bilboka.core.book.domain
+package bilboka.core.book.domain
 
-import ivaralek.bilboka.core.vehicle.Vehicle
+import bilboka.core.vehicle.Vehicle
 
 class Book(var vehicle: Vehicle) {
 

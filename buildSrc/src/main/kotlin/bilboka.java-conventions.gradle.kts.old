@@ -1,0 +1,35 @@
+plugins {
+//    id("com.github.johnrengelman.shadow")
+//    id("java")
+}
+//
+//plugins {
+////    `kotlin-dsl`
+////    `kotlin-dsl-precompiled-script-plugins`
+//
+//    id("java")
+//    id("com.github.johnrengelman.shadow")
+//
+//}
+
+repositories {
+    mavenCentral()
+
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+//tasks.shadowJar {
+//    isZip64 = true // TODO Trengs den?
+//}
+
+//println("Enabling Shadow plugin in project ${project.name}...")
+//apply(plugin = "com.github.johnrengelman.shadow")
+
+apply {
+    from("$rootDir/gradle/heroku/clean.gradle")
+    from("$rootDir/gradle/heroku/stage.gradle")
+}
+

@@ -1,4 +1,4 @@
-package ivaralek.bilboka.configuration
+package bilboka.configuration
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
