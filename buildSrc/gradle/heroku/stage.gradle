@@ -6,3 +6,5 @@ task copyToLib(type: Copy) {
 }
 copyToLib.dependsOn(shadowJar)
 stage.dependsOn(copyToLib)
+
+// TODO Tror ikke denne trengs.

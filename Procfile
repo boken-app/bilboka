@@ -1,2 +1,1 @@
-web: java -jar build/libs/bilboka-messenger-integration*all.jar
- TODO riktige modulnavn
+web: java -jar build/libs/bilboka-messenger-integration-0.0.1-SNAPSHOT-all.jar

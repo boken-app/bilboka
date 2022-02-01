@@ -34,6 +34,25 @@ allprojects {
         }
     }
 
+    // TODO Usikker på om man trenger noe med denne for å kopiere jars til et sted.
+//    tasks.withType<Jar> {
+//        manifest {
+//            attributes["Main-Class"] = "bilboka.BilbokaApplicationKt" // Tror Heroku trenger denne
+//        }
+//
+//        // This line of code recursively collects and copies all of a project"s files
+//        // and adds them to the JAR itself. One can extend this task, to skip certain
+//        // files or particular types at will
+//        from(configurations.compileClasspath.get()
+//            .onEach { println("add from dependencies: ${it.name}") }
+//            .map { if (it.isDirectory()) it else zipTree(it) })
+//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//
+////    val sourcesMain = sourceSets.main.get()
+////    sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
+////    from(sourcesMain.output)
+//    }
+
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
         //   setZip64(true)  // new code
         manifest {
