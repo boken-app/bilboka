@@ -25,7 +25,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 
 	implementation(project(":bilboka-core"))
-//	implementation(project(":bilboka-messenger-integration"))
+	implementation(project(":bilboka-messenger-integration"))
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
