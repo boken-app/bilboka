@@ -56,7 +56,7 @@ allprojects {
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
         //   setZip64(true)  // new code
         manifest {
-            attributes["Main-Class"] = "ivaralek.bilboka.BilbokaApplication"
+            attributes["Main-Class"] = "bilboka.BilbokaApplicationKt"
         }
     }
 

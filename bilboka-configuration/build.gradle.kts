@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 plugins {
 	kotlin("jvm")
 	application
@@ -31,9 +29,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.getByName<BootJar>("bootJar") {
-	enabled = false
-}
+//tasks.getByName<BootJar>("bootJar") {
+//	enabled = false
+//}
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	kotlinOptions {
@@ -43,13 +41,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 application {
-	mainClass.set("ivaralek.bilboka.BilbokaApplicationKt")
+	mainClass.set("bilboka.BilbokaApplicationKt")
 }
 
 // Ser ut som det holder med den over.
 //tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
 // //   setZip64(true)  // new code
 //    manifest {
-//        attributes["Main-Class"] = "ivaralek.bilboka.BilbokaApplicationKt"
+//        attributes["Main-Class"] = "bilboka.BilbokaApplicationKt"
 //    }
 //}

@@ -51,7 +51,7 @@ tasks.withType<Jar> {
 //tasks.withType<ShadowJar>() {
 //    setZip64(true)  // new code
 //    manifest {
-//        attributes["Main-Class"] = "ivaralek.bilboka.BilbokaApplication"
+//        attributes["Main-Class"] = "bilboka.BilbokaApplication"
 //    }
 //}
 

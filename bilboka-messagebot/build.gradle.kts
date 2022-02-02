@@ -2,7 +2,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm")
-    application
+//    application
 
     id("bilboka.plugin")
 
@@ -30,9 +30,9 @@ dependencies {
 
 }
 
-application {
-    mainClass.set("ivaralek.bilboka.BilbokaApplicationKt")
-}
+//application {
+//    mainClass.set("bilboka.BilbokaApplicationKt")
+//}
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
