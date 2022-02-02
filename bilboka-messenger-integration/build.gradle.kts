@@ -12,10 +12,6 @@ plugins {
 group = "ivaralek"
 version = "0.0.1-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io") // khttp
-}
 
 // TODO rydde opp her bl.a.
 dependencies {

@@ -1,9 +1,9 @@
 package bilboka.messenger.resource
 
+import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerWebhookRequest
 import bilboka.messenger.service.MessageResponderService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,10 +17,9 @@ object MessengerWebhookConfig {
 
 @RestController
 @RequestMapping("webhook")
-class MessengerWebhookResource {
-
-    @Value("\${messenger.verify-token}")
-    lateinit var verifyToken: String
+class MessengerWebhookResource(
+    private val messengerProperties: MessengerProperties
+) {
 
     @Autowired
     lateinit var messageResponderService: MessageResponderService
@@ -31,7 +30,7 @@ class MessengerWebhookResource {
         @RequestParam(name = "hub.challenge") challenge: String,
         @RequestParam(name = "hub.mode") mode: String
     ): ResponseEntity<String> {
-        if (verifyToken == token && MessengerWebhookConfig.SUBSCRIBE_MODE == mode) {
+        if (messengerProperties.verifyToken == token && MessengerWebhookConfig.SUBSCRIBE_MODE == mode) {
             return ResponseEntity.ok(challenge)
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build()

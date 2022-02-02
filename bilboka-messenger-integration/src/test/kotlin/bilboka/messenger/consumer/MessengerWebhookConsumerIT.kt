@@ -1,5 +1,6 @@
 package bilboka.messenger.consumer
 
+import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.FacebookMessage
 import io.mockk.mockkStatic
 import io.mockk.verify
@@ -38,7 +39,10 @@ internal class MessengerWebhookConsumerIT {
             "http://localhost:%s",
             mockBackEnd.port
         )
-        webhookConsumer = MessengerWebhookConsumer(testUrl, pageAccessToken)
+        val messengerProperties = MessengerProperties()
+        messengerProperties.sendUrl = testUrl
+        messengerProperties.pageAccessToken = pageAccessToken
+        webhookConsumer = MessengerWebhookConsumer(messengerProperties)
     }
 
     @Test

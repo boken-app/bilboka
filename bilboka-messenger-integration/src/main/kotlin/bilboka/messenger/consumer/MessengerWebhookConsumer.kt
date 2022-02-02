@@ -1,26 +1,28 @@
 package bilboka.messenger.consumer
 
+import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.FacebookMessage
 import khttp.responses.Response
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
 import java.lang.String.format
 
 object MessengerWebhookConfig {
     const val ACCESS_TOKEN = "access_token"
 }
 
+@Component
 class MessengerWebhookConsumer(
-    var sendUrl: String,
-    var pageAccessToken: String
+    private val messengerProperties: MessengerProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendMessage(message: FacebookMessage) {
         val response: Response = khttp.post(
-            url = sendUrl,
-            headers = mapOf(Pair(MessengerWebhookConfig.ACCESS_TOKEN, pageAccessToken)),
+            url = messengerProperties.sendUrl,
+            headers = mapOf(Pair(MessengerWebhookConfig.ACCESS_TOKEN, messengerProperties.pageAccessToken)),
             data = JSONObject(message)
         )
         if (response.statusCode == HttpStatus.OK.value()) {

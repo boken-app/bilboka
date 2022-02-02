@@ -19,6 +19,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://jitpack.io") // khttp
     }
 
     tasks.withType<JavaCompile> {
