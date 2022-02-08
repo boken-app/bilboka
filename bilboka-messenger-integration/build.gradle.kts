@@ -2,7 +2,6 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm")
-//    application
 
     id("bilboka.plugin")
 
@@ -11,7 +10,6 @@ plugins {
 
 group = "ivaralek"
 version = "0.0.1-SNAPSHOT"
-
 
 // TODO rydde opp her bl.a.
 dependencies {
@@ -30,10 +28,6 @@ dependencies {
     testImplementation("com.squareup.okhttp3:okhttp:4.0.1")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.0.1")
 }
-
-//application {
-//    mainClass.set("bilboka.BilbokaApplicationKt")
-//}
 
 tasks.getByName<BootJar>("bootJar") {
     enabled = false

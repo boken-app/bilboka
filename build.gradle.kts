@@ -35,23 +35,10 @@ allprojects {
         }
     }
 
-    // TODO Usikker på om man trenger noe med denne for å kopiere jars til et sted.
-//    tasks.withType<Jar> {
+//    tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
 //        manifest {
-//            attributes["Main-Class"] = "bilboka.BilbokaApplicationKt" // Tror Heroku trenger denne
+//            attributes["Main-Class"] = "bilboka.BilbokaApplicationKt"
 //        }
-//
-//        // This line of code recursively collects and copies all of a project"s files
-//        // and adds them to the JAR itself. One can extend this task, to skip certain
-//        // files or particular types at will
-//        from(configurations.compileClasspath.get()
-//            .onEach { println("add from dependencies: ${it.name}") }
-//            .map { if (it.isDirectory()) it else zipTree(it) })
-//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//
-////    val sourcesMain = sourceSets.main.get()
-////    sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
-////    from(sourcesMain.output)
 //    }
 
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
@@ -92,18 +79,15 @@ subprojects {
         mavenCentral()
     }
 
-    apply {
-        plugin("io.spring.dependency-management")
-    }
+//    apply {
+//        plugin("io.spring.dependency-management")
+//    }
 
 
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(from = file("$rootDir/gradle/heroku/stage.gradle"))
 }
 
-dependencies {
-    implementation(project(":bilboka-configuration"))
-    implementation("org.springframework.boot:spring-boot-starter-web")
-}
-
-
+//dependencies {
+//    implementation("org.springframework.boot:spring-boot-starter-web")
+//}
