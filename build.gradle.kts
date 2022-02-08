@@ -35,12 +35,6 @@ allprojects {
         }
     }
 
-//    tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
-//        manifest {
-//            attributes["Main-Class"] = "bilboka.BilbokaApplicationKt"
-//        }
-//    }
-
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
         //   setZip64(true)  // new code
         manifest {
@@ -79,15 +73,7 @@ subprojects {
         mavenCentral()
     }
 
-//    apply {
-//        plugin("io.spring.dependency-management")
-//    }
+    apply(plugin = "com.github.johnrengelman.shadow") // Trengs for Heroku
 
-
-    apply(plugin = "com.github.johnrengelman.shadow")
     apply(from = file("$rootDir/gradle/heroku/stage.gradle"))
 }
-
-//dependencies {
-//    implementation("org.springframework.boot:spring-boot-starter-web")
-//}

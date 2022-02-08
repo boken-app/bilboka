@@ -12,8 +12,6 @@ object Versions {
     val logback = "1.2.3"
 
     val spring = "2.6.2"
-
-    // val shadow = "7.1.2"
 }
 
 val jUnitApi = "org.junit.jupiter:junit-jupiter-api:${Versions.jUnitJupiter}"
@@ -31,20 +29,14 @@ val slf4jApi = "org.slf4j:slf4j-api:${Versions.slf4j}"
 val logbackClassic = "ch.qos.logback:logback-classic:${Versions.logback}"
 val locbackCore = "ch.qos.logback:logback-core:${Versions.logback}"
 
-//val ktorServerNetty = "io.ktor:ktor-server-netty:${Versions.kTor}"
-//val ktorHtmlBuilder = "io.ktor:ktor-html-builder:${Versions.kTor}"
-
 //"compileOnly"("org.slf4j:slf4j-api:1.7.30")
 //"compileOnly"("ch.qos.logback:logback-classic:1.2.3")
 //"compileOnly"("ch.qos.logback:logback-core:1.2.3")
-
-//implementation("org.springframework.boot:spring-boot-gradle-plugin:2.5.2")
 
 object Libs {
 }
 
 internal fun Project.configureDependencies() = dependencies {
-    //   add("testImplementation", jUnit)
     add("implementation", kotlinStandardLibrary)
 
     //   add("implementation", springbootGradle)
@@ -60,8 +52,4 @@ internal fun Project.configureDependencies() = dependencies {
     add("testRuntimeOnly", jUnitEngine)
     add("testImplementation", jUnitPlatformCommons)
     add("testImplementation", jUnitPlatformLauncher)
-
-//    add("implementation", ktorHtmlBuilder)
-//    add("implementation", ktorServerNetty)
 }
-

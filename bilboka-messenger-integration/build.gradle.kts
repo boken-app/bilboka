@@ -1,3 +1,4 @@
+import bilboka.dependencies.Libs
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -16,9 +17,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    implementation("com.github.jkcclemens:khttp:-SNAPSHOT")
-
-    runtimeOnly("com.h2database:h2") // ?
+    implementation(Libs.kHttp)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
