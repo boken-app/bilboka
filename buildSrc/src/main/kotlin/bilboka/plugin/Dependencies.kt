@@ -11,7 +11,7 @@ object Versions {
     val slf4j = "1.7.30"
     val logback = "1.2.3"
 
-    val spring = "2.6.2"
+    val spring = "2.6.3"
 }
 
 val jUnitApi = "org.junit.jupiter:junit-jupiter-api:${Versions.jUnitJupiter}"

@@ -11,7 +11,7 @@ plugins {
     id("org.springframework.boot") version "2.6.3" apply false
 
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.3.50" apply false
+    kotlin("plugin.spring") version "1.6.10" apply false
 }
 
 allprojects {
