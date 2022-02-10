@@ -27,16 +27,7 @@ allprojects {
         targetCompatibility = "11"
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "11"
-            incremental = false
-        }
-    }
-
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
-        //   setZip64(true)  // new code
         manifest {
             attributes["Main-Class"] = "bilboka.BilbokaApplicationKt"
         }

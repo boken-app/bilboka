@@ -2,10 +2,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	kotlin("jvm")
-//	application
 
 	id("bilboka.plugin")
-
 }
 
 group = "ivaralek"
@@ -29,14 +27,6 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "11"
-	}
 }
 
 tasks.getByName<BootJar>("bootJar") {
