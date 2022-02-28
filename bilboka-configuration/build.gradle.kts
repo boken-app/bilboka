@@ -1,3 +1,5 @@
+import bilboka.dependencies.Libs
+
 plugins {
 	kotlin("jvm")
 	application
@@ -13,17 +15,12 @@ repositories {
 }
 
 dependencyManagement {
-	imports { mavenBom("org.springframework.boot:spring-boot-dependencies:2.4.4") }
+	imports { mavenBom(Libs.springbootDependencies) }
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
 	implementation(project(":bilboka-core"))
 	implementation(project(":bilboka-messenger-integration"))
-
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 application {

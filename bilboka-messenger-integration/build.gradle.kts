@@ -5,21 +5,15 @@ plugins {
     kotlin("jvm")
 
     id("bilboka.plugin")
-
-    id("org.springframework.boot") apply false // TODO vet ikke om dette er nødvendig
 }
 
 group = "ivaralek"
 version = "0.0.1-SNAPSHOT"
 
-// TODO rydde opp her bl.a.
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation(Libs.kHttp)
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     testImplementation("org.mockito:mockito-core:3.3.3")
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon

@@ -1,17 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-
-    id("java-library")
-    id("org.springframework.boot") version "2.6.3" apply false
-
     kotlin("jvm")
     kotlin("plugin.spring") version "1.6.10" apply false
+
+    id("org.springframework.boot") version "2.6.3" apply false
+
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 allprojects {
@@ -60,11 +53,7 @@ allprojects {
 }
 
 subprojects {
-    repositories {
-        mavenCentral()
-    }
-
-    apply(plugin = "com.github.johnrengelman.shadow") // Trengs for Heroku
-
+    // Heroku
+    apply(plugin = "com.github.johnrengelman.shadow")
     apply(from = file("$rootDir/gradle/heroku/stage.gradle"))
 }

@@ -11,6 +11,6 @@ class HelloResource {
 
     @GetMapping
     fun get(): ResponseEntity<String> {
-        return ResponseEntity.ok("Hallo fra Bilboka!")
+        return ResponseEntity.ok("Hallois fra Bilboka!")
     }
 }
