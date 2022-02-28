@@ -32,20 +32,7 @@ internal class MessageResponderServiceTest {
         val testMessage = "Hei test!"
 
         responderService.handleMessage(
-            FacebookEntry(
-                time = 3L,
-                id = "1",
-                messaging = listOf(
-                    FacebookMessaging(
-                        sender = mapOf(Pair("id", "123")),
-                        timestamp = 2L,
-                        message = FacebookMessage(
-                            sender = mapOf(Pair("id", "123")),
-                            message = mapOf(Pair("text", testMessage))
-                        )
-                    )
-                )
-            )
+            messageWithText(testMessage)
         )
 
         verify { consumer.sendMessage(any()) }
@@ -55,5 +42,20 @@ internal class MessageResponderServiceTest {
             assertThat(v).contains(testMessage)
         }
     }
+
+    private fun messageWithText(testMessage: String) = FacebookEntry(
+        time = 3L,
+        id = "1",
+        messaging = listOf(
+            FacebookMessaging(
+                sender = mapOf(Pair("id", "123")),
+                timestamp = 2L,
+                message = FacebookMessage(
+                    sender = mapOf(Pair("id", "123")),
+                    message = mapOf(Pair("text", testMessage))
+                )
+            )
+        )
+    )
 
 }

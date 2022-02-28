@@ -26,17 +26,22 @@ class MessageResponderService {
             logger.info(format("Sender PSID: %s", senderPSID))
 
             val text = messageEvent.message?.message?.get("text")
+            logger.info(format("Mottok melding: %s", text))
 
             // TODO behandle melding
 
-            messengerConsumer.sendMessage(
-                FacebookMessage(
-                    recipient = mapOf(),
-                    message = mapOf(Pair("text", format("Du sendte melding: %s", text)))
-                )
-            )
+            sendReply(format("Du sendte melding: %s", text))
         } else {
-            logger.warn("Ugyldig lengde på Messaging.")
+            logger.warn("Ugyldig lengde på Messaging. Forventet 1, var {}", entry.messaging.size)
         }
+    }
+
+    private fun sendReply(text: String) {
+        messengerConsumer.sendMessage(
+            FacebookMessage(
+                recipient = mapOf(),
+                message = mapOf(Pair("text", text))
+            )
+        )
     }
 }
