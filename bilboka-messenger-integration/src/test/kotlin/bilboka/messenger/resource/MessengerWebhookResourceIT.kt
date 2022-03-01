@@ -163,9 +163,9 @@ internal class MessengerWebhookResourceIT {
                                     emptyMap(),
                                     FacebookMessage(
                                         1234L,
-                                        emptyMap(),
-                                        emptyMap(),
-                                        emptyMap()
+                                        personWithId("456"),
+                                        personWithId("354"),
+                                        textMessage("Test")
                                     ),
                                     null
                                 )
