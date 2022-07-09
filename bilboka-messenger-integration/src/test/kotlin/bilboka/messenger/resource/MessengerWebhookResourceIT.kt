@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.Collections.emptyList
-import java.util.Collections.emptyMap
 
 @RunWith(SpringRunner::class)
 @WebMvcTest(MockMvc::class, properties = ["messenger.verify-token = detteerettesttoken"])
@@ -159,8 +158,8 @@ internal class MessengerWebhookResourceIT {
                             "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
-                                    emptyMap(),
-                                    emptyMap(),
+                                    personWithId("456"),
+                                    personWithId("354"),
                                     FacebookMessage(
                                         1234L,
                                         personWithId("456"),
@@ -220,8 +219,8 @@ internal class MessengerWebhookResourceIT {
                             "125", 125L, listOf(
                                 FacebookMessaging(
                                     1234L,
-                                    emptyMap(),
-                                    emptyMap(),
+                                    personWithId("457"),
+                                    personWithId("3565"),
                                     null,
                                     FacebookPostback(
                                         1234L,
@@ -249,13 +248,13 @@ internal class MessengerWebhookResourceIT {
                             "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
-                                    emptyMap(),
-                                    emptyMap(),
+                                    personWithId("456"),
+                                    personWithId("354"),
                                     null,
                                     FacebookPostback(
                                         1234L,
-                                        emptyMap(),
-                                        emptyMap(),
+                                        personWithId("456"),
+                                        personWithId("354"),
                                         "no"
                                     )
                                 )

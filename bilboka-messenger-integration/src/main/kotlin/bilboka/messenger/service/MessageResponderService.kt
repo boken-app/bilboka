@@ -23,17 +23,23 @@ class MessageResponderService {
 
             val messageEvent = entry.messaging[0]
 
-            val senderPSID = messageEvent.sender["id"]
+            val senderPSID = messageEvent.sender["id"] ?: throw IllegalArgumentException("Mangler sender-PSID")
             logger.info(format("Sender PSID: %s", senderPSID))
 
-            logger.info("messageEvent.message=${JSONObject(messageEvent.message)}")
+            if (messageEvent.message != null) {
+                logger.info("messageEvent.message=${JSONObject(messageEvent.message)}")
 
-            val text = messageEvent.message?.message?.get("text")
-            logger.info(format("Mottok melding: %s", text))
+                val text = messageEvent.message?.message?.get("text")
+                logger.info(format("Mottok melding: %s", text))
 
-            // TODO behandle melding
+                // TODO behandle melding
 
-            sendReply(format("Du sendte melding: %s", text), senderPSID!!)
+                sendReply(format("Du sendte melding: %s", text), senderPSID)
+            } else {
+                logger.info("Request inneholder ingen melding.")
+                sendReply("Du sendte noe rart jeg ikke skjønte", senderPSID)
+            }
+
         } else {
             logger.warn("Ugyldig lengde på Messaging. Forventet 1, var {}", entry.messaging.size)
         }
