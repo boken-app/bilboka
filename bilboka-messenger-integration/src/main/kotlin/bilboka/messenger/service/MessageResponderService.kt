@@ -25,6 +25,8 @@ class MessageResponderService {
             val senderPSID = messageEvent.sender["id"]
             logger.info(format("Sender PSID: %s", senderPSID))
 
+            logger.info("messageEvent.message=${messageEvent.message}")
+
             val text = messageEvent.message?.message?.get("text")
             logger.info(format("Mottok melding: %s", text))
 

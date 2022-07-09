@@ -20,7 +20,7 @@ class MessengerWebhookConsumer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendMessage(message: FacebookMessage) {
-        logger.info("Sender melding med access token=${messengerProperties.pageAccessToken}, sendUrl=${messengerProperties.sendUrl}")
+        logger.info("Sender melding ${JSONObject(message)}")
 
         val response: Response = khttp.post(
             url = messengerProperties.sendUrl,
