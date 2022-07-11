@@ -24,7 +24,8 @@ class MessageResponderService {
 
             val messageEvent = entry.messaging[0]
 
-            val senderPSID = messageEvent.sender["id"] ?: throw IllegalArgumentException("Mangler sender-PSID")
+            val sender = messageEvent.sender ?: throw IllegalArgumentException("Mangler sender")
+            val senderPSID = sender["id"] ?: throw IllegalArgumentException("Mangler sender-PSID")
             logger.info(format("Sender PSID: %s", senderPSID))
 
             if (messageEvent.message != null) {

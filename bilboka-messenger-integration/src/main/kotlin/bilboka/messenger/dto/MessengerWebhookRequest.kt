@@ -19,9 +19,9 @@ data class FacebookEntry(
 
 data class FacebookMessaging(
     val timestamp: Long? = null,
-    val messagingType: String? = "RESPONSE",// TODO skal ha underscore _ Sjekk at det blir riktig.
-    val sender: Map<String, String> = mapOf(),
-    val recipient: Map<String, String> = mapOf(),
+    val messagingType: String? = null,// TODO skal ha underscore _ Sjekk at det blir riktig.
+    val sender: Map<String, String>? = null,
+    val recipient: Map<String, String>? = null,
     val message: FacebookMessage? = null,
     val postback: FacebookPostback? = null
 ) : Serializable
