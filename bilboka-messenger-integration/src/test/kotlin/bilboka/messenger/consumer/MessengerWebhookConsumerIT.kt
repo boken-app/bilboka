@@ -3,6 +3,7 @@ package bilboka.messenger.consumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
+import io.mockk.InternalPlatformDsl.toStr
 import io.mockk.mockkStatic
 import io.mockk.verify
 import okhttp3.mockwebserver.MockResponse
@@ -74,7 +75,7 @@ internal class MessengerWebhookConsumerIT {
         // Assert
         verify {
             khttp.post(
-                url = eq(testUrl),
+                url = any(),
                 headers = any(),
                 data = any()
             )
@@ -83,6 +84,8 @@ internal class MessengerWebhookConsumerIT {
         val takeRequest = mockBackEnd.takeRequest()
 
         assertThat(takeRequest.method).isEqualTo("POST")
+        assertThat(takeRequest.requestUrl.toStr()).contains(testUrl)
+        assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
         assertThat(takeRequest.path).isEqualTo("/")
         assertThat(takeRequest.headers).contains(Pair("access_token", pageAccessToken))
         assertThat(takeRequest.body.readUtf8())
