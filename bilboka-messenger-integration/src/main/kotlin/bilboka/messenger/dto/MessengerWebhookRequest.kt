@@ -19,7 +19,7 @@ data class FacebookEntry(
 
 data class FacebookMessaging(
     val timestamp: Long? = null,
-    val messagingType: String? = "RESPONSE",
+    val messagingType: String? = "RESPONSE",// TODO skal ha underscore _ Sjekk at det blir riktig.
     val sender: Map<String, String> = mapOf(),
     val recipient: Map<String, String> = mapOf(),
     val message: FacebookMessage? = null,
