@@ -18,7 +18,8 @@ data class FacebookEntry(
 ) : Serializable
 
 data class FacebookMessaging(
-    val timestamp: Long,
+    val timestamp: Long? = null,
+    val messagingType: String? = "RESPONSE",
     val sender: Map<String, String> = mapOf(),
     val recipient: Map<String, String> = mapOf(),
     val message: FacebookMessage? = null,
@@ -26,10 +27,8 @@ data class FacebookMessaging(
 ) : Serializable
 
 data class FacebookMessage(
-    val timestamp: Long? = null,
-    val sender: Map<String, String> = mapOf(),
-    val recipient: Map<String, String> = mapOf(),
-    val message: Map<String, String> = mapOf()
+    val mid: String = "",
+    val text: String?
 ) : Serializable
 
 data class FacebookPostback(

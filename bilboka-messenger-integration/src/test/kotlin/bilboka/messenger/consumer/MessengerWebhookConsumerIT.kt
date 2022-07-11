@@ -2,6 +2,7 @@ package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.FacebookMessage
+import bilboka.messenger.dto.FacebookMessaging
 import io.mockk.mockkStatic
 import io.mockk.verify
 import okhttp3.mockwebserver.MockResponse
@@ -59,12 +60,12 @@ internal class MessengerWebhookConsumerIT {
 
         val recipient = mapOf(Pair("id", "123"))
         val testMessage = "detteerentest"
-        val message = mapOf(Pair("text", testMessage))
 
-        val testFBMessage = FacebookMessage(
-            timestamp = 1L,
+        val testFBMessage = FacebookMessaging(
             recipient = recipient,
-            message = message
+            message = FacebookMessage(
+                text = testMessage
+            )
         )
 
         // Act

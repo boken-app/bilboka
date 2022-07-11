@@ -1,7 +1,7 @@
 package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
-import bilboka.messenger.dto.FacebookMessage
+import bilboka.messenger.dto.FacebookMessaging
 import khttp.responses.Response
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
@@ -19,7 +19,7 @@ class MessengerWebhookConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun sendMessage(message: FacebookMessage) {
+    fun sendMessage(message: FacebookMessaging) {
         logger.info("Sender melding ${JSONObject(message)}")
 
         val response: Response = khttp.post(

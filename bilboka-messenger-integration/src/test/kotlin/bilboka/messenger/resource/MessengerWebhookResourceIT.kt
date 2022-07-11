@@ -158,13 +158,11 @@ internal class MessengerWebhookResourceIT {
                             "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
+                                    null,
                                     personWithId("456"),
                                     personWithId("354"),
                                     FacebookMessage(
-                                        1234L,
-                                        personWithId("456"),
-                                        personWithId("354"),
-                                        textMessage("Test")
+                                        text = "Test"
                                     ),
                                     null
                                 )
@@ -187,13 +185,11 @@ internal class MessengerWebhookResourceIT {
                             "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
+                                    null,
                                     personWithId("456"),
                                     personWithId("354"),
                                     FacebookMessage(
-                                        1234L,
-                                        personWithId("456"),
-                                        personWithId("354"),
-                                        textMessage("Test")
+                                        text = "Test"
                                     ),
                                     null
                                 )
@@ -203,13 +199,11 @@ internal class MessengerWebhookResourceIT {
                             "124", 124L, listOf(
                                 FacebookMessaging(
                                     1234L,
+                                    null,
                                     personWithId("457"),
                                     personWithId("3565"),
                                     FacebookMessage(
-                                        1234L,
-                                        personWithId("457"),
-                                        personWithId("3565"),
-                                        textMessage("TestMsg2")
+                                        text = "TestMsg2"
                                     ),
                                     null
                                 )
@@ -219,6 +213,7 @@ internal class MessengerWebhookResourceIT {
                             "125", 125L, listOf(
                                 FacebookMessaging(
                                     1234L,
+                                    null,
                                     personWithId("457"),
                                     personWithId("3565"),
                                     null,
@@ -248,6 +243,7 @@ internal class MessengerWebhookResourceIT {
                             "123", 123L, listOf(
                                 FacebookMessaging(
                                     1234L,
+                                    null,
                                     personWithId("456"),
                                     personWithId("354"),
                                     null,

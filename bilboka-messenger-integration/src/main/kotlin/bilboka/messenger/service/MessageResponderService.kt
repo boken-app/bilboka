@@ -3,6 +3,7 @@ package bilboka.messenger.service
 import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.FacebookEntry
 import bilboka.messenger.dto.FacebookMessage
+import bilboka.messenger.dto.FacebookMessaging
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,7 +30,7 @@ class MessageResponderService {
             if (messageEvent.message != null) {
                 logger.info("messageEvent.message=${JSONObject(messageEvent)}")
 
-                val text = messageEvent.message?.message?.get("text")
+                val text = messageEvent.message.text
                 logger.info(format("Mottok melding: %s", text))
 
                 // TODO behandle melding
@@ -47,9 +48,11 @@ class MessageResponderService {
 
     private fun sendReply(text: String, recipientPSID: String) {
         messengerConsumer.sendMessage(
-            FacebookMessage(
+            FacebookMessaging(
                 recipient = mapOf(Pair("id", recipientPSID)),
-                message = mapOf(Pair("text", text))
+                message = FacebookMessage(
+                    text = text
+                )
             )
         )
     }

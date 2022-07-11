@@ -25,7 +25,7 @@ internal class MessageResponderServiceTest {
 
     @Test
     fun messageResponder() {
-        val slot = slot<FacebookMessage>()
+        val slot = slot<FacebookMessaging>()
 
         justRun { consumer.sendMessage(capture(slot)) }
 
@@ -37,10 +37,7 @@ internal class MessageResponderServiceTest {
 
         verify { consumer.sendMessage(any()) }
 
-        assertThat(slot.captured.message).anySatisfy { k, v ->
-            assertThat(k).isEqualTo("text")
-            assertThat(v).contains(testMessage)
-        }
+        assertThat(slot.captured.message?.text).contains(testMessage)
     }
 
     private fun messageWithText(testMessage: String) = FacebookEntry(
@@ -51,8 +48,7 @@ internal class MessageResponderServiceTest {
                 sender = mapOf(Pair("id", "123")),
                 timestamp = 2L,
                 message = FacebookMessage(
-                    sender = mapOf(Pair("id", "123")),
-                    message = mapOf(Pair("text", testMessage))
+                    text = testMessage
                 )
             )
         )
