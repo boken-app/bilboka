@@ -27,7 +27,7 @@ class MessageResponderService {
             logger.info(format("Sender PSID: %s", senderPSID))
 
             if (messageEvent.message != null) {
-                logger.info("messageEvent.message=${JSONObject(messageEvent.message)}")
+                logger.info("messageEvent.message=${JSONObject(messageEvent)}")
 
                 val text = messageEvent.message?.message?.get("text")
                 logger.info(format("Mottok melding: %s", text))
