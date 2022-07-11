@@ -48,6 +48,7 @@ internal class MessengerWebhookConsumerIT {
     }
 
     @Test
+    @Disabled // TODO
     fun sendMessage_correctPostCall() {
 
         // Arrange
