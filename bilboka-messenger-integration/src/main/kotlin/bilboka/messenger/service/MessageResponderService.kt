@@ -25,7 +25,7 @@ class MessageResponderService {
 
             val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
 
-            if (messageEvent.message != null) {
+            if (messageEvent.message?.text != null) {
                 val text = messageEvent.message.text
                 logger.info(format("Mottok melding=%s fra PSID=%s", text, senderPSID))
 
