@@ -24,7 +24,7 @@ class MessengerWebhookConsumer(
         val url =
             "${messengerProperties.sendUrl}?${MessengerWebhookConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
         logger.debug("Sender request ${JSONObject(message)} til $url")
-        logger.info("Sender melding ${message.message?.text} til ${message.sender?.get("id")}")
+        logger.info("Sender melding ${message.message?.text} til ${message.recipient?.get("id")}")
 
         val response: Response = khttp.post(
             url = url,
