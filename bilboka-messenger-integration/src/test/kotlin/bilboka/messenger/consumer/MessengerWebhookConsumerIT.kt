@@ -88,7 +88,6 @@ internal class MessengerWebhookConsumerIT {
         assertThat(takeRequest.requestUrl.toStr()).contains(testUrl)
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
         assertThat(takeRequest.path).isEqualTo("/")
-        assertThat(takeRequest.headers).contains(Pair("access_token", pageAccessToken))
         assertThat(takeRequest.body.readUtf8())
             .contains(testMessage)
             .contains("\"text\":")

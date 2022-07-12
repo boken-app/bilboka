@@ -28,7 +28,7 @@ class MessengerWebhookConsumer(
         val response: Response = khttp.post(
             url = url,
             headers = mapOf(Pair("Content-Type", "application/json")),
-            data = JSONObject(message)
+            json = message
         )
         if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Melding sendt!")
