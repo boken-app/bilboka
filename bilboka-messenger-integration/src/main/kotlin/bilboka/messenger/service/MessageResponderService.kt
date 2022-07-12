@@ -26,10 +26,10 @@ class MessageResponderService {
 
             val sender = messageEvent.sender ?: throw IllegalArgumentException("Mangler sender")
             val senderPSID = sender["id"] ?: throw IllegalArgumentException("Mangler sender-PSID")
-            logger.info(format("Sender PSID: %s", senderPSID))
+            logger.debug(format("Sender PSID: %s", senderPSID))
 
             if (messageEvent.message != null) {
-                logger.info("messageEvent.message=${JSONObject(messageEvent)}")
+                logger.debug("messageEvent.message=${JSONObject(messageEvent)}")
 
                 val text = messageEvent.message.text
                 logger.info(format("Mottok melding: %s", text))
@@ -38,7 +38,7 @@ class MessageResponderService {
 
                 sendReply(format("Du sendte melding: %s", text), senderPSID)
             } else {
-                logger.info("Request inneholder ingen melding.")
+                logger.warn("Request inneholder ingen melding.")
                 sendReply("Du sendte noe rart jeg ikke skjønte", senderPSID)
             }
 
