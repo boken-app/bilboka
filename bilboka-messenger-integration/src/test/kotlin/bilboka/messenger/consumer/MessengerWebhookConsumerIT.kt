@@ -48,7 +48,6 @@ internal class MessengerWebhookConsumerIT {
     }
 
     @Test
-  //  @Disabled // TODO
     fun sendMessage_correctPostCall() {
 
         // Arrange
@@ -78,7 +77,7 @@ internal class MessengerWebhookConsumerIT {
             khttp.post(
                 url = any(),
                 headers = any(),
-                data = any()
+                json = any()
             )
         }
 
@@ -87,7 +86,10 @@ internal class MessengerWebhookConsumerIT {
         assertThat(takeRequest.method).isEqualTo("POST")
         assertThat(takeRequest.requestUrl.toStr()).contains(mockBackEnd.port.toStr())
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
-        assertThat(takeRequest.body.readUtf8()).isEqualTo("{\"recipient\":{\"id\":\"123\"},\"message\":{\"text\":\"detteerentest\"}}")
+        assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
+        assertThat(takeRequest.body.readUtf8())
+            .contains("{\"text\":\"$testMessage\"}}")
+            .contains("{\"recipient\":{\"id\":\"123\"}")
     }
 
 }

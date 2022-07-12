@@ -4,7 +4,6 @@ import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.FacebookEntry
 import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
-import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -24,15 +23,11 @@ class MessageResponderService {
 
             val messageEvent = entry.messaging[0]
 
-            val sender = messageEvent.sender ?: throw IllegalArgumentException("Mangler sender")
-            val senderPSID = sender["id"] ?: throw IllegalArgumentException("Mangler sender-PSID")
-            logger.debug(format("Sender PSID: %s", senderPSID))
+            val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
 
             if (messageEvent.message != null) {
-                logger.debug("messageEvent.message=${JSONObject(messageEvent)}")
-
                 val text = messageEvent.message.text
-                logger.info(format("Mottok melding: %s", text))
+                logger.info(format("Mottok melding=%s fra PSID=%s", text, senderPSID))
 
                 // TODO behandle melding
 
