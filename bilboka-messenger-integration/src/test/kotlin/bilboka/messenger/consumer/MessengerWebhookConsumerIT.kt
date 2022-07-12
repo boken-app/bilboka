@@ -48,7 +48,7 @@ internal class MessengerWebhookConsumerIT {
     }
 
     @Test
-    @Disabled // TODO
+  //  @Disabled // TODO
     fun sendMessage_correctPostCall() {
 
         // Arrange
@@ -85,12 +85,9 @@ internal class MessengerWebhookConsumerIT {
         val takeRequest = mockBackEnd.takeRequest()
 
         assertThat(takeRequest.method).isEqualTo("POST")
-        assertThat(takeRequest.requestUrl.toStr()).contains(testUrl)
+        assertThat(takeRequest.requestUrl.toStr()).contains(mockBackEnd.port.toStr())
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
-        assertThat(takeRequest.path).isEqualTo("/")
-        assertThat(takeRequest.body.readUtf8())
-            .contains(testMessage)
-            .contains("\"text\":")
+        assertThat(takeRequest.body.readUtf8()).isEqualTo("{\"recipient\":{\"id\":\"123\"},\"message\":{\"text\":\"detteerentest\"}}")
     }
 
 }
