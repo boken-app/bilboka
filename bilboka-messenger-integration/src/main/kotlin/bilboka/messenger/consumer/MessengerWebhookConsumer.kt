@@ -20,11 +20,10 @@ class MessengerWebhookConsumer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendMessage(message: FacebookMessaging) {
+        logger.info("Sender melding ${message.message?.text} til ${message.recipient?.get("id")}")
 
         val url =
             "${messengerProperties.sendUrl}?${MessengerWebhookConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
-        logger.debug("Sender request ${JSONObject(message)} til $url")
-        logger.info("Sender melding ${message.message?.text} til ${message.recipient?.get("id")}")
 
         val response: Response = khttp.post(
             url = url,
@@ -36,5 +35,4 @@ class MessengerWebhookConsumer(
             logger.error(format("Sending gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
         }
     }
-
 }
