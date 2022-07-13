@@ -1,5 +1,8 @@
 package bilboka.messagebot
 
+import bilboka.messagebot.commands.AddFuelRecordCommand
+import bilboka.messagebot.commands.Helper
+import bilboka.messagebot.commands.SmallTalk
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -8,19 +11,21 @@ class MessageBot {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    private val commandRegistry = setOf(
+        AddFuelRecordCommand(),
+        SmallTalk(),
+        Helper()
+    )
+
     fun processMessage(message: String): String {
         logger.info("Mottok melding $message")
 
-        return when (message) {
-            "Hei" -> "Hei"
-            "Hei!" -> "Hei!"
-            "Skjer" -> "Ikke noe spes. Der?"
-            "Skjer?" -> "Ikke noe spes. Der?"
-            "Hvem der" -> "Bare meg!"
-            "Ikke noe spes" -> "ok"
-            "Ikke noe" -> "ok"
-            "Ingenting" -> "ok"
-            else -> "Usikker på hva du mener med $message"
+        commandRegistry.forEach {
+            if (it.isMatch(message)) {
+                return it.execute(message)
+            }
         }
+
+        return "Forstod ikke helt hva du mente, prøv igjen."
     }
 }

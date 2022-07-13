@@ -7,9 +7,21 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MessageBotTest {
+
+    val messagebot = MessageBot()
+
     @Test
-    fun testHandleMessage() {
-        val messagebot = MessageBot()
-        assertThat(messagebot.processMessage("Hei")).isNotBlank
+    fun sendHei_returnsHei() {
+        assertThat(messagebot.processMessage("Hei")).isEqualTo("Hei")
+    }
+
+    @Test
+    fun sendSkjer_returnsIkkenospes() {
+        assertThat(messagebot.processMessage("Skjer?")).isEqualTo("Ikke noe spes. Der?")
+    }
+
+    @Test
+    fun sendSomethingStrange_returnsHei() {
+        assertThat(messagebot.processMessage("Her kommer en rar melding")).isEqualTo("Forstod ikke helt hva du mente, prøv igjen.")
     }
 }
