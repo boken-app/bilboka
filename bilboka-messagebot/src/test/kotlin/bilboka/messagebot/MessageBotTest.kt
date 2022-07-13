@@ -3,12 +3,22 @@
  */
 package bilboka.messagebot
 
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(MockKExtension::class)
 class MessageBotTest {
 
-    val messagebot = MessageBot()
+    @MockK
+    lateinit var carBookExecutor: CarBookExecutor
+
+    @InjectMockKs
+    lateinit var messagebot: MessageBot
 
     @Test
     fun sendHei_returnsHei() {

@@ -1,9 +1,10 @@
 package bilboka.messagebot
 
-import bilboka.messagebot.commands.AddFuelRecordCommand
+import bilboka.messagebot.commands.AddFuelRecord
 import bilboka.messagebot.commands.Helper
 import bilboka.messagebot.commands.SmallTalk
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
@@ -11,11 +12,16 @@ class MessageBot {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val commandRegistry = setOf(
-        AddFuelRecordCommand(),
-        SmallTalk(),
-        Helper()
-    )
+    @Autowired
+    lateinit var carBookExecutor: CarBookExecutor
+
+    private val commandRegistry by lazy {
+        setOf(
+            AddFuelRecord(carBookExecutor),
+            SmallTalk(),
+            Helper()
+        )
+    }
 
     fun processMessage(message: String): String {
         logger.info("Mottok melding $message")

@@ -19,7 +19,8 @@ dependencyManagement {
 }
 
 dependencies {
-
+    implementation(project(":bilboka-core"))
+    testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
 }
 
 tasks.getByName<BootJar>("bootJar") {

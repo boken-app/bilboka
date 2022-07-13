@@ -1,6 +1,10 @@
 package bilboka.messagebot.commands
 
-class AddFuelRecordCommand : CarBookCommand {
+import bilboka.messagebot.CarBookExecutor
+
+class AddFuelRecord(
+    executor: CarBookExecutor
+) : CarBookCommand {
     override fun isMatch(message: String): Boolean {
         return false
     }

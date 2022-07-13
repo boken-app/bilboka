@@ -1,7 +1,7 @@
 package bilboka.core.book.domain
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
-class MaintenanceRecord(date: LocalDate?, odometer: Int?) : Record(date, RecordType.MAINTENANCE, odometer) {
+class MaintenanceRecord(date: LocalDateTime?, odometer: Int?) : Record(date, RecordType.MAINTENANCE, odometer) {
 
 }

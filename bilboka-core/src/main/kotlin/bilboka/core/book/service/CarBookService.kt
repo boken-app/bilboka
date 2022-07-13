@@ -3,6 +3,7 @@ package bilboka.core.book.service
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.Record
 import bilboka.core.book.repository.BookStorage
+import bilboka.core.exception.VehicleNotFoundException
 import bilboka.core.vehicle.Vehicle
 import org.springframework.stereotype.Service
 
@@ -24,5 +25,10 @@ class CarBookService(val storage: BookStorage) {
     fun addRecordForVehicle(record: Record, vehicle: Vehicle) {
         val book = storage.getForVehicle(vehicle)
         book?.addRecord(record)
+    }
+
+    fun addRecordForVehicle(record: Record, vehicle: String) {
+        val book = getBookForVehicle(vehicle) ?: throw VehicleNotFoundException("Fant ikke bil $vehicle")
+        book.addRecord(record)
     }
 }

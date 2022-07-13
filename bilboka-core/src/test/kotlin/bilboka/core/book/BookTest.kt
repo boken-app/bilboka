@@ -6,7 +6,7 @@ import bilboka.core.book.domain.MaintenanceRecord
 import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate.now
+import java.time.LocalDateTime.now
 
 internal class BookTest {
 
