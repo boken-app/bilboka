@@ -1,5 +1,7 @@
 package bilboka.messenger.resource
 
+import bilboka.core.book.repository.BookStorage
+import bilboka.core.book.repository.InMemoryStorage
 import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -311,6 +314,10 @@ internal class MessengerWebhookResourceIT {
     @ComponentScan(basePackages = ["bilboka"])
     class MessengerIntegrationConfig {
 
+        @Bean
+        fun bookStorage(): BookStorage {
+            return InMemoryStorage()
+        }
     }
 
 }
