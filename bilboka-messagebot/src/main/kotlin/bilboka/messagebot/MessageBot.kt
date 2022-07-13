@@ -17,6 +17,9 @@ class MessageBot {
             "Skjer" -> "Ikke noe spes. Der?"
             "Skjer?" -> "Ikke noe spes. Der?"
             "Hvem der" -> "Bare meg!"
+            "Ikke noe spes" -> "ok"
+            "Ikke noe" -> "ok"
+            "Ingenting" -> "ok"
             else -> "Usikker på hva du mener med $message"
         }
     }
