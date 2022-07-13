@@ -10,6 +10,14 @@ class MessageBot {
 
     fun processMessage(message: String): String {
         logger.info("Mottok melding $message")
-        return "Hei! Du sendte: $message. -MessageBot"
+
+        return when (message) {
+            "Hei" -> "Hei"
+            "Hei!" -> "Hei!"
+            "Skjer" -> "Ikke noe spes. Der?"
+            "Skjer?" -> "Ikke noe spes. Der?"
+            "Hvem der" -> "Bare meg!"
+            else -> "Usikker på hva du mener med $message"
+        }
     }
 }
