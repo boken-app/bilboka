@@ -1,6 +1,5 @@
 package bilboka.messenger.resource
 
-import bilboka.messenger.MessengerIntegrationConfig
 import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
@@ -28,7 +29,7 @@ import java.util.Collections.emptyList
 
 @RunWith(SpringRunner::class)
 @WebMvcTest(MockMvc::class, properties = ["messenger.verify-token = detteerettesttoken"])
-@ContextConfiguration(classes = [MessengerIntegrationConfig::class])
+@ContextConfiguration(classes = [MessengerWebhookResourceIT.MessengerIntegrationConfig::class])
 internal class MessengerWebhookResourceIT {
 
     // TODO Muligens lage skille på test og IT
@@ -305,4 +306,11 @@ internal class MessengerWebhookResourceIT {
             throw RuntimeException(e)
         }
     }
+
+    @Configuration
+    @ComponentScan(basePackages = ["bilboka"])
+    class MessengerIntegrationConfig {
+
+    }
+
 }
