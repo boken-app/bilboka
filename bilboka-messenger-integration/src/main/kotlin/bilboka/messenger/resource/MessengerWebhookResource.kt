@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.function.Consumer
 
 object MessengerWebhookConfig {
     const val SUBSCRIBE_MODE = "subscribe"
@@ -42,14 +41,14 @@ class MessengerWebhookResource(
 
     @PostMapping
     fun post(@RequestBody request: MessengerWebhookRequest): ResponseEntity<String> {
-        if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
+        return if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             logger.info("Handling incoming page request!")
             request.entry.stream()
-                .forEach(Consumer { facebookEntry -> facebookMessageHandler.handleMessage(facebookEntry) })
-            return ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
+                .forEach { facebookEntry -> facebookMessageHandler.handleMessage(facebookEntry) }
+            ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
             logger.info("Unknown request object {}. Replying not found!", request.requestObject)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
     }
 

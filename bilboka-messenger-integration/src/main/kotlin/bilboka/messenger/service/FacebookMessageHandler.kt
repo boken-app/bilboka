@@ -24,18 +24,12 @@ class FacebookMessageHandler {
     fun handleMessage(entry: FacebookEntry) {
 
         if (entry.messaging.size == 1) {
-
             val messageEvent = entry.messaging[0]
-
             val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
 
             if (messageEvent.message?.text != null) {
                 val text = messageEvent.message.text
                 logger.info(format("Mottok melding=%s fra PSID=%s", text, senderPSID))
-
-                // TODO behandle melding
-
-
                 sendReply(messageBot.processMessage(text), senderPSID)
             } else {
                 logger.warn("Request inneholder ingen melding.")
