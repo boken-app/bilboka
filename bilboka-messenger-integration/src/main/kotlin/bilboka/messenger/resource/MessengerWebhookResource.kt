@@ -2,7 +2,7 @@ package bilboka.messenger.resource
 
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerWebhookRequest
-import bilboka.messenger.service.MessageResponderService
+import bilboka.messenger.service.FacebookMessageHandler
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -24,7 +24,7 @@ class MessengerWebhookResource(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
-    lateinit var messageResponderService: MessageResponderService
+    lateinit var facebookMessageHandler: FacebookMessageHandler
 
     @GetMapping
     fun get(
@@ -45,7 +45,7 @@ class MessengerWebhookResource(
         if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             logger.info("Handling incoming page request!")
             request.entry.stream()
-                .forEach(Consumer { facebookEntry -> messageResponderService.handleMessage(facebookEntry) })
+                .forEach(Consumer { facebookEntry -> facebookMessageHandler.handleMessage(facebookEntry) })
             return ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
             logger.info("Unknown request object {}. Replying not found!", request.requestObject)

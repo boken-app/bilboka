@@ -3,13 +3,13 @@
  */
 package bilboka.messagebot
 
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class MessageBotTest {
     @Test
-    fun testSomeLibraryMethod() {
-        val classUnderTest = MessageBot()
-        assertTrue(classUnderTest.someLibraryMethod(), "someLibraryMethod should return 'true'")
+    fun testHandleMessage() {
+        val messagebot = MessageBot()
+        assertThat(messagebot.processMessage("Hei")).isNotBlank
     }
 }

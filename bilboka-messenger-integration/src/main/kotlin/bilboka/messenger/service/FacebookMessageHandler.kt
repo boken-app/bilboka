@@ -1,5 +1,6 @@
 package bilboka.messenger.service
 
+import bilboka.messagebot.MessageBot
 import bilboka.messenger.consumer.MessengerWebhookConsumer
 import bilboka.messenger.dto.FacebookEntry
 import bilboka.messenger.dto.FacebookMessage
@@ -10,12 +11,15 @@ import org.springframework.stereotype.Component
 import java.lang.String.format
 
 @Component
-class MessageResponderService {
+class FacebookMessageHandler {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     lateinit var messengerConsumer: MessengerWebhookConsumer
+
+    @Autowired
+    lateinit var messageBot: MessageBot
 
     fun handleMessage(entry: FacebookEntry) {
 
@@ -31,7 +35,8 @@ class MessageResponderService {
 
                 // TODO behandle melding
 
-                sendReply(format("Du sendte melding: %s", text), senderPSID)
+
+                sendReply(messageBot.processMessage(text), senderPSID)
             } else {
                 logger.warn("Request inneholder ingen melding.")
                 sendReply("Du sendte noe rart jeg ikke skjønte", senderPSID)
