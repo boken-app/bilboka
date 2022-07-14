@@ -11,8 +11,9 @@ class CarBookExecutor {
     @Autowired
     lateinit var carBookService: CarBookService
 
-    fun addFuelRecord(vehicle: String, amount: Double, cost: Double, isFull: Boolean = false) {
+    fun addFuelRecord(vehicle: String, amount: Double, cost: Double, isFull: Boolean = false): FuelRecord {
         val fuelRecord = FuelRecord(amount = amount, costNOK = cost, isFull = isFull)
         carBookService.addRecordForVehicle(fuelRecord, vehicle)
+        return fuelRecord
     }
 }

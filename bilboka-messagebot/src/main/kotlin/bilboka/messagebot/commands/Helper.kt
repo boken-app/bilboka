@@ -7,6 +7,6 @@ class Helper : CarBookCommand {
     }
 
     override fun execute(message: String): String {
-        return "Her kommer det en hjelpetkst."
+        return "For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\""
     }
 }
