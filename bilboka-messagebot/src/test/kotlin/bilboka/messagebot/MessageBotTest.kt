@@ -3,6 +3,7 @@
  */
 package bilboka.messagebot
 
+import io.mockk.confirmVerified
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -37,6 +38,7 @@ class MessageBotTest {
         messagebot.processMessage("Hei", senderID)
 
         verify { botMessenger.sendMessage("Hei", senderID) }
+        confirmVerified(botMessenger)
     }
 
     @Test
@@ -44,6 +46,7 @@ class MessageBotTest {
         messagebot.processMessage("Skjer?", senderID)
 
         verify { botMessenger.sendMessage("Ikke noe spes. Der?", senderID) }
+        confirmVerified(botMessenger)
     }
 
     @Test
@@ -51,5 +54,6 @@ class MessageBotTest {
         messagebot.processMessage("Her kommer en rar melding", senderID)
 
         verify { botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID) }
+        confirmVerified(botMessenger)
     }
 }

@@ -32,9 +32,10 @@ class MessageBot {
         commandRegistry.forEach {
             if (it.isMatch(message)) {
                 botMessenger.sendMessage(it.execute(message), senderID)
+                return
             }
         }
 
-        return botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID)
+        botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID)
     }
 }
