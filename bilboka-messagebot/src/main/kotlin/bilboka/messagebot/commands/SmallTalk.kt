@@ -3,21 +3,25 @@ package bilboka.messagebot.commands
 class SmallTalk : CarBookCommand {
 
     val conversations = mapOf(
-        Pair("Hei", "Hei"),
-        Pair("Hei!", "Hei!"),
-        Pair("Driver med", "Ikke noe spes. Der?"),
-        Pair("Skjer", "Ikke noe spes. Der?"),
-        Pair("Skjer?", "Ikke noe spes. Der?"),
-        Pair("Hvem der", "Bare meg!"),
-        Pair("Ikke noe", "ok"),
-        Pair("Ingenting", "ok"),
-        Pair("Meh", "meh"),
-        Pair("Jada", "Joda så"),
+        Pair("hei", "Hei"),
+        Pair("hei!", "Hei!"),
+        Pair("hey!", "Yo!"),
+        Pair("hey", "Yo!"),
+        Pair("driver med", "Ikke noe spes. Der?"),
+        Pair("skjer", "Ikke noe spes. Der?"),
+        Pair("skjer?", "Ikke noe spes. Der?"),
+        Pair("sup", "sup"),
+        Pair("hvem der", "Bare meg!"),
+        Pair("ikke noe", "ok"),
+        Pair("ingenting", "ok"),
+        Pair("meh", "meh"),
+        Pair("jada", "Joda så"),
         Pair(":)", "^^"),
+        Pair(":D", ":)"),
     )
 
     override fun isMatch(message: String): Boolean {
-        return conversations.keys.contains(message)
+        return conversations.keys.contains(message.lowercase())
     }
 
     override fun execute(message: String): String {
