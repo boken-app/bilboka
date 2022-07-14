@@ -25,6 +25,6 @@ class SmallTalk : CarBookCommand {
     }
 
     override fun execute(message: String): String {
-        return conversations[message] ?: "Usikker på hva du mener med $message"
+        return conversations[message.lowercase()] ?: "Usikker på hva du mener med $message"
     }
 }
