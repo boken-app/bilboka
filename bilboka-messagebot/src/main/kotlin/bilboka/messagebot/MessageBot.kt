@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+internal const val DEFAULT_MESSAGE =
+    "Forstod ikke helt hva du mente. Prøv igjen eller skriv 'hjelp' om du trenger informasjon."
+
 @Component
 class MessageBot {
 
@@ -37,7 +40,7 @@ class MessageBot {
         }
 
         botMessenger.sendMessage(
-            "Forstod ikke helt hva du mente. Prøv igjen eller skriv 'hjelp' om du trenger informasjon.",
+            DEFAULT_MESSAGE,
             senderID
         )
     }

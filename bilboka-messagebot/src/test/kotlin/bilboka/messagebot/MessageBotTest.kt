@@ -52,7 +52,7 @@ class MessageBotTest {
     fun sendSomethingStrange_returnsDefaultMessage() {
         messagebot.processMessage("Her kommer en rar melding", senderID)
 
-        verify { botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID) }
+        verify { botMessenger.sendMessage(DEFAULT_MESSAGE, senderID) }
         confirmVerified(botMessenger)
     }
 }
