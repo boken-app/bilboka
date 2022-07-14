@@ -13,6 +13,9 @@ class MessageBot {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
+    lateinit var botMessenger: BotMessenger
+
+    @Autowired
     lateinit var carBookExecutor: CarBookExecutor
 
     private val commandRegistry by lazy {
@@ -23,15 +26,15 @@ class MessageBot {
         )
     }
 
-    fun processMessage(message: String): String {
+    fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
 
         commandRegistry.forEach {
             if (it.isMatch(message)) {
-                return it.execute(message)
+                botMessenger.sendMessage(it.execute(message), senderID)
             }
         }
 
-        return "Forstod ikke helt hva du mente, prøv igjen."
+        return botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID)
     }
 }

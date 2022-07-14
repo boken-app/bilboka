@@ -7,7 +7,9 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
-import org.assertj.core.api.Assertions.assertThat
+import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -17,21 +19,37 @@ class MessageBotTest {
     @MockK
     lateinit var carBookExecutor: CarBookExecutor
 
+    @MockK
+    lateinit var botMessenger: BotMessenger
+
     @InjectMockKs
     lateinit var messagebot: MessageBot
 
+    private val senderID = "1267"
+
+    @BeforeEach
+    fun setupMessenger() {
+        justRun { botMessenger.sendMessage(any(), any()) }
+    }
+
     @Test
     fun sendHei_returnsHei() {
-        assertThat(messagebot.processMessage("Hei")).isEqualTo("Hei")
+        messagebot.processMessage("Hei", senderID)
+
+        verify { botMessenger.sendMessage("Hei", senderID) }
     }
 
     @Test
     fun sendSkjer_returnsIkkenospes() {
-        assertThat(messagebot.processMessage("Skjer?")).isEqualTo("Ikke noe spes. Der?")
+        messagebot.processMessage("Skjer?", senderID)
+
+        verify { botMessenger.sendMessage("Ikke noe spes. Der?", senderID) }
     }
 
     @Test
-    fun sendSomethingStrange_returnsHei() {
-        assertThat(messagebot.processMessage("Her kommer en rar melding")).isEqualTo("Forstod ikke helt hva du mente, prøv igjen.")
+    fun sendSomethingStrange_returnsDefaultMessage() {
+        messagebot.processMessage("Her kommer en rar melding", senderID)
+
+        verify { botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID) }
     }
 }

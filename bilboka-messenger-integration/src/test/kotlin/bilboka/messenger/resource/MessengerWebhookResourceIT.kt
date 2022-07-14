@@ -293,10 +293,6 @@ internal class MessengerWebhookResourceIT {
             )
         }
 
-        private fun textMessage(msg: String): Map<String, String> {
-            return mapOf(Pair("text", msg))
-        }
-
         private fun personWithId(id: String): Map<String, String> {
             return mapOf(Pair("id", id))
         }
