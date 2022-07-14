@@ -14,7 +14,7 @@ object MessengerWebhookConfig {
 }
 
 @Component
-class MessengerWebhookConsumer(
+class MessengerSendAPIConsumer(
     private val messengerProperties: MessengerProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)

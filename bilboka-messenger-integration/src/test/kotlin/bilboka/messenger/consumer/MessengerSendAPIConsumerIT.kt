@@ -16,9 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @TestInstance(PER_CLASS)
-internal class MessengerWebhookConsumerIT {
+internal class MessengerSendAPIConsumerIT {
 
-    lateinit var webhookConsumer: MessengerWebhookConsumer
+    lateinit var webhookConsumer: MessengerSendAPIConsumer
     lateinit var testUrl: String
     lateinit var mockBackEnd: MockWebServer
 
@@ -44,7 +44,7 @@ internal class MessengerWebhookConsumerIT {
         val messengerProperties = MessengerProperties()
         messengerProperties.sendUrl = testUrl
         messengerProperties.pageAccessToken = pageAccessToken
-        webhookConsumer = MessengerWebhookConsumer(messengerProperties)
+        webhookConsumer = MessengerSendAPIConsumer(messengerProperties)
     }
 
     @Test

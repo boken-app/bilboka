@@ -1,6 +1,6 @@
 package bilboka.messagebot
 
-import bilboka.messagebot.commands.AddFuelRecord
+import bilboka.messagebot.commands.FuelRecordAdder
 import bilboka.messagebot.commands.Helper
 import bilboka.messagebot.commands.SmallTalk
 import org.slf4j.LoggerFactory
@@ -20,7 +20,7 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            AddFuelRecord(carBookExecutor),
+            FuelRecordAdder(carBookExecutor),
             SmallTalk(),
             Helper()
         )
@@ -36,6 +36,9 @@ class MessageBot {
             }
         }
 
-        botMessenger.sendMessage("Forstod ikke helt hva du mente, prøv igjen.", senderID)
+        botMessenger.sendMessage(
+            "Forstod ikke helt hva du mente. Prøv igjen eller skriv 'hjelp' om du trenger informasjon.",
+            senderID
+        )
     }
 }

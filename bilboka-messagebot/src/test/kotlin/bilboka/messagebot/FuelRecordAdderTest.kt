@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class AddFuelRecordTest {
+class FuelRecordAdderTest {
 
     @MockK
     lateinit var carBookExecutor: CarBookExecutor

@@ -4,7 +4,7 @@ import bilboka.core.exception.VehicleNotFoundException
 import bilboka.messagebot.CarBookExecutor
 import kotlin.text.RegexOption.IGNORE_CASE
 
-class AddFuelRecord(
+class FuelRecordAdder(
     val executor: CarBookExecutor
 ) : CarBookCommand {
     private val matcher = Regex(

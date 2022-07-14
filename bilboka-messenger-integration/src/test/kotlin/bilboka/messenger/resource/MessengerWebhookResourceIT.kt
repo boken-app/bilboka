@@ -2,7 +2,7 @@ package bilboka.messenger.resource
 
 import bilboka.core.book.repository.BookStorage
 import bilboka.core.book.repository.InMemoryStorage
-import bilboka.messenger.consumer.MessengerWebhookConsumer
+import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
@@ -38,14 +38,14 @@ internal class MessengerWebhookResourceIT {
     // TODO Muligens lage skille på test og IT
 
     @MockkBean
-    lateinit var messengerWebhookConsumer: MessengerWebhookConsumer
+    lateinit var messengerSendAPIConsumer: MessengerSendAPIConsumer
 
     @Autowired
     lateinit var mvc: MockMvc
 
     @BeforeEach
     fun setUp() {
-        justRun { messengerWebhookConsumer.sendMessage(any()) }
+        justRun { messengerSendAPIConsumer.sendMessage(any()) }
     }
 
     @AfterEach
@@ -123,7 +123,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
-            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -136,7 +136,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isNotFound)
 
-            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -150,7 +150,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
-            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -177,7 +177,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
-            verify { messengerWebhookConsumer.sendMessage(any()) }
+            verify { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -235,7 +235,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
-            verify(exactly = 3) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 3) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -265,7 +265,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
-            verify(exactly = 1) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 1) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
@@ -276,7 +276,7 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isBadRequest)
 
-            verify(exactly = 0) { messengerWebhookConsumer.sendMessage(any()) }
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         private fun okResponseContent() = content().string("EVENT_RECEIVED")
