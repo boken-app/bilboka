@@ -1,12 +1,14 @@
 package bilboka.messagebot.commands
 
-class Helper : CarBookCommand {
+import bilboka.messagebot.BotMessenger
+
+class Helper(private val botMessenger: BotMessenger) : CarBookCommand(botMessenger) {
 
     override fun isMatch(message: String): Boolean {
         return setOf("hjelp", "help", "hlp", "h", "info", "?").contains(message.lowercase())
     }
 
-    override fun execute(message: String): String {
-        return "For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\""
+    override fun execute(senderID: String, message: String) {
+        botMessenger.sendMessage("For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\"", senderID)
     }
 }

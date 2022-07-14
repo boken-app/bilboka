@@ -23,9 +23,9 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            FuelRecordAdder(carBookExecutor),
-            SmallTalk(),
-            Helper()
+            FuelRecordAdder(botMessenger, carBookExecutor),
+            SmallTalk(botMessenger),
+            Helper(botMessenger)
         )
     }
 
@@ -34,7 +34,7 @@ class MessageBot {
 
         commandRegistry.forEach {
             if (it.isMatch(message)) {
-                botMessenger.sendMessage(it.execute(message), senderID)
+                it.execute(senderID, message)
                 return
             }
         }

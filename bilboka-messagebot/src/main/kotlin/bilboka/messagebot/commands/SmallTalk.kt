@@ -1,6 +1,8 @@
 package bilboka.messagebot.commands
 
-class SmallTalk : CarBookCommand {
+import bilboka.messagebot.BotMessenger
+
+class SmallTalk(private val botMessenger: BotMessenger) : CarBookCommand(botMessenger) {
 
     val conversations = mapOf(
         Pair("hei", "Hei"),
@@ -17,7 +19,6 @@ class SmallTalk : CarBookCommand {
         Pair("hvem der", "Bare meg!"),
         Pair("ikke noe", "ok"),
         Pair("ingenting", "ok"),
-        Pair("meh", "meh"),
         Pair("jada", "Joda så"),
         Pair(":)", "^^"),
         Pair("😊", ":D"),
@@ -27,7 +28,7 @@ class SmallTalk : CarBookCommand {
         return conversations.keys.contains(message.lowercase())
     }
 
-    override fun execute(message: String): String {
-        return conversations[message.lowercase()] ?: "Usikker på hva du mener med $message"
+    override fun execute(senderID: String, message: String) {
+        botMessenger.sendMessage(conversations[message.lowercase()] ?: "Usikker på hva du mener med $message", senderID)
     }
 }

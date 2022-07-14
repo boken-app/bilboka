@@ -1,8 +1,10 @@
 package bilboka.messagebot.commands
 
-interface CarBookCommand {
+import bilboka.messagebot.BotMessenger
 
-    fun isMatch(message: String): Boolean
-    fun execute(message: String): String
+abstract class CarBookCommand(private val botMessenger: BotMessenger) {
+
+    abstract fun isMatch(message: String): Boolean
+    abstract fun execute(senderID: String, message: String)
 
 }
