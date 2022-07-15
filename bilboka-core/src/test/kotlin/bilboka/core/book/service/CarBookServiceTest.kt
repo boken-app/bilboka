@@ -1,7 +1,7 @@
 package bilboka.core.book.service
 
 import bilboka.core.book.domain.FuelRecord
-import bilboka.core.book.repository.InMemoryStorage
+import bilboka.core.repository.InMemoryStorage
 import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,37 +12,21 @@ internal class CarBookServiceTest {
     val carBookService: CarBookService = CarBookService(InMemoryStorage())
 
     @Test
-    fun makeNewBook() {
+    fun makeNewVehicle() {
+        val bil = carBookService.addVehicle(Vehicle("Testbil"))
 
-        val bil = Vehicle("Testbil")
-        val newBook = carBookService.makeNewBookForVehicle(bil)
-
-        assertThat(newBook.vehicle).isEqualTo(bil)
-        assertThat(carBookService.getBookForVehicle(bil)).isNotNull
+        assertThat(carBookService.getVehicle("Testbil")).isEqualTo(bil)
+        assertThat(carBookService.getVehicle("Testbil")?.book).isNotNull
 
     }
 
     @Test
     fun addFuelRecordToBook() {
-        val bil = Vehicle("Testbil")
-        carBookService.makeNewBookForVehicle(bil)
+        carBookService.addVehicle(Vehicle("Testbil"))
 
         val fuelToAdd = FuelRecord(now(), 300000, 12.4, 13.37, false)
-
-        carBookService.addRecordForVehicle(fuelToAdd, bil)
-
-        assertThat(carBookService.getBookForVehicle(bil)?.records).contains(fuelToAdd)
-    }
-
-    @Test
-    fun addFuelRecordToBookByName() {
-        val bil = Vehicle("Testbil")
-        carBookService.makeNewBookForVehicle(bil)
-
-        val fuelToAdd = FuelRecord(now(), 300000, 12.4, 13.37, false)
-
         carBookService.addRecordForVehicle(fuelToAdd, "Testbil")
 
-        assertThat(carBookService.getBookForVehicle(bil)?.records).contains(fuelToAdd)
+        assertThat(carBookService.getBookForVehicle("Testbil")?.records).contains(fuelToAdd)
     }
 }

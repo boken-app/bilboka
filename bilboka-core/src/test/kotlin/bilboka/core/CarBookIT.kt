@@ -1,9 +1,9 @@
 package bilboka.core
 
 import bilboka.core.book.domain.FuelRecord
-import bilboka.core.book.repository.BookStorage
-import bilboka.core.book.repository.InMemoryStorage
 import bilboka.core.book.service.CarBookService
+import bilboka.core.repository.InMemoryStorage
+import bilboka.core.repository.VehicleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +38,7 @@ class CarBookIT {
 @Configuration
 class IntegrationTestConfig {
     @Bean
-    fun bookStorage(): BookStorage {
+    fun vehicleRepository(): VehicleRepository {
         return InMemoryStorage()
     }
 }

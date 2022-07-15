@@ -2,29 +2,25 @@ package bilboka.core.book.service
 
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.Record
-import bilboka.core.book.repository.BookStorage
+import bilboka.core.repository.VehicleRepository
 import bilboka.core.vehicle.Vehicle
 import bilboka.core.vehicle.VehicleNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class CarBookService(val storage: BookStorage) {
+class CarBookService(val storage: VehicleRepository) {
 
-    fun makeNewBookForVehicle(vehicle: Vehicle): Book {
-        return storage.save(Book(vehicle))
+    fun addVehicle(vehicle: Vehicle): Vehicle {
+        vehicle.book = Book(vehicle)
+        return storage.save(vehicle)
     }
 
-    fun getBookForVehicle(vehicle: Vehicle): Book? {
-        return storage.getForVehicle(vehicle)
+    fun getVehicle(vehicleName: String): Vehicle? {
+        return storage.getByName(vehicleName)
     }
 
     fun getBookForVehicle(vehicleName: String): Book? {
-        return storage.getForVehicle(vehicleName)
-    }
-
-    fun addRecordForVehicle(record: Record, vehicle: Vehicle) {
-        val book = storage.getForVehicle(vehicle)
-        book?.addRecord(record)
+        return storage.getByName(vehicleName)?.book
     }
 
     fun addRecordForVehicle(record: Record, vehicle: String) {

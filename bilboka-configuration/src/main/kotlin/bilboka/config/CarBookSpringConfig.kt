@@ -1,7 +1,7 @@
 package bilboka.config
 
-import bilboka.core.book.repository.BookStorage
-import bilboka.core.book.repository.InMemoryStorage
+import bilboka.core.repository.InMemoryStorage
+import bilboka.core.repository.VehicleRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 class CarBookSpringConfig {
 
     @Bean
-    fun bookStorage(): BookStorage {
+    fun vehicleRepository(): VehicleRepository {
         return InMemoryStorage()
     }
 

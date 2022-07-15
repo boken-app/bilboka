@@ -16,10 +16,9 @@ internal class BookIT(@Autowired val carBookService: CarBookService) {
     @Test
     fun saveAndGetFromStorage() {
         val testTime = ZonedDateTime.now()
-        val bil = Vehicle("testbil")
-        carBookService.makeNewBookForVehicle(bil)
+        val bil = carBookService.addVehicle(Vehicle("testbil"))
 
-        val bookByVehicle = carBookService.getBookForVehicle(bil)
+        val bookByVehicle = carBookService.getBookForVehicle("testbil")
         assertThat(bookByVehicle).isNotNull
         assertThat(bookByVehicle?.vehicle).isEqualTo(bil)
 
@@ -28,7 +27,7 @@ internal class BookIT(@Autowired val carBookService: CarBookService) {
         assertThat(bookByName?.vehicle).isEqualTo(bil)
 
         val record = FuelRecord(now(), 1234, 10.0, 190.1, false)
-        carBookService.addRecordForVehicle(record, bil)
+        carBookService.addRecordForVehicle(record, "testbil")
 
         assertThat(bookByVehicle?.records).hasSize(1)
         assertThat(bookByVehicle?.records).contains(record)

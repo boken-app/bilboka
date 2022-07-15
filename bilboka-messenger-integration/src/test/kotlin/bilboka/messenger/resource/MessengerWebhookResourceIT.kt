@@ -1,7 +1,7 @@
 package bilboka.messenger.resource
 
-import bilboka.core.book.repository.BookStorage
-import bilboka.core.book.repository.InMemoryStorage
+import bilboka.core.repository.InMemoryStorage
+import bilboka.core.repository.VehicleRepository
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -311,7 +311,7 @@ internal class MessengerWebhookResourceIT {
     class MessengerIntegrationConfig {
 
         @Bean
-        fun bookStorage(): BookStorage {
+        fun vehicleRepository(): VehicleRepository {
             return InMemoryStorage()
         }
     }
