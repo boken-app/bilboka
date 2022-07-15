@@ -1,6 +1,6 @@
 package bilboka.messagebot.commands
 
-import bilboka.core.exception.VehicleNotFoundException
+import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import kotlin.text.RegexOption.IGNORE_CASE
