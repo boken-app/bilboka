@@ -5,34 +5,14 @@ package bilboka.messagebot
 
 import bilboka.messagebot.commands.DEFAULT_HELP_MESSAGE
 import io.mockk.confirmVerified
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.justRun
 import io.mockk.verify
 import io.mockk.verifyOrder
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class MessageBotTest {
-
-    @MockK
-    lateinit var carBookExecutor: CarBookExecutor
-
-    @MockK
-    lateinit var botMessenger: BotMessenger
-
-    @InjectMockKs
-    lateinit var messagebot: MessageBot
-
-    private val senderID = "1267"
-
-    @BeforeEach
-    fun setupMessenger() {
-        justRun { botMessenger.sendMessage(any(), any()) }
-    }
+class MessageBotTest : AbstractMessageBotTest() {
 
     @Test
     fun sendHei_returnsHei() {
