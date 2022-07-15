@@ -7,7 +7,25 @@ class InMemoryStorage : BookStorage {
 
     val books: HashSet<Book> = HashSet()
 
-    override fun save(book: Book): Book {
+    init {
+        save(
+            Book(
+                Vehicle(
+                    name = "XC 70",
+                    nicknames = setOf("XC 70", "XC70"),
+                )
+            )
+        )
+        save(
+            Book(
+                Vehicle(
+                    name = "760",
+                )
+            )
+        )
+    }
+
+    final override fun save(book: Book): Book {
         books.add(book)
         return book
     }
@@ -17,6 +35,6 @@ class InMemoryStorage : BookStorage {
     }
 
     override fun getForVehicle(vehicleName: String): Book? {
-        return books.find { book -> book.vehicle.name == vehicleName }
+        return books.find { book -> book.vehicle.isCalled(vehicleName) }
     }
 }

@@ -4,7 +4,7 @@ import bilboka.core.vehicle.Vehicle
 
 class Book(var vehicle: Vehicle) {
 
-    var records: ArrayList<Record> = ArrayList<Record>()
+    var records: ArrayList<Record> = ArrayList()
 
     fun addRecord(record: Record) {
         records.add(record)
