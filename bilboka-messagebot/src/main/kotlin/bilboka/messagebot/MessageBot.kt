@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.messagebot.commands.FuelRecordAdder
+import bilboka.messagebot.commands.FuelRecordGetter
 import bilboka.messagebot.commands.Helper
 import bilboka.messagebot.commands.SmallTalk
 import org.slf4j.LoggerFactory
@@ -24,6 +25,7 @@ class MessageBot {
     private val commandRegistry by lazy {
         setOf(
             FuelRecordAdder(botMessenger, carBookExecutor),
+            FuelRecordGetter(botMessenger, carBookExecutor),
             SmallTalk(botMessenger),
             Helper(botMessenger)
         )
