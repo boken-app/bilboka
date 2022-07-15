@@ -51,4 +51,19 @@ class FuelRecordGetterTest {
         confirmVerified(botMessenger)
     }
 
+    @Test
+    fun sendGetLastRecordWhenNoRecords_repliesSomethingUseful() {
+        every { carBookExecutor.getLastRecord(any()) } returns null
+
+        messagebot.processMessage("Siste testbil", senderID)
+
+        verify {
+            botMessenger.sendMessage(
+                any(),
+                senderID
+            )
+        }
+        confirmVerified(botMessenger)
+    }
+
 }

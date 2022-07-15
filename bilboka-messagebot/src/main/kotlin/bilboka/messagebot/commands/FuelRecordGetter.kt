@@ -21,9 +21,13 @@ class FuelRecordGetter(
         val (vehicleName) = matcher.find(message)!!.destructured
         val lastRecord = executor.getLastRecord(vehicleName)
         if (lastRecord is FuelRecord) {
-            val fuelRecord = lastRecord as FuelRecord
             botMessenger.sendMessage(
-                "Siste tanking av $vehicleName, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
+                "Siste tanking av $vehicleName, ${lastRecord.amount} liter for ${lastRecord.costNOK} kr, ${lastRecord.pricePerLiter()} kr/l",
+                senderID
+            )
+        } else {
+            botMessenger.sendMessage(
+                "Finner ingen tankinger for $vehicleName",
                 senderID
             )
         }
