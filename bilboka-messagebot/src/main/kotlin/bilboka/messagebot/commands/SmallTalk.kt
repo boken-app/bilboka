@@ -4,6 +4,9 @@ import bilboka.messagebot.BotMessenger
 
 class SmallTalk(private val botMessenger: BotMessenger) : CarBookCommand(botMessenger) {
 
+    private var hasAskedSomething = false
+    // TODO: Denne må håndteres pr. senderID for å fungere for flere brukere.
+
     val conversations = mapOf(
         Pair("hei", "Hei"),
         Pair("hei!", "Hei! :D"),
@@ -25,10 +28,25 @@ class SmallTalk(private val botMessenger: BotMessenger) : CarBookCommand(botMess
     )
 
     override fun isMatch(message: String): Boolean {
-        return conversations.keys.contains(message.lowercase())
+        return hasAskedSomething || conversations.keys.contains(message.lowercase())
     }
 
     override fun execute(senderID: String, message: String) {
-        botMessenger.sendMessage(conversations[message.lowercase()] ?: "Usikker på hva du mener med $message", senderID)
+        if (hasAskedSomething) {
+            botMessenger.sendMessage("Cool", senderID)
+            resetState()
+        } else {
+            botMessenger.sendMessage(
+                conversations[message.lowercase()] ?: "Usikker på hva du mener med $message",
+                senderID
+            )
+        }
+        if (message.lowercase() == "skjer?") {
+            hasAskedSomething = true
+        }
+    }
+
+    override fun resetState() {
+        hasAskedSomething = false
     }
 }

@@ -2,6 +2,8 @@ package bilboka.messagebot.commands
 
 import bilboka.messagebot.BotMessenger
 
+internal const val DEFAULT_HELP_MESSAGE = "For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\""
+
 class Helper(private val botMessenger: BotMessenger) : CarBookCommand(botMessenger) {
 
     override fun isMatch(message: String): Boolean {
@@ -9,6 +11,10 @@ class Helper(private val botMessenger: BotMessenger) : CarBookCommand(botMesseng
     }
 
     override fun execute(senderID: String, message: String) {
-        botMessenger.sendMessage("For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\"", senderID)
+        botMessenger.sendMessage(DEFAULT_HELP_MESSAGE, senderID)
+    }
+
+    override fun resetState() {
+
     }
 }

@@ -31,17 +31,22 @@ class MessageBot {
 
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
+        var noMatches = true
 
         commandRegistry.forEach {
-            if (it.isMatch(message)) {
+            if (noMatches && it.isMatch(message)) {
                 it.execute(senderID, message)
-                return
+                noMatches = false
+            } else {
+                it.resetState()
             }
         }
 
-        botMessenger.sendMessage(
-            DEFAULT_MESSAGE,
-            senderID
-        )
+        if (noMatches) {
+            botMessenger.sendMessage(
+                DEFAULT_MESSAGE,
+                senderID
+            )
+        }
     }
 }

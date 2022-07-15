@@ -3,12 +3,14 @@
  */
 package bilboka.messagebot
 
+import bilboka.messagebot.commands.DEFAULT_HELP_MESSAGE
 import io.mockk.confirmVerified
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -45,6 +47,32 @@ class MessageBotTest {
         messagebot.processMessage("Skjer?", senderID)
 
         verify { botMessenger.sendMessage("Ikke noe spes. Der?", senderID) }
+        confirmVerified(botMessenger)
+    }
+
+    @Test
+    fun sendSkjerThenSomethingElse_returnsCool() {
+        messagebot.processMessage("Skjer?", senderID)
+        messagebot.processMessage("Holder på med noe greier", senderID)
+
+        verifyOrder {
+            botMessenger.sendMessage("Ikke noe spes. Der?", senderID)
+            botMessenger.sendMessage("Cool", senderID)
+        }
+        confirmVerified(botMessenger)
+    }
+
+    @Test
+    fun sendSkjerThenSomethingMatcinghOtherRule_returnsOtherRuleResponse() {
+        messagebot.processMessage("Skjer?", senderID)
+        messagebot.processMessage("Stuff skjer", senderID)
+        messagebot.processMessage("Help", senderID)
+
+        verifyOrder {
+            botMessenger.sendMessage("Ikke noe spes. Der?", senderID)
+            botMessenger.sendMessage("Cool", senderID)
+            botMessenger.sendMessage(DEFAULT_HELP_MESSAGE, senderID)
+        }
         confirmVerified(botMessenger)
     }
 

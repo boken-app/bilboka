@@ -34,6 +34,10 @@ class FuelRecordAdder(
             botMessenger.sendMessage("Kjenner ikke til bil $vehicleName", senderID)
         }
     }
+
+    override fun resetState() {
+
+    }
 }
 
 private fun String.convertToDouble(): Double {
