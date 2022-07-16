@@ -11,7 +11,7 @@ class FuelRecordAdder(
     private val executor: CarBookExecutor
 ) : CarBookCommand(botMessenger) {
     private val matcher = Regex(
-        "(drivstoff|tanking|fylt|fuel)\\s+(\\w+[\\s+?\\w]+?)\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
+        "(drivstoff|tank|fylt|fuel)\\s+(\\w+[\\s+?\\w]+?)\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
         IGNORE_CASE
     )
 

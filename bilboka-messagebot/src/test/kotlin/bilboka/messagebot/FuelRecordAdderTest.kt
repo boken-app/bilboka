@@ -56,7 +56,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
         verify {
             botMessenger.sendMessage(
-                "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 19.999999999999996 kr/l",
+                "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 20.0 kr/l",
                 senderID
             )
         }
