@@ -1,7 +1,6 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import java.time.format.DateTimeFormatter
@@ -21,18 +20,15 @@ class FuelRecordGetter(
 
     override fun execute(senderID: String, message: String) {
         val (vehicleName) = matcher.find(message)!!.destructured
-        try {
-            val lastRecord = executor.getLastRecord(vehicleName)
-            if (lastRecord is FuelRecord) {
-                replyWithLastRecord(vehicleName, lastRecord, senderID)
-            } else {
-                botMessenger.sendMessage(
-                    "Finner ingen tankinger for $vehicleName",
-                    senderID
-                )
-            }
-        } catch (e: VehicleNotFoundException) {
-            botMessenger.sendMessage("Kjenner ikke til bil $vehicleName", senderID)
+
+        val lastRecord = executor.getLastRecord(vehicleName)
+        if (lastRecord is FuelRecord) {
+            replyWithLastRecord(vehicleName, lastRecord, senderID)
+        } else {
+            botMessenger.sendMessage(
+                "Finner ingen tankinger for $vehicleName",
+                senderID
+            )
         }
     }
 

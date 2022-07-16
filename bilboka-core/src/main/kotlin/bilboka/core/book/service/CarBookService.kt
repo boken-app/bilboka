@@ -19,12 +19,16 @@ class CarBookService(val storage: VehicleRepository) {
         return storage.getByName(vehicleName)
     }
 
-    fun getBookForVehicle(vehicleName: String): Book? {
-        return storage.getByName(vehicleName)?.book ?: throw VehicleNotFoundException("Fant ikke bil $vehicleName")
+    fun getBookForVehicle(vehicleName: String): Book {
+        return getVehicle(vehicleName)?.book() ?: throw VehicleNotFoundException(
+            "Fant ikke bil $vehicleName",
+            vehicleName
+        )
     }
 
-    fun addRecordForVehicle(record: Record, vehicle: String): Vehicle {
-        val book = getBookForVehicle(vehicle) ?: throw VehicleNotFoundException("Fant ikke bil $vehicle")
+    fun addRecordForVehicle(record: Record, vehicleName: String): Vehicle {
+        val book =
+            getBookForVehicle(vehicleName) ?: throw VehicleNotFoundException("Fant ikke bil $vehicleName", vehicleName)
         book.addRecord(record)
         return book.vehicle
     }

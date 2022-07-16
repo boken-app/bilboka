@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.commands.FuelRecordAdder
 import bilboka.messagebot.commands.FuelRecordGetter
 import bilboka.messagebot.commands.Helper
@@ -33,6 +34,17 @@ class MessageBot {
 
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
+        try {
+            runCommands(message, senderID)
+        } catch (e: VehicleNotFoundException) {
+            botMessenger.sendMessage("Kjenner ikke til bil ${e.vehicleName}", senderID)
+        } catch (e: RuntimeException) {
+            logger.error("Feil ved prosessering av melding '$message'", e)
+            botMessenger.sendMessage("Det skjedde noe feil. (${e.message})", senderID)
+        }
+    }
+
+    private fun runCommands(message: String, senderID: String) {
         var noMatches = true
 
         commandRegistry.forEach {

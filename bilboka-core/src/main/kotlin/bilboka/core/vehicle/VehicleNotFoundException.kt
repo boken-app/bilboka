@@ -1,4 +1,4 @@
 package bilboka.core.vehicle
 
-class VehicleNotFoundException(message: String) : RuntimeException(message) {
+class VehicleNotFoundException(message: String, val vehicleName: String) : RuntimeException(message) {
 }

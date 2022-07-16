@@ -11,21 +11,24 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @ExtendWith(MockKExtension::class)
 class FuelRecordGetterTest : AbstractMessageBotTest() {
 
     @Test
     fun sendGetLastRecord_repliedWithLastRecord() {
+        val now = LocalDateTime.now()
         every { carBookExecutor.getLastRecord(any()) } returns FuelRecord(
-            amount = 30.0, costNOK = 300.0
+            dateTime = now, amount = 30.0, costNOK = 300.0
         )
 
         messagebot.processMessage("Siste testbil", senderID)
 
         verify {
             botMessenger.sendMessage(
-                message = "Siste tanking av testbil: 30.0 liter for 300.0 kr (10.0 kr/l) 2022-07-16",
+                message = "Siste tanking av testbil: 30.0 liter for 300.0 kr (10.0 kr/l) ${now.format(DateTimeFormatter.ISO_DATE)}",
                 senderID
             )
         }
@@ -49,7 +52,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
     @Test
     fun sendGetLastRecordWhenCarNotFound_repliesSomethingUseful() {
-        every { carBookExecutor.getLastRecord(any()) } throws VehicleNotFoundException("Ops")
+        every { carBookExecutor.getLastRecord(any()) } throws VehicleNotFoundException("Ops", "bil")
 
         messagebot.processMessage("Siste testbil", senderID)
 

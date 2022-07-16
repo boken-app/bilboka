@@ -1,7 +1,6 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import kotlin.text.RegexOption.IGNORE_CASE
@@ -25,7 +24,6 @@ class FuelRecordAdder(
         val amount = values[3]
         val cost = values[4]
 
-        try {
             val fuelRecord = FuelRecord(
                 odometer = null, // TODO
                 amount = amount.convertToDouble(),
@@ -40,9 +38,6 @@ class FuelRecordAdder(
                 "Registrert tanking av ${vehicle.name}, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
                 senderID
             )
-        } catch (e: VehicleNotFoundException) {
-            botMessenger.sendMessage("Kjenner ikke til bil $vehicleName", senderID)
-        }
     }
 
     override fun resetState() {

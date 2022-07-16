@@ -17,6 +17,6 @@ class CarBookExecutor {
     }
 
     fun getLastRecord(vehicle: String): Record? {
-        return carBookService.getBookForVehicle(vehicle)?.records?.lastOrNull()
+        return carBookService.getBookForVehicle(vehicle).records.lastOrNull()
     }
 }
