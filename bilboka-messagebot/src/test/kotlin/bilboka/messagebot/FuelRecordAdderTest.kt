@@ -10,7 +10,6 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -34,15 +33,14 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     }
 
     @Test
-    @Disabled // TODO
     fun sendAddFuelRequestDifferentCase_callsAddFuelExecutor() {
         every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle("en testbil")
 
-        messagebot.processMessage("fylt en testbil 30.2 L 300.60 Kr", senderID)
+        messagebot.processMessage("fylt en testbil 30.2 L 302.0 Kr", senderID)
 
         verify {
             botMessenger.sendMessage(
-                "Registrert tanking av en testbil, 30.2 liter for 300.6 kr, 9.953642384105962 kr/l,",
+                "Registrert tanking av en testbil, 30.2 liter for 302.0 kr, 10.0 kr/l",
                 senderID
             )
         }
@@ -51,15 +49,14 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     }
 
     @Test
-    @Disabled // TODO
     fun sendAddFuelRequestDifferentCaseWithComma_callsAddFuelExecutor() {
         every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle("XC 70")
 
-        messagebot.processMessage("Hei drivstoff XC 70 30,44 l 3000,07 kr.. :D", senderID)
+        messagebot.processMessage("Hei drivstoff XC 70 30,44 l 608,80 kr.. :D", senderID)
 
         verify {
             botMessenger.sendMessage(
-                "Registrert tanking av XC 70, 30.44 liter for 3000.07, 98.55683311432325 kr/l,",
+                "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 19.999999999999996 kr/l",
                 senderID
             )
         }

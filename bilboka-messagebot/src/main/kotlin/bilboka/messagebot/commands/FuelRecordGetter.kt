@@ -3,6 +3,7 @@ package bilboka.messagebot.commands
 import bilboka.core.book.domain.FuelRecord
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
+import java.time.format.DateTimeFormatter
 
 class FuelRecordGetter(
     private val botMessenger: BotMessenger,
@@ -23,7 +24,11 @@ class FuelRecordGetter(
         if (lastRecord is FuelRecord) {
             botMessenger.sendMessage(
                 "Siste tanking av $vehicleName: ${lastRecord.amount} liter " +
-                        "for ${lastRecord.costNOK} kr (${lastRecord.pricePerLiter()} kr/l) ${lastRecord.dateTime}",
+                        "for ${lastRecord.costNOK} kr (${lastRecord.pricePerLiter()} kr/l) ${
+                            lastRecord.dateTime?.format(
+                                DateTimeFormatter.ISO_DATE
+                            )
+                        }",
                 senderID
             )
         } else {
