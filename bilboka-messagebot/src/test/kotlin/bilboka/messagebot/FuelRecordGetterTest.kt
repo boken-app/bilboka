@@ -4,6 +4,7 @@
 package bilboka.messagebot
 
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.VehicleNotFoundException
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
@@ -34,6 +35,21 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
     @Test
     fun sendGetLastRecordWhenNoRecords_repliesSomethingUseful() {
         every { carBookExecutor.getLastRecord(any()) } returns null
+
+        messagebot.processMessage("Siste testbil", senderID)
+
+        verify {
+            botMessenger.sendMessage(
+                any(),
+                senderID
+            )
+        }
+        confirmVerified(botMessenger)
+    }
+
+    @Test
+    fun sendGetLastRecordWhenCarNotFound_repliesSomethingUseful() {
+        every { carBookExecutor.getLastRecord(any()) } throws VehicleNotFoundException("Ops")
 
         messagebot.processMessage("Siste testbil", senderID)
 
