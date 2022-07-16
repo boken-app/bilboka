@@ -35,13 +35,13 @@ internal class FuelRecordTest {
     @Test
     fun fieldsAreSet() {
         val date = LocalDateTime.now()
-        val fuelRecord = FuelRecord(odometer = 1000000, amount = 2.0, costNOK = 3.0, isFull = true, date = date)
+        val fuelRecord = FuelRecord(odometer = 1000000, amount = 2.0, costNOK = 3.0, isFull = true, dateTime = date)
 
         assertThat(fuelRecord.odometer).isEqualTo(1000000)
         assertThat(fuelRecord.amount).isEqualTo(2.0)
         assertThat(fuelRecord.costNOK).isEqualTo(3.0)
         assertThat(fuelRecord.isFull).isTrue()
-        assertThat(fuelRecord.date).isEqualTo(date)
+        assertThat(fuelRecord.dateTime).isEqualTo(date)
         assertThat(fuelRecord.type).isEqualTo(RecordType.FUEL)
     }
 

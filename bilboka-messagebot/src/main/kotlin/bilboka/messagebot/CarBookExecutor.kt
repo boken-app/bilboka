@@ -1,8 +1,8 @@
 package bilboka.messagebot
 
-import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.domain.Record
 import bilboka.core.book.service.CarBookService
+import bilboka.core.vehicle.Vehicle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -12,10 +12,8 @@ class CarBookExecutor {
     @Autowired
     lateinit var carBookService: CarBookService
 
-    fun addFuelRecord(vehicle: String, amount: Double, cost: Double, isFull: Boolean = false): FuelRecord {
-        val fuelRecord = FuelRecord(amount = amount, costNOK = cost, isFull = isFull)
-        carBookService.addRecordForVehicle(fuelRecord, vehicle)
-        return fuelRecord
+    fun addRecordToVehicle(record: Record, vehicle: String): Vehicle {
+        return carBookService.addRecordForVehicle(record, vehicle)
     }
 
     fun getLastRecord(vehicle: String): Record? {

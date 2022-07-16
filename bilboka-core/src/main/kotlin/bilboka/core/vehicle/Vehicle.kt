@@ -2,6 +2,7 @@ package bilboka.core.vehicle
 
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.FuelRecord
+import java.time.LocalDateTime
 
 class Vehicle(
     var name: String,
@@ -9,9 +10,11 @@ class Vehicle(
     var book: Book? = null
 ) : Fuelable {
 
-    override fun addFuel(amount: Double, costNOK: Double, isFull: Boolean) {
+    override fun addFuel(dateTime: LocalDateTime?, odometer: Int?, amount: Double?, costNOK: Double?, isFull: Boolean) {
         book().addRecord(
             FuelRecord(
+                dateTime = dateTime ?: LocalDateTime.now(),
+                odometer = odometer,
                 amount = amount,
                 costNOK = costNOK,
                 isFull = isFull
@@ -27,4 +30,5 @@ class Vehicle(
     fun book(): Book {
         return book ?: throw IllegalStateException("Mangler bok for bil $name")
     }
+
 }

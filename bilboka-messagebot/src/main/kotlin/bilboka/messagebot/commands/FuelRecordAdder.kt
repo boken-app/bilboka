@@ -1,5 +1,6 @@
 package bilboka.messagebot.commands
 
+import bilboka.core.book.domain.FuelRecord
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
@@ -25,9 +26,18 @@ class FuelRecordAdder(
         val cost = values[4]
 
         try {
-            val fuelRecord = executor.addFuelRecord(vehicleName, amount.convertToDouble(), cost.convertToDouble())
+            val fuelRecord = FuelRecord(
+                odometer = null, // TODO
+                amount = amount.convertToDouble(),
+                costNOK = cost.convertToDouble(),
+            )
+            val vehicle = executor.addRecordToVehicle(
+                fuelRecord,
+                vehicleName
+            )
+
             botMessenger.sendMessage(
-                "Registrert tanking av $vehicleName, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
+                "Registrert tanking av ${vehicle.name}, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
                 senderID
             )
         } catch (e: VehicleNotFoundException) {
