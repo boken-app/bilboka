@@ -24,20 +24,20 @@ class FuelRecordAdder(
         val amount = values[3]
         val cost = values[4]
 
-            val fuelRecord = FuelRecord(
-                odometer = null, // TODO
-                amount = amount.convertToDouble(),
-                costNOK = cost.convertToDouble(),
-            )
-            val vehicle = executor.addRecordToVehicle(
-                fuelRecord,
-                vehicleName
-            )
+        val fuelRecord = FuelRecord(
+            odometer = null, // TODO
+            amount = amount.convertToDouble(),
+            costNOK = cost.convertToDouble(),
+        )
+        val vehicle = executor.addRecordToVehicle(
+            fuelRecord,
+            vehicleName
+        )
 
-            botMessenger.sendMessage(
-                "Registrert tanking av ${vehicle.name}, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
-                senderID
-            )
+        botMessenger.sendMessage(
+            "Registrert tanking av ${vehicle.name}, ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
+            senderID
+        )
     }
 
     override fun resetState() {
