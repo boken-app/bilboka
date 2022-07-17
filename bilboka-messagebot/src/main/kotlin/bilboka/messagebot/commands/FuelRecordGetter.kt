@@ -20,13 +20,13 @@ class FuelRecordGetter(
 
     override fun execute(senderID: String, message: String) {
         val (vehicleName) = matcher.find(message)!!.destructured
-
-        val lastRecord = executor.getLastRecord(vehicleName)
-        if (lastRecord is FuelRecord) {
-            replyWithLastRecord(vehicleName, lastRecord, senderID)
+        val book = executor.getBookForVehicle(vehicleName)
+        val lastRecord = book.getLastFuelRecord()
+        if (lastRecord != null) {
+            replyWithLastRecord(book.vehicle.name, lastRecord, senderID)
         } else {
             botMessenger.sendMessage(
-                "Finner ingen tankinger for $vehicleName",
+                "Finner ingen tankinger for ${book.vehicle.name}",
                 senderID
             )
         }

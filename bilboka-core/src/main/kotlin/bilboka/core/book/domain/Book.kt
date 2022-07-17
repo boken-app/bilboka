@@ -9,4 +9,9 @@ class Book(var vehicle: Vehicle) {
     fun addRecord(record: Record) {
         records.add(record)
     }
+
+    fun getLastFuelRecord(): FuelRecord? {
+        return records.lastOrNull { record -> record is FuelRecord } as FuelRecord?
+    }
+
 }

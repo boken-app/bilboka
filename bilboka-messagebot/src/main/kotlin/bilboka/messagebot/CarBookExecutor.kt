@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.Record
 import bilboka.core.book.service.CarBookService
 import bilboka.core.vehicle.Vehicle
@@ -16,7 +17,7 @@ class CarBookExecutor {
         return carBookService.addRecordForVehicle(record, vehicle)
     }
 
-    fun getLastRecord(vehicle: String): Record? {
-        return carBookService.getBookForVehicle(vehicle).records.lastOrNull()
+    fun getBookForVehicle(vehicle: String): Book {
+        return carBookService.getBookForVehicle(vehicle)
     }
 }
