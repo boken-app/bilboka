@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 class Vehicle(
     var name: String,
+    var tegnkombinasjonNormalisert: String? = null,
     var nicknames: Set<String> = setOf(),
     var book: Book? = null
 ) : Fuelable {
@@ -23,8 +24,16 @@ class Vehicle(
     }
 
     fun isCalled(calledName: String): Boolean {
-        return calledName.lowercase() == name.lowercase() || nicknames.map { it.lowercase() }
-            .contains(calledName.lowercase())
+        return calledName.lowercase() == name.lowercase()
+                || nicknames.map { it.lowercase() }.contains(calledName.lowercase())
+                || hasTegnkombinasjon(calledName)
+    }
+
+    fun hasTegnkombinasjon(tegnkombinasjon: String): Boolean {
+        return tegnkombinasjon
+            .replace(" ", "")
+            .replace("-", "")
+            .uppercase() == tegnkombinasjonNormalisert
     }
 
     fun book(): Book {
