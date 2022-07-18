@@ -1,6 +1,7 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.FuelType
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import kotlin.text.RegexOption.IGNORE_CASE
@@ -28,6 +29,7 @@ class FuelRecordAdder(
             odometer = null, // TODO
             amount = amount.convertToDouble(),
             costNOK = cost.convertToDouble(),
+            fuelType = FuelType.DIESEL,
         )
         val vehicle = executor.addRecordToVehicle(
             fuelRecord,
@@ -46,8 +48,5 @@ class FuelRecordAdder(
 }
 
 private fun String.convertToDouble(): Double {
-    if (this.contains(',')) {
-        return this.replace(',', '.').toDouble()
-    }
-    return this.toDouble()
+    return this.replace(',', '.').toDouble()
 }

@@ -5,10 +5,12 @@ import bilboka.core.book.domain.FuelRecord
 import java.time.LocalDateTime
 
 class Vehicle(
+    var book: Book? = null,
     var name: String,
-    var tegnkombinasjonNormalisert: String? = null,
     var nicknames: Set<String> = setOf(),
-    var book: Book? = null
+    val tegnkombinasjonNormalisert: String? = null,
+    val odometerUnit: OdometerUnit = OdometerUnit.KILOMETERS,
+    val fuelType: FuelType
 ) : Fuelable {
 
     override fun addFuel(dateTime: LocalDateTime?, odometer: Int?, amount: Double?, costNOK: Double?, isFull: Boolean) {
@@ -18,9 +20,14 @@ class Vehicle(
                 odometer = odometer,
                 amount = amount,
                 costNOK = costNOK,
-                isFull = isFull
+                isFull = isFull,
+                fuelType = fuelType()
             )
         )
+    }
+
+    override fun fuelType(): FuelType {
+        return fuelType
     }
 
     fun isCalled(calledName: String): Boolean {

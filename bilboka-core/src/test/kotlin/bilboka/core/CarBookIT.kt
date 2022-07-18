@@ -4,6 +4,7 @@ import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.service.CarBookService
 import bilboka.core.repository.InMemoryStorage
 import bilboka.core.repository.VehicleRepository
+import bilboka.core.vehicle.FuelType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +29,8 @@ class CarBookIT {
         carBookService.addRecordForVehicle(
             FuelRecord(
                 amount = 12.4,
-                costNOK = 22.43
+                costNOK = 22.43,
+                fuelType = FuelType.DIESEL
             ), "760"
         )
         assertThat(carBookService.getBookForVehicle("760")?.records).isNotEmpty

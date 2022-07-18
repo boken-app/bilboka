@@ -12,4 +12,6 @@ interface Fuelable {
         isFull: Boolean = false
     )
 
+    fun fuelType(): FuelType
+
 }

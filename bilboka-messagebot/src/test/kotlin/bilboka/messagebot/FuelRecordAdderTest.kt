@@ -4,6 +4,7 @@
 package bilboka.messagebot
 
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.FuelType
 import bilboka.core.vehicle.Vehicle
 import bilboka.core.vehicle.VehicleNotFoundException
 import io.mockk.confirmVerified
@@ -18,7 +19,10 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequest_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle("testbil")
+        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+            name = "testbil",
+            fuelType = FuelType.DIESEL
+        )
 
         messagebot.processMessage("Drivstoff testbil 30l 300kr", senderID)
 
@@ -34,7 +38,10 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequestDifferentCase_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle("en testbil")
+        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+            name = "en testbil",
+            fuelType = FuelType.DIESEL
+        )
 
         messagebot.processMessage("fylt en testbil 30.2 L 302.0 Kr", senderID)
 
@@ -50,7 +57,10 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequestDifferentCaseWithComma_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle("XC 70")
+        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+            name = "XC 70",
+            fuelType = FuelType.DIESEL
+        )
 
         messagebot.processMessage("Hei drivstoff XC 70 30,44 l 608,80 kr.. :D", senderID)
 

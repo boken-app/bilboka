@@ -3,6 +3,7 @@ package bilboka.core.book
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.domain.MaintenanceRecord
+import bilboka.core.vehicle.FuelType
 import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,9 +13,9 @@ internal class BookTest {
 
     @Test
     fun addRecordAddsRecord() {
-        val book = Book(Vehicle(""))
+        val book = Book(Vehicle(name = "", fuelType = FuelType.DIESEL))
 
-        var record1 = FuelRecord(now(), 23300, null, null, true)
+        var record1 = FuelRecord(now(), 23300, null, null, true, FuelType.DIESEL)
         var record2 = MaintenanceRecord(now().minusDays(1), 40000)
 
         book.addRecord(record1)

@@ -5,6 +5,7 @@ package bilboka.messagebot
 
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.FuelType
 import bilboka.core.vehicle.Vehicle
 import bilboka.core.vehicle.VehicleNotFoundException
 import io.mockk.confirmVerified
@@ -23,11 +24,11 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
     fun sendGetLastRecord_repliedWithLastRecord() {
         val now = LocalDateTime.now()
         val book = Book(
-            Vehicle(name = "En Testbil")
+            Vehicle(name = "En Testbil", fuelType = FuelType.DIESEL)
         )
         book.addRecord(
             FuelRecord(
-                dateTime = now, amount = 30.0, costNOK = 300.0
+                dateTime = now, amount = 30.0, costNOK = 300.0, fuelType = FuelType.DIESEL
             )
         )
         every { carBookExecutor.getBookForVehicle(any()) } returns book
@@ -49,7 +50,12 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
     @Test
     fun sendGetLastRecordWhenNoRecords_repliesSomethingUseful() {
-        every { carBookExecutor.getBookForVehicle(any()) } returns Book(Vehicle(name = "En Testbil"))
+        every { carBookExecutor.getBookForVehicle(any()) } returns Book(
+            Vehicle(
+                name = "En Testbil",
+                fuelType = FuelType.DIESEL
+            )
+        )
 
         messagebot.processMessage("Siste testbil", senderID)
 

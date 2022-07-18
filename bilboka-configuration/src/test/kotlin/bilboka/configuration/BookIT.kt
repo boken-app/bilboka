@@ -2,6 +2,7 @@ package bilboka.configuration
 
 import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.service.CarBookService
+import bilboka.core.vehicle.FuelType
 import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,21 +17,21 @@ internal class BookIT(@Autowired val carBookService: CarBookService) {
     @Test
     fun saveAndGetFromStorage() {
         val testTime = ZonedDateTime.now()
-        val bil = carBookService.addVehicle(Vehicle("testbil"))
+        val bil = carBookService.addVehicle(Vehicle(name = "testbil", fuelType = FuelType.DIESEL))
 
         val bookByVehicle = carBookService.getBookForVehicle("testbil")
         assertThat(bookByVehicle).isNotNull
-        assertThat(bookByVehicle?.vehicle).isEqualTo(bil)
+        assertThat(bookByVehicle.vehicle).isEqualTo(bil)
 
         val bookByName = carBookService.getBookForVehicle(bil.name)
         assertThat(bookByName).isNotNull
-        assertThat(bookByName?.vehicle).isEqualTo(bil)
+        assertThat(bookByName.vehicle).isEqualTo(bil)
 
-        val record = FuelRecord(now(), 1234, 10.0, 190.1, false)
+        val record = FuelRecord(now(), 1234, 10.0, 190.1, false, FuelType.DIESEL)
         carBookService.addRecordForVehicle(record, "testbil")
 
-        assertThat(bookByVehicle?.records).hasSize(1)
-        assertThat(bookByVehicle?.records).contains(record)
-        assertThat(bookByVehicle?.records?.first()?.creationDateTime).isAfterOrEqualTo(testTime)
+        assertThat(bookByVehicle.records).hasSize(1)
+        assertThat(bookByVehicle.records).contains(record)
+        assertThat(bookByVehicle.records.first().creationDateTime).isAfterOrEqualTo(testTime)
     }
 }

@@ -2,6 +2,7 @@ package bilboka.vehicle
 
 import bilboka.core.book.domain.Book
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.FuelType
 import bilboka.core.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -10,7 +11,7 @@ import java.time.LocalDateTime
 
 internal class VehicleTest {
 
-    private val vehicle = Vehicle("testbil")
+    private val vehicle = Vehicle(name = "testbil", fuelType = FuelType.DIESEL)
 
     @BeforeEach
     fun setup() {
