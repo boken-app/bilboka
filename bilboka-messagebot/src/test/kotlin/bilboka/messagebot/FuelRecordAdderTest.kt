@@ -19,58 +19,41 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequest_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+        testAddFuelRequest(
             name = "testbil",
-            fuelType = FuelType.DIESEL
+            message = "Drivstoff testbil 23456 30l 300kr",
+            answer = "Registrert tanking av testbil, 30.0 liter for 300.0 kr, 10.0 kr/l"
         )
-
-        messagebot.processMessage("Drivstoff testbil 30l 300kr", senderID)
-
-        verify {
-            botMessenger.sendMessage(
-                "Registrert tanking av testbil, 30.0 liter for 300.0 kr, 10.0 kr/l",
-                senderID
-            )
-        }
-        verify { carBookExecutor.addRecordToVehicle(ofType(FuelRecord::class), "testbil") }
-        confirmVerified(botMessenger, carBookExecutor)
     }
 
     @Test
     fun sendAddFuelRequestDifferentCase_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+        testAddFuelRequest(
             name = "en testbil",
-            fuelType = FuelType.DIESEL
+            message = "fylt en testbil 30.2 L 302.0 Kr",
+            answer = "Registrert tanking av en testbil, 30.2 liter for 302.0 kr, 10.0 kr/l"
         )
-
-        messagebot.processMessage("fylt en testbil 30.2 L 302.0 Kr", senderID)
-
-        verify {
-            botMessenger.sendMessage(
-                "Registrert tanking av en testbil, 30.2 liter for 302.0 kr, 10.0 kr/l",
-                senderID
-            )
-        }
-        verify { carBookExecutor.addRecordToVehicle(ofType(FuelRecord::class), "en testbil") }
-        confirmVerified(botMessenger, carBookExecutor)
     }
 
     @Test
     fun sendAddFuelRequestDifferentCaseWithComma_callsAddFuelExecutor() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+        testAddFuelRequest(
             name = "XC 70",
+            message = "Hei drivstoff XC 70 30,44 l 608,80 kr.. :D",
+            answer = "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 20.0 kr/l"
+        )
+    }
+
+    private fun testAddFuelRequest(name: String, message: String, answer: String) {
+        every { carBookExecutor.addRecordToVehicle(any(), any()) } returns Vehicle(
+            name = name,
             fuelType = FuelType.DIESEL
         )
 
-        messagebot.processMessage("Hei drivstoff XC 70 30,44 l 608,80 kr.. :D", senderID)
+        messagebot.processMessage(message, senderID)
 
-        verify {
-            botMessenger.sendMessage(
-                "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 20.0 kr/l",
-                senderID
-            )
-        }
-        verify { carBookExecutor.addRecordToVehicle(ofType(FuelRecord::class), "XC 70") }
+        verifySentMessage(answer)
+        verify { carBookExecutor.addRecordToVehicle(ofType(FuelRecord::class), name) }
         confirmVerified(botMessenger, carBookExecutor)
     }
 
@@ -80,7 +63,17 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
         messagebot.processMessage("Drivstoff test-bil 30l 300kr", senderID)
 
-        verify { botMessenger.sendMessage("Kjenner ikke til bil test-bil", senderID) }
+        verifySentMessage("Kjenner ikke til bil test-bil")
         confirmVerified(botMessenger)
     }
+
+    private fun verifySentMessage(message: String) {
+        verify {
+            botMessenger.sendMessage(
+                message,
+                senderID
+            )
+        }
+    }
+
 }
