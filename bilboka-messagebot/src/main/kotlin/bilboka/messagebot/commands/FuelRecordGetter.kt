@@ -10,7 +10,7 @@ class FuelRecordGetter(
     private val executor: CarBookExecutor
 ) : CarBookCommand(botMessenger) {
     private val matcher = Regex(
-        "siste\\s+(\\w+(\\s+?\\w+)?)",
+        "siste\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE
     )
 

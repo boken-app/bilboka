@@ -10,7 +10,7 @@ class InMemoryStorage : VehicleRepository {
     init {
         val bil1 = Vehicle(
             name = "XC 70",
-            nicknames = setOf("XC 70", "XC70", "XC70"),
+            nicknames = setOf("XC 70", "XC70", "XC-70"),
             tegnkombinasjonNormalisert = "KT65881"
         )
         bil1.book = Book(bil1)

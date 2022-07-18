@@ -66,11 +66,11 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequestForUnknownCar_answersCarUnknown() {
-        every { carBookExecutor.addRecordToVehicle(any(), any()) } throws VehicleNotFoundException("Hei!", "testbil")
+        every { carBookExecutor.addRecordToVehicle(any(), any()) } throws VehicleNotFoundException("Hei!", "test-bil")
 
-        messagebot.processMessage("Drivstoff testbil 30l 300kr", senderID)
+        messagebot.processMessage("Drivstoff test-bil 30l 300kr", senderID)
 
-        verify { botMessenger.sendMessage("Kjenner ikke til bil testbil", senderID) }
+        verify { botMessenger.sendMessage("Kjenner ikke til bil test-bil", senderID) }
         confirmVerified(botMessenger)
     }
 }
