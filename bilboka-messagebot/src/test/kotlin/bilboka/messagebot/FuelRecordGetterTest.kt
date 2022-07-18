@@ -28,7 +28,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
         )
         book.addRecord(
             FuelRecord(
-                dateTime = now, amount = 30.0, costNOK = 300.0, fuelType = FuelType.DIESEL
+                dateTime = now, odometer = 1234, amount = 30.0, costNOK = 300.0, fuelType = FuelType.DIESEL
             )
         )
         every { carBookExecutor.getBookForVehicle(any()) } returns book
@@ -41,7 +41,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
                     now.format(
                         DateTimeFormatter.ISO_DATE
                     )
-                }",
+                } ved 1234 km",
                 senderID
             )
         }

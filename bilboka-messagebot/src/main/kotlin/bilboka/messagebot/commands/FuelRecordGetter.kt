@@ -1,6 +1,7 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.domain.FuelRecord
+import bilboka.core.vehicle.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import java.time.format.DateTimeFormatter
@@ -23,7 +24,7 @@ class FuelRecordGetter(
         val book = executor.getBookForVehicle(vehicleName)
 
         book.getLastFuelRecord()?.apply {
-            replyWithLastRecord(book.vehicle.name, this, senderID)
+            replyWithLastRecord(book.vehicle, this, senderID)
         } ?: botMessenger.sendMessage(
             "Finner ingen tankinger for ${book.vehicle.name}",
             senderID
@@ -31,17 +32,17 @@ class FuelRecordGetter(
     }
 
     private fun replyWithLastRecord(
-        vehicleName: String,
+        vehicle: Vehicle,
         lastRecord: FuelRecord,
         senderID: String
     ) {
         botMessenger.sendMessage(
-            "Siste tanking av $vehicleName: ${lastRecord.amount} liter " +
+            "Siste tanking av ${vehicle.name}: ${lastRecord.amount} liter " +
                     "for ${lastRecord.costNOK} kr (${lastRecord.pricePerLiter()} kr/l) ${
                         lastRecord.dateTime?.format(
                             DateTimeFormatter.ISO_DATE
                         )
-                    }",
+                    } ved ${lastRecord.odometer} ${vehicle.odometerUnit}",
             senderID
         )
     }

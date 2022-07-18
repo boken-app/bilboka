@@ -21,8 +21,8 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequest_callsAddFuelExecutor() {
         testAddFuelRequest(
             name = "testbil",
-            message = "Drivstoff testbil 30l 300kr",
-            answer = "Registrert tanking av testbil: 30.0 liter for 300.0 kr, 10.0 kr/l"
+            message = "Drivstoff testbil 34567 30l 300kr",
+            answer = "Registrert tanking av testbil ved 34567 km: 30.0 liter for 300.0 kr, 10.0 kr/l"
         )
     }
 
@@ -30,8 +30,8 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequestDifferentCase_callsAddFuelExecutor() {
         testAddFuelRequest(
             name = "en testbil",
-            message = "fylt en testbil 30.2 L 302.0 Kr",
-            answer = "Registrert tanking av en testbil: 30.2 liter for 302.0 kr, 10.0 kr/l"
+            message = "fylt en testbil 5555 30.2 L 302.0 Kr",
+            answer = "Registrert tanking av en testbil ved 5555 km: 30.2 liter for 302.0 kr, 10.0 kr/l"
         )
     }
 
@@ -39,8 +39,8 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequestDifferentCaseWithComma_callsAddFuelExecutor() {
         testAddFuelRequest(
             name = "XC 70",
-            message = "Hei drivstoff XC 70 30,44 l 608,80 kr.. :D",
-            answer = "Registrert tanking av XC 70: 30.44 liter for 608.8 kr, 20.0 kr/l"
+            message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
+            answer = "Registrert tanking av XC 70 ved 1234 km: 30.44 liter for 608.8 kr, 20.0 kr/l"
         )
     }
 
@@ -61,7 +61,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequestForUnknownCar_answersCarUnknown() {
         every { carBookExecutor.addRecordToVehicle(any(), any()) } throws VehicleNotFoundException("Hei!", "test-bil")
 
-        messagebot.processMessage("Drivstoff test-bil 30l 300kr", senderID)
+        messagebot.processMessage("Drivstoff test-bil 444 30l 300kr", senderID)
 
         verifySentMessage("Kjenner ikke til bil test-bil")
         confirmVerified(botMessenger)

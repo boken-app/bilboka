@@ -2,7 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.messagebot.BotMessenger
 
-internal const val DEFAULT_HELP_MESSAGE = "For å registrere drivstoff, skriv f.eks. \"Drivstoff xc70 30l 400kr\""
+internal const val DEFAULT_HELP_MESSAGE = "For å registrere drivstoff, skriv f.eks. \"Drivstoff XC70 256789 30l 300kr\""
 
 class Helper(private val botMessenger: BotMessenger) : CarBookCommand(botMessenger) {
 

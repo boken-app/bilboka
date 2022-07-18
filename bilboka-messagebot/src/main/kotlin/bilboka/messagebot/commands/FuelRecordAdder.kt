@@ -11,7 +11,7 @@ class FuelRecordAdder(
     private val executor: CarBookExecutor
 ) : CarBookCommand(botMessenger) {
     private val matcher = Regex(
-        "(drivstoff|tank|fylt|fuel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
+        "(drivstoff|tank|fylt|fuel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s([0-9]{1,7})\\s?(km|mi)?\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
         IGNORE_CASE
     )
 
@@ -22,11 +22,12 @@ class FuelRecordAdder(
     override fun execute(senderID: String, message: String) {
         val values = matcher.find(message)!!.groupValues
         val vehicleName = values[2]
-        val amount = values[3]
-        val cost = values[4]
+        val odoReading = values[3]
+        val amount = values[5]
+        val cost = values[6]
 
         val fuelRecord = FuelRecord(
-            odometer = null, // TODO
+            odometer = odoReading.toInt(),
             amount = amount.convertToDouble(),
             costNOK = cost.convertToDouble(),
             fuelType = FuelType.DIESEL,
@@ -37,7 +38,7 @@ class FuelRecordAdder(
         )
 
         botMessenger.sendMessage(
-            "Registrert tanking av ${vehicle.name}: ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
+            "Registrert tanking av ${vehicle.name} ved ${fuelRecord.odometer} ${vehicle.odometerUnit}: ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
             senderID
         )
     }
