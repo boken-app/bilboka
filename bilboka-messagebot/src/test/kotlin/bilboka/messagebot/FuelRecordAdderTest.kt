@@ -21,8 +21,8 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequest_callsAddFuelExecutor() {
         testAddFuelRequest(
             name = "testbil",
-            message = "Drivstoff testbil 23456 30l 300kr",
-            answer = "Registrert tanking av testbil, 30.0 liter for 300.0 kr, 10.0 kr/l"
+            message = "Drivstoff testbil 30l 300kr",
+            answer = "Registrert tanking av testbil: 30.0 liter for 300.0 kr, 10.0 kr/l"
         )
     }
 
@@ -31,7 +31,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
         testAddFuelRequest(
             name = "en testbil",
             message = "fylt en testbil 30.2 L 302.0 Kr",
-            answer = "Registrert tanking av en testbil, 30.2 liter for 302.0 kr, 10.0 kr/l"
+            answer = "Registrert tanking av en testbil: 30.2 liter for 302.0 kr, 10.0 kr/l"
         )
     }
 
@@ -40,7 +40,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
         testAddFuelRequest(
             name = "XC 70",
             message = "Hei drivstoff XC 70 30,44 l 608,80 kr.. :D",
-            answer = "Registrert tanking av XC 70, 30.44 liter for 608.8 kr, 20.0 kr/l"
+            answer = "Registrert tanking av XC 70: 30.44 liter for 608.8 kr, 20.0 kr/l"
         )
     }
 
