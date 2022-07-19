@@ -4,6 +4,7 @@ import bilboka.core.book.domain.FuelRecord
 import bilboka.core.vehicle.FuelType
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
+import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
 class FuelRecordAdder(
@@ -38,7 +39,9 @@ class FuelRecordAdder(
         )
 
         botMessenger.sendMessage(
-            "Registrert tanking av ${vehicle.name} ved ${fuelRecord.odometer} ${vehicle.odometerUnit}: ${fuelRecord.amount} liter for ${fuelRecord.costNOK} kr, ${fuelRecord.pricePerLiter()} kr/l",
+            "Registrert tanking av ${vehicle.name} ved ${fuelRecord.odometer} ${vehicle.odometerUnit}: ${fuelRecord.amount.format()} liter for ${fuelRecord.costNOK.format()} kr, ${
+                fuelRecord.pricePerLiter().format()
+            } kr/l",
             senderID
         )
     }
