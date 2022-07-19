@@ -5,6 +5,7 @@ import bilboka.core.vehicle.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class FuelRecordGetter(
     private val botMessenger: BotMessenger,
@@ -40,7 +41,7 @@ class FuelRecordGetter(
             "Siste tanking av ${vehicle.name}: ${lastRecord.amount} liter " +
                     "for ${lastRecord.costNOK} kr (${lastRecord.pricePerLiter()} kr/l) ${
                         lastRecord.dateTime?.format(
-                            DateTimeFormatter.ISO_DATE
+                            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                         )
                     } ved ${lastRecord.odometer} ${vehicle.odometerUnit}",
             senderID
