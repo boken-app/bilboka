@@ -16,7 +16,7 @@ class FuelRecord(
         if (costNOK == null || amount == null) {
             return null
         }
-        return "%.2f".format(costNOK / amount).replace(",", ".").toDouble()
+        return (costNOK / amount)
     }
 
 }

@@ -4,6 +4,7 @@ import bilboka.core.book.domain.FuelRecord
 import bilboka.core.vehicle.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
+import bilboka.messagebot.format
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -38,8 +39,8 @@ class FuelRecordGetter(
         senderID: String
     ) {
         botMessenger.sendMessage(
-            "Siste tanking av ${vehicle.name}: ${lastRecord.amount} liter " +
-                    "for ${lastRecord.costNOK} kr (${lastRecord.pricePerLiter()} kr/l) ${
+            "Siste tanking av ${vehicle.name}: ${lastRecord.amount.format()} liter " +
+                    "for ${lastRecord.costNOK.format()} kr (${lastRecord.pricePerLiter().format()} kr/l) ${
                         lastRecord.dateTime?.format(
                             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                         )

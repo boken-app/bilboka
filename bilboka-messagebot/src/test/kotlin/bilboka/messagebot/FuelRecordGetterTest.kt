@@ -29,7 +29,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
         )
         book.addRecord(
             FuelRecord(
-                dateTime = time, odometer = 1234, amount = 30.0, costNOK = 300.0, fuelType = FuelType.DIESEL
+                dateTime = time, odometer = 1234, amount = 30.0, costNOK = 100.0, fuelType = FuelType.DIESEL
             )
         )
         every { carBookExecutor.getBookForVehicle(any()) } returns book
@@ -38,8 +38,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
         verify {
             botMessenger.sendMessage(
-                //  message = "Siste tanking av En Testbil: 30.0 liter for 300.0 kr (10.0 kr/l) 01/01/2020, 12:00 ved 1234 km",
-                message = any(),
+                message = "Siste tanking av En Testbil: 30 liter for 100 kr (3,33 kr/l) 01/01/2020, 12:00 ved 1234 km",
                 senderID
             )
         }
