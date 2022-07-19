@@ -28,6 +28,6 @@ internal class CarBookServiceTest {
         val fuelToAdd = FuelRecord(now(), 300000, 12.4, 13.37, false, FuelType.DIESEL)
         carBookService.addRecordForVehicle(fuelToAdd, "Testbil")
 
-        assertThat(carBookService.getBookForVehicle("Testbil")?.records).contains(fuelToAdd)
+        assertThat(carBookService.getBookForVehicle("Testbil").records).contains(fuelToAdd)
     }
 }

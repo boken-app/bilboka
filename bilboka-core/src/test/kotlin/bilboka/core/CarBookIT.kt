@@ -33,7 +33,7 @@ class CarBookIT {
                 fuelType = FuelType.DIESEL
             ), "760"
         )
-        assertThat(carBookService.getBookForVehicle("760")?.records).isNotEmpty
+        assertThat(carBookService.getBookForVehicle("760").records).isNotEmpty
     }
 }
 

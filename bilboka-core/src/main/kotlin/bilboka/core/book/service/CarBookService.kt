@@ -28,7 +28,7 @@ class CarBookService(val storage: VehicleRepository) {
 
     fun addRecordForVehicle(record: Record, vehicleName: String): Vehicle {
         val book =
-            getBookForVehicle(vehicleName) ?: throw VehicleNotFoundException("Fant ikke bil $vehicleName", vehicleName)
+            getBookForVehicle(vehicleName)
         book.addRecord(record)
         return book.vehicle
     }
