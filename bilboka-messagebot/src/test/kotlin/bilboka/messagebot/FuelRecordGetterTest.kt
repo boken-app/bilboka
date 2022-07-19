@@ -35,7 +35,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
         verify {
             botMessenger.sendMessage(
-                message = "Siste tanking av En Testbil: 30 liter for 100 kr (3,33 kr/l) 01.01.2020, 12:00 ved 1234 km",
+                message = "Siste tanking av En Testbil: 30 liter for 100 kr (3,33 kr/l) ${time.format()} ved 1234 km",
                 senderID
             )
         }
