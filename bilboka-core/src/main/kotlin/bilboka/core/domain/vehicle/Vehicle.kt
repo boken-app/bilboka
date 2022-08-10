@@ -1,27 +1,35 @@
-package bilboka.core.vehicle
+package bilboka.core.domain.vehicle
 
-import bilboka.core.book.domain.Book
-import bilboka.core.book.domain.FuelRecord
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.book.Record
 import java.time.LocalDateTime
+import javax.persistence.*
 
-class Vehicle(
-    var book: Book? = null,
+@Entity
+open class Vehicle(
     var name: String,
+    @ElementCollection
     var nicknames: Set<String> = setOf(),
     val tegnkombinasjonNormalisert: String? = null,
     val odometerUnit: OdometerUnit = OdometerUnit.KILOMETERS,
-    val fuelType: FuelType
+    val fuelType: FuelType,
+    @OneToMany(mappedBy = "vehicle")
+    var bookEntries: MutableList<Record>? = arrayListOf(),
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
 ) : Fuelable {
 
     override fun addFuel(dateTime: LocalDateTime?, odometer: Int?, amount: Double?, costNOK: Double?, isFull: Boolean) {
-        book().addRecord(
+        bookEntries?.add(
             FuelRecord(
                 dateTime = dateTime ?: LocalDateTime.now(),
                 odometer = odometer,
                 amount = amount,
                 costNOK = costNOK,
                 isFull = isFull,
-                fuelType = fuelType()
+                fuelType = fuelType(),
+                vehicle = this
             )
         )
     }
@@ -43,8 +51,5 @@ class Vehicle(
             .uppercase() == tegnkombinasjonNormalisert
     }
 
-    fun book(): Book {
-        return book ?: throw IllegalStateException("Mangler bok for bil $name")
-    }
 
 }

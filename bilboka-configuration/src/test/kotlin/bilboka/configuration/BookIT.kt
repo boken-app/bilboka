@@ -1,9 +1,9 @@
 package bilboka.configuration
 
-import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.service.CarBookService
-import bilboka.core.vehicle.FuelType
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +27,7 @@ internal class BookIT(@Autowired val carBookService: CarBookService) {
         assertThat(bookByName).isNotNull
         assertThat(bookByName.vehicle).isEqualTo(bil)
 
-        val record = FuelRecord(now(), 1234, 10.0, 190.1, false, FuelType.DIESEL)
+        val record = FuelRecord(now(), bil, 1234, 10.0, 190.1, false, FuelType.DIESEL)
         carBookService.addRecordForVehicle(record, "testbil")
 
         assertThat(bookByVehicle.records).hasSize(1)

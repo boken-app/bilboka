@@ -1,8 +1,9 @@
 package bilboka.core.book
 
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.book.domain.RecordType
-import bilboka.core.vehicle.FuelType
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.book.RecordType
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -11,9 +12,12 @@ import java.time.ZonedDateTime
 
 internal class FuelRecordTest {
 
+    private val testbil = Vehicle(name = "test", fuelType = FuelType.DIESEL)
+
     @Test
     fun pricePerLiterIsCorrect() {
         val fuelRecord = FuelRecord(
+            vehicle = testbil,
             odometer = 250000,
             amount = 100.0,
             costNOK = 1000.0,
@@ -28,6 +32,7 @@ internal class FuelRecordTest {
     @Test
     fun pricePerLiterIsNullWithNoAmount() {
         val fuelRecord = FuelRecord(
+            vehicle = testbil,
             odometer = 250000,
             amount = null,
             costNOK = 1000.0,
@@ -41,6 +46,7 @@ internal class FuelRecordTest {
     @Test
     fun pricePerLiterIsNullWithNoCost() {
         val fuelRecord = FuelRecord(
+            vehicle = testbil,
             odometer = 250000,
             amount = 100.0,
             costNOK = null,
@@ -55,6 +61,7 @@ internal class FuelRecordTest {
     fun fieldsAreSet() {
         val date = LocalDateTime.now()
         val fuelRecord = FuelRecord(
+            vehicle = testbil,
             dateTime = date,
             odometer = 1000000,
             amount = 2.0,
@@ -75,6 +82,7 @@ internal class FuelRecordTest {
     @Disabled("Denne funker ikke av en eller annen grunn.")
     fun dateTimeIsSet() {
         val fuelRecord = FuelRecord(
+            vehicle = testbil,
             odometer = 1000000,
             amount = null,
             costNOK = null,

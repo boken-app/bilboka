@@ -1,8 +1,8 @@
 package bilboka.messagebot
 
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.FuelType
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import bilboka.core.vehicle.VehicleNotFoundException
 import io.mockk.confirmVerified
 import io.mockk.every

@@ -3,6 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	kotlin("jvm")
+	kotlin("plugin.jpa") version "1.6.10"
 
 	id("bilboka.plugin")
 }
@@ -19,7 +20,8 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation("org.flywaydb:flyway-core")
+//	implementation("org.flywaydb:flyway-core")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
 //	implementation("org.postgresql:postgresql:42.3.1") // TODO Database burde automatisk funke med Heroku
 

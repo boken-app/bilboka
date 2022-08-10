@@ -1,4 +1,4 @@
-package bilboka.core.vehicle
+package bilboka.core.domain.vehicle
 
 import java.time.LocalDateTime
 

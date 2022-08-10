@@ -1,46 +1,46 @@
 package bilboka.core
 
-import bilboka.core.book.domain.FuelRecord
 import bilboka.core.book.service.CarBookService
-import bilboka.core.repository.InMemoryStorage
+import bilboka.core.config.BilbokaCoreConfig
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import bilboka.core.repository.VehicleRepository
-import bilboka.core.vehicle.FuelType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest(classes = [CarBookService::class, IntegrationTestConfig::class])
+@Transactional
+@SpringBootTest(classes = [CarBookService::class, BilbokaCoreConfig::class, VehicleRepository::class])
 class CarBookIT {
 
     @Autowired
     lateinit var carBookService: CarBookService
 
+    @BeforeEach
+    fun initiateCars() {
+
+    }
+
     @Test
     fun bookExistsForXC70() {
+        carBookService.addVehicle(Vehicle("xc70", fuelType = FuelType.DIESEL))
+
         val book = carBookService.getBookForVehicle("xc70")
         assertThat(book).isNotNull
     }
 
     @Test
     fun addFuelForXC70_succeeds() {
-        carBookService.addRecordForVehicle(
-            FuelRecord(
-                amount = 12.4,
-                costNOK = 22.43,
-                fuelType = FuelType.DIESEL
-            ), "760"
-        )
-        assertThat(carBookService.getBookForVehicle("760").records).isNotEmpty
-    }
-}
+        carBookService.addVehicle(Vehicle("760", fuelType = FuelType.BENSIN))
 
-@Configuration
-class IntegrationTestConfig {
-    @Bean
-    fun vehicleRepository(): VehicleRepository {
-        return InMemoryStorage()
+        carBookService.getVehicle("760")
+            ?.addFuel(
+                amount = 12.4,
+                costNOK = 22.43
+            )
+        assertThat(carBookService.getBookForVehicle("760").records).isNotEmpty
     }
 }

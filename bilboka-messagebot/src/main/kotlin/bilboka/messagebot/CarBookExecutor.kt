@@ -1,9 +1,9 @@
 package bilboka.messagebot
 
-import bilboka.core.book.domain.Book
-import bilboka.core.book.domain.Record
 import bilboka.core.book.service.CarBookService
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.domain.book.Book
+import bilboka.core.domain.book.Record
+import bilboka.core.domain.vehicle.Vehicle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

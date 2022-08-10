@@ -1,7 +1,7 @@
 package bilboka.messagebot.commands
 
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.FuelType
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.FuelType
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.CarBookExecutor
 import bilboka.messagebot.format
