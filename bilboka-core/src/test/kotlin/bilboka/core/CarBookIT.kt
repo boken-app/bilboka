@@ -1,46 +1,45 @@
 package bilboka.core
 
-import bilboka.core.book.service.CarBookService
+import bilboka.core.book.service.VehicleService
 import bilboka.core.config.BilbokaCoreConfig
 import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
-import bilboka.core.repository.VehicleRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
-@SpringBootTest(classes = [CarBookService::class, BilbokaCoreConfig::class, VehicleRepository::class])
+@SpringBootTest(classes = [VehicleService::class, BilbokaCoreConfig::class, Book::class])
 class CarBookIT {
 
     @Autowired
-    lateinit var carBookService: CarBookService
+    lateinit var vehicleService: VehicleService
 
-    @BeforeEach
-    fun initiateCars() {
-
-    }
+    @Autowired
+    lateinit var book: Book
 
     @Test
-    fun bookExistsForXC70() {
-        carBookService.addVehicle(Vehicle("xc70", fuelType = FuelType.DIESEL))
+    fun vehicleExistsAfterSave() {
+        vehicleService.addVehicle(Vehicle("760", fuelType = FuelType.DIESEL))
 
-        val book = carBookService.getBookForVehicle("xc70")
-        assertThat(book).isNotNull
+        val vehicle = vehicleService.findVehicle("760")
+        assertThat(vehicle).isNotNull
     }
 
     @Test
     fun addFuelForXC70_succeeds() {
-        carBookService.addVehicle(Vehicle("760", fuelType = FuelType.BENSIN))
+        val vehicle =
+            vehicleService.addVehicle(Vehicle(name = "xc70", nicknames = setOf("crosser"), fuelType = FuelType.BENSIN))
 
-        carBookService.getVehicle("760")
-            ?.addFuel(
-                amount = 12.4,
-                costNOK = 22.43
-            )
-        assertThat(carBookService.getBookForVehicle("760").records).isNotEmpty
+        book.addFuelForVehicle(
+            "crosser",
+            1234,
+            amount = 12.4,
+            costNOK = 22.43
+        )
+
+        assertThat(vehicle.bookEntries).isNotEmpty
     }
 }

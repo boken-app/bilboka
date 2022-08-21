@@ -7,4 +7,8 @@ interface VehicleRepository : CrudRepository<Vehicle, Long> {
 
     fun getByName(name: String): Vehicle?
 
+    fun findByNicknames(name: String): Vehicle?
+
+    fun findByTegnkombinasjonNormalisert(name: String): Vehicle?
+
 }

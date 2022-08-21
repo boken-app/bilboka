@@ -1,5 +1,6 @@
 package bilboka.core.domain.vehicle
 
+import bilboka.core.book.service.normaliserTegnkombinasjon
 import bilboka.core.domain.book.FuelRecord
 import bilboka.core.domain.book.Record
 import java.time.LocalDateTime
@@ -18,23 +19,30 @@ open class Vehicle(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : Fuelable {
+) {
 
-    override fun addFuel(dateTime: LocalDateTime?, odometer: Int?, amount: Double?, costNOK: Double?, isFull: Boolean) {
-        bookEntries?.add(
-            FuelRecord(
-                dateTime = dateTime ?: LocalDateTime.now(),
-                odometer = odometer,
-                amount = amount,
-                costNOK = costNOK,
-                isFull = isFull,
-                fuelType = fuelType(),
-                vehicle = this
-            )
+    fun addFuel(
+        odometer: Int?,
+        amount: Double?,
+        costNOK: Double?,
+        isFull: Boolean = false,
+        dateTime: LocalDateTime = LocalDateTime.now()
+    ): FuelRecord {
+        val fuelRecord = FuelRecord(
+            dateTime = dateTime,
+            odometer = odometer,
+            amount = amount,
+            costNOK = costNOK,
+            isFull = isFull,
+            vehicle = this
         )
+        bookEntries?.add(
+            fuelRecord
+        )
+        return fuelRecord
     }
 
-    override fun fuelType(): FuelType {
+    fun fuelType(): FuelType {
         return fuelType
     }
 
@@ -45,11 +53,7 @@ open class Vehicle(
     }
 
     fun hasTegnkombinasjon(tegnkombinasjon: String): Boolean {
-        return tegnkombinasjon
-            .replace(" ", "")
-            .replace("-", "")
-            .uppercase() == tegnkombinasjonNormalisert
+        return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert
     }
-
 
 }

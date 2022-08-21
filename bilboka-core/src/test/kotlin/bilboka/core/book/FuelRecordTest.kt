@@ -22,7 +22,6 @@ internal class FuelRecordTest {
             amount = 100.0,
             costNOK = 1000.0,
             isFull = true,
-            fuelType = FuelType.DIESEL
         )
 
         assertThat(fuelRecord.pricePerLiter()).isEqualTo(10.0)
@@ -37,7 +36,6 @@ internal class FuelRecordTest {
             amount = null,
             costNOK = 1000.0,
             isFull = true,
-            fuelType = FuelType.DIESEL
         )
 
         assertThat(fuelRecord.pricePerLiter()).isNull()
@@ -51,7 +49,6 @@ internal class FuelRecordTest {
             amount = 100.0,
             costNOK = null,
             isFull = true,
-            fuelType = FuelType.DIESEL
         )
 
         assertThat(fuelRecord.pricePerLiter()).isNull()
@@ -67,7 +64,6 @@ internal class FuelRecordTest {
             amount = 2.0,
             costNOK = 3.0,
             isFull = true,
-            fuelType = FuelType.DIESEL
         )
 
         assertThat(fuelRecord.odometer).isEqualTo(1000000)
@@ -87,7 +83,6 @@ internal class FuelRecordTest {
             amount = null,
             costNOK = null,
             isFull = false,
-            fuelType = FuelType.DIESEL
         )
 
         val now = ZonedDateTime.now()

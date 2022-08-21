@@ -1,6 +1,5 @@
 package bilboka.vehicle
 
-import bilboka.core.domain.book.Book
 import bilboka.core.domain.book.FuelRecord
 import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
@@ -15,7 +14,6 @@ internal class VehicleTest {
 
     @BeforeEach
     fun setup() {
-        val book = Book(vehicle)
     }
 
     @Test
@@ -37,6 +35,7 @@ internal class VehicleTest {
         vehicle.addFuel(
             amount = 12.2,
             odometer = 12356,
+            costNOK = null,
         )
 
         val records = vehicle.bookEntries!!

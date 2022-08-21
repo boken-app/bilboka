@@ -33,6 +33,14 @@ class InMemoryStorage : VehicleRepository {
         return vehicles.find { vehicle -> vehicle.isCalled(name) }
     }
 
+    override fun findByNicknames(name: String): Vehicle? {
+        TODO("Not yet implemented")
+    }
+
+    override fun findByTegnkombinasjonNormalisert(name: String): Vehicle? {
+        TODO("Not yet implemented")
+    }
+
     override fun <S : Vehicle?> saveAll(entities: MutableIterable<S>): MutableIterable<S> {
         TODO("Not yet implemented")
     }
