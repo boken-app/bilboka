@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.Book
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.justRun
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 abstract class AbstractMessageBotTest {
 
     @MockK
-    lateinit var carBookExecutor: CarBookExecutor
+    lateinit var book: Book
 
     @MockK
     lateinit var botMessenger: BotMessenger
