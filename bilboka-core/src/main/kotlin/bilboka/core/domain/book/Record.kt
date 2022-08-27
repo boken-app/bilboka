@@ -8,16 +8,16 @@ import javax.persistence.*
 
 @Entity
 open class Record(
-    val dateTime: LocalDateTime? = LocalDateTime.now(),
-    val type: RecordType,
-    val odometer: Int? = null,
+    open val dateTime: LocalDateTime? = LocalDateTime.now(),
+    open val type: RecordType,
+    open val odometer: Int? = null,
     @ManyToOne
-    val vehicle: Vehicle,
+    open val vehicle: Vehicle,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    open val id: Long? = null,
     @CreatedDate
-    val creationDateTime: ZonedDateTime? = null
+    open val creationDateTime: ZonedDateTime? = null
 ) {
     // val creationDateTime: ZonedDateTime = now()
 }

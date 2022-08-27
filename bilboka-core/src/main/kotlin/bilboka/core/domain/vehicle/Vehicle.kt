@@ -8,17 +8,17 @@ import javax.persistence.*
 
 @Entity
 open class Vehicle(
-    var name: String,
+    open var name: String,
     @ElementCollection
-    var nicknames: Set<String> = setOf(),
-    val tegnkombinasjonNormalisert: String? = null,
-    val odometerUnit: OdometerUnit = OdometerUnit.KILOMETERS,
-    val fuelType: FuelType,
+    open var nicknames: Set<String> = setOf(),
+    open val tegnkombinasjonNormalisert: String? = null,
+    open val odometerUnit: OdometerUnit = OdometerUnit.KILOMETERS,
+    open val fuelType: FuelType,
     @OneToMany(mappedBy = "vehicle")
-    var bookEntries: MutableList<Record>? = arrayListOf(),
+    open var bookEntries: MutableList<Record>? = arrayListOf(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    open val id: Long? = null
 ) {
 
     fun addFuel(
