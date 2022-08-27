@@ -4,6 +4,7 @@ import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
 import java.util.*
 
+// TODO skal vekk
 class InMemoryStorage : VehicleRepository {
 
     val vehicles: HashSet<Vehicle> = HashSet()
