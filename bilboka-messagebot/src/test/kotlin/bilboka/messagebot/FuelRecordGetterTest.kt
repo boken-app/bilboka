@@ -1,9 +1,8 @@
 package bilboka.messagebot
 
-import bilboka.core.book.domain.Book
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.FuelType
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import bilboka.core.vehicle.VehicleNotFoundException
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -21,15 +20,10 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
     @Test
     fun sendGetLastRecord_repliedWithLastRecord() {
         val time = LocalDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.NOON)
-        val book = Book(
-            Vehicle(name = "En Testbil", fuelType = FuelType.DIESEL)
+        val vehicle = Vehicle(name = "En Testbil", fuelType = FuelType.DIESEL)
+        every { book.getLastFuelRecord(any()) } returns FuelRecord(
+            vehicle = vehicle, dateTime = time, odometer = 1234, amount = 30.0, costNOK = 100.0
         )
-        book.addRecord(
-            FuelRecord(
-                dateTime = time, odometer = 1234, amount = 30.0, costNOK = 100.0, fuelType = FuelType.DIESEL
-            )
-        )
-        every { carBookExecutor.getBookForVehicle(any()) } returns book
 
         messagebot.processMessage("Siste testbil", senderID)
 
@@ -44,18 +38,13 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
     @Test
     fun sendGetLastRecordWhenNoRecords_repliesSomethingUseful() {
-        every { carBookExecutor.getBookForVehicle(any()) } returns Book(
-            Vehicle(
-                name = "En Testbil",
-                fuelType = FuelType.DIESEL
-            )
-        )
+        every { book.getLastFuelRecord(any()) } returns null
 
         messagebot.processMessage("Siste testbil", senderID)
 
         verify {
             botMessenger.sendMessage(
-                "Finner ingen tankinger for En Testbil",
+                "Finner ingen tankinger for testbil",
                 senderID
             )
         }
@@ -64,7 +53,7 @@ class FuelRecordGetterTest : AbstractMessageBotTest() {
 
     @Test
     fun sendGetLastRecordWhenCarNotFound_repliesSomethingUseful() {
-        every { carBookExecutor.getBookForVehicle(any()) } throws VehicleNotFoundException("Ops", "bil")
+        every { book.getLastFuelRecord(any()) } throws VehicleNotFoundException("Ops", "bil")
 
         messagebot.processMessage("Siste testbil", senderID)
 

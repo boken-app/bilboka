@@ -1,9 +1,8 @@
 package bilboka.vehicle
 
-import bilboka.core.book.domain.Book
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.FuelType
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.FuelType
+import bilboka.core.domain.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,8 +14,6 @@ internal class VehicleTest {
 
     @BeforeEach
     fun setup() {
-        val book = Book(vehicle)
-        vehicle.book = book
     }
 
     @Test
@@ -29,7 +26,7 @@ internal class VehicleTest {
             isFull = false
         )
 
-        assertThat(vehicle.book?.records).hasSize(1)
+        assertThat(vehicle.bookEntries).hasSize(1)
     }
 
     @Test
@@ -38,9 +35,10 @@ internal class VehicleTest {
         vehicle.addFuel(
             amount = 12.2,
             odometer = 12356,
+            costNOK = null,
         )
 
-        val records = vehicle.book?.records!!
+        val records = vehicle.bookEntries!!
         val fuelRecord = records[0] as FuelRecord
         assertThat(records).hasSize(1)
         assertThat(fuelRecord.odometer).isEqualTo(12356)

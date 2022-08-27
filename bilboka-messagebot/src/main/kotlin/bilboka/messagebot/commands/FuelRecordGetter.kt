@@ -1,14 +1,14 @@
 package bilboka.messagebot.commands
 
-import bilboka.core.book.domain.FuelRecord
-import bilboka.core.vehicle.Vehicle
+import bilboka.core.Book
+import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.vehicle.Vehicle
 import bilboka.messagebot.BotMessenger
-import bilboka.messagebot.CarBookExecutor
 import bilboka.messagebot.format
 
 class FuelRecordGetter(
     private val botMessenger: BotMessenger,
-    private val executor: CarBookExecutor
+    private val book: Book
 ) : CarBookCommand(botMessenger) {
     private val matcher = Regex(
         "siste\\s+(\\w+([\\s-]+?\\w+)?)",
@@ -21,12 +21,11 @@ class FuelRecordGetter(
 
     override fun execute(senderID: String, message: String) {
         val (vehicleName) = matcher.find(message)!!.destructured
-        val book = executor.getBookForVehicle(vehicleName)
 
-        book.getLastFuelRecord()?.apply {
-            replyWithLastRecord(book.vehicle, this, senderID)
+        book.getLastFuelRecord(vehicleName)?.apply {
+            replyWithLastRecord(this.vehicle, this, senderID)
         } ?: botMessenger.sendMessage(
-            "Finner ingen tankinger for ${book.vehicle.name}",
+            "Finner ingen tankinger for $vehicleName",
             senderID
         )
     }

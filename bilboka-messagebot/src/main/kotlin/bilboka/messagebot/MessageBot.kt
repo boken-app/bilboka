@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.Book
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.commands.FuelRecordAdder
 import bilboka.messagebot.commands.FuelRecordGetter
@@ -21,12 +22,12 @@ class MessageBot {
     lateinit var botMessenger: BotMessenger
 
     @Autowired
-    lateinit var carBookExecutor: CarBookExecutor
+    lateinit var book: Book
 
     private val commandRegistry by lazy {
         setOf(
-            FuelRecordAdder(botMessenger, carBookExecutor),
-            FuelRecordGetter(botMessenger, carBookExecutor),
+            FuelRecordAdder(botMessenger, book),
+            FuelRecordGetter(botMessenger, book),
             SmallTalk(botMessenger),
             Helper(botMessenger)
         )
