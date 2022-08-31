@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	kotlin("jvm")
-	kotlin("plugin.jpa") version "1.6.10"
+	kotlin("plugin.jpa") version "1.7.10"
 
 	id("bilboka.plugin")
 }
