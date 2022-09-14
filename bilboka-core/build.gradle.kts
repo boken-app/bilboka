@@ -22,6 +22,8 @@ dependencyManagement {
 dependencies {
 //	implementation("org.flywaydb:flyway-core")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+	implementation("org.postgresql:postgresql")
 
 //	implementation("org.postgresql:postgresql:42.3.1") // TODO Database burde automatisk funke med Heroku
 
