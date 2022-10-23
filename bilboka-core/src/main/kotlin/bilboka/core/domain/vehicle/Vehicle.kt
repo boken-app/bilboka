@@ -4,20 +4,14 @@ import bilboka.core.book.service.normaliserTegnkombinasjon
 import bilboka.core.domain.book.FuelRecord
 import bilboka.core.domain.book.Record
 import java.time.LocalDateTime
-import javax.persistence.*
 
-@Entity
 open class Vehicle(
     open var name: String,
-    @ElementCollection
     open var nicknames: Set<String> = setOf(),
     open val tegnkombinasjonNormalisert: String? = null,
     open val odometerUnit: OdometerUnit = OdometerUnit.KILOMETERS,
     open val fuelType: FuelType,
-    @OneToMany(mappedBy = "vehicle")
     open var bookEntries: MutableList<Record>? = arrayListOf(),
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     open val id: Long? = null
 ) {
 

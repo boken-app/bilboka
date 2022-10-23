@@ -1,17 +1,16 @@
 package bilboka.core
 
 import bilboka.core.book.service.VehicleService
-import bilboka.core.config.BilbokaCoreConfig
 import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@SpringBootTest(classes = [VehicleService::class, BilbokaCoreConfig::class, Book::class])
+@SpringBootTest(classes = [VehicleService::class, Book::class])
+@Disabled
 class CarBookIT {
 
     @Autowired

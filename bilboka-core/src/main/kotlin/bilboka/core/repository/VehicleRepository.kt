@@ -1,9 +1,10 @@
 package bilboka.core.repository
 
 import bilboka.core.domain.vehicle.Vehicle
-import org.springframework.data.repository.CrudRepository
 
-interface VehicleRepository : CrudRepository<Vehicle, Long> {
+interface VehicleRepository {
+
+    fun save(vehicle: Vehicle): Vehicle
 
     fun getByName(name: String): Vehicle?
 

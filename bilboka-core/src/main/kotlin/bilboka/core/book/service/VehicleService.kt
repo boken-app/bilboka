@@ -4,14 +4,13 @@ import bilboka.core.domain.vehicle.Vehicle
 import bilboka.core.repository.VehicleRepository
 import bilboka.core.vehicle.VehicleNotFoundException
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
 class VehicleService(val storage: VehicleRepository) {
 
     fun addVehicle(vehicle: Vehicle): Vehicle {
-        return storage.save(vehicle)
+        return vehicle
+        //   return storage.save(vehicle)
     }
 
     fun findVehicle(vehicleName: String): Vehicle {

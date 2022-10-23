@@ -3,10 +3,8 @@ package bilboka.core
 import bilboka.core.book.service.VehicleService
 import bilboka.core.domain.book.FuelRecord
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
-@Transactional
 class Book(
     val bookService: VehicleService
 ) {

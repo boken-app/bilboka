@@ -2,7 +2,6 @@ package bilboka.core.repository
 
 import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
-import java.util.*
 
 // TODO skal vekk
 class InMemoryStorage : VehicleRepository {
@@ -25,7 +24,7 @@ class InMemoryStorage : VehicleRepository {
         save(bil2)
     }
 
-    override fun <S : Vehicle?> save(vehicle: S): S {
+    override fun save(vehicle: Vehicle): Vehicle {
         vehicles.add(vehicle!!)
         return vehicle
     }
@@ -35,13 +34,14 @@ class InMemoryStorage : VehicleRepository {
     }
 
     override fun findByNicknames(name: String): Vehicle? {
-        TODO("Not yet implemented")
+        return vehicles.find { vehicle -> vehicle.isCalled(name) }
     }
 
     override fun findByTegnkombinasjonNormalisert(name: String): Vehicle? {
-        TODO("Not yet implemented")
+        return vehicles.find { vehicle -> vehicle.tegnkombinasjonNormalisert.equals(name) }
     }
 
+    /*
     override fun <S : Vehicle?> saveAll(entities: MutableIterable<S>): MutableIterable<S> {
         TODO("Not yet implemented")
     }
@@ -85,4 +85,6 @@ class InMemoryStorage : VehicleRepository {
     override fun findById(id: Long): Optional<Vehicle> {
         TODO("Not yet implemented")
     }
+    */
+
 }
