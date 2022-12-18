@@ -1,7 +1,8 @@
 package bilboka.core
 
 import bilboka.core.book.service.VehicleService
-import bilboka.core.domain.book.FuelRecord
+import bilboka.core.domain.book.Record
+import bilboka.core.domain.book.RecordType
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,18 +16,19 @@ class Book(
         amount: Double,
         costNOK: Double,
         isFull: Boolean = false
-    ): FuelRecord {
+    ): Record {
         val vehicle = bookService.findVehicle(vehicleName)
         return vehicle.addFuel(
             odometer = odoReading,
             amount = amount,
             costNOK = costNOK,
-            isFull = isFull
+            isFull = isFull,
+            source = "test"
         )
     }
 
-    fun getLastFuelRecord(vehicle: String): FuelRecord? {
-        return bookService.findVehicle(vehicle).bookEntries?.lastOrNull { record -> record is FuelRecord } as FuelRecord?
+    fun getLastFuelRecord(vehicle: String): Record? {
+        return bookService.findVehicle(vehicle).lastRecord(RecordType.FUEL)
     }
 
 }

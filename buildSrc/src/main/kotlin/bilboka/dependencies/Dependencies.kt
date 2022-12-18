@@ -10,6 +10,8 @@ object Versions {
     val slf4j = "1.7.30"
     val logback = "1.2.3"
 
+    val exposed = "0.40.1"
+
     val kHttp = "0.1.0"
     val kTor = "1.6.0"
 }

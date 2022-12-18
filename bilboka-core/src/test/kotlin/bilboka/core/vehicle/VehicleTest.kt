@@ -1,19 +1,27 @@
 package bilboka.vehicle
 
-import bilboka.core.domain.book.FuelRecord
+import bilboka.core.H2Test
+import bilboka.core.domain.book.RecordType
 import bilboka.core.domain.vehicle.FuelType
 import bilboka.core.domain.vehicle.Vehicle
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class VehicleTest {
+internal class VehicleTest : H2Test() {
 
-    private val vehicle = Vehicle(name = "testbil", fuelType = FuelType.DIESEL)
+    private lateinit var vehicle: Vehicle
 
-    @BeforeEach
+    @BeforeAll
     fun setup() {
+        vehicle = transaction {
+            Vehicle.new {
+                name = "testbil"
+                fuelType = FuelType.DIESEL
+            }
+        }
     }
 
     @Test
@@ -23,10 +31,11 @@ internal class VehicleTest {
             amount = 12.2,
             costNOK = 130.0,
             odometer = 12356,
-            isFull = false
+            isFull = false,
+            source = "test"
         )
 
-        assertThat(vehicle.bookEntries).hasSize(1)
+        assertThat(vehicle.records).hasSize(1)
     }
 
     @Test
@@ -36,15 +45,15 @@ internal class VehicleTest {
             amount = 12.2,
             odometer = 12356,
             costNOK = null,
+            source = "test"
         )
 
-        val records = vehicle.bookEntries!!
-        val fuelRecord = records[0] as FuelRecord
-        assertThat(records).hasSize(1)
-        assertThat(fuelRecord.odometer).isEqualTo(12356)
-        assertThat(fuelRecord.amount).isEqualTo(12.2)
-        assertThat(fuelRecord.costNOK).isNull()
-        assertThat(fuelRecord.pricePerLiter()).isNull()
-        assertThat(fuelRecord.dateTime).isAfterOrEqualTo(before)
+        val fuelRecord = vehicle.lastRecord(RecordType.FUEL)
+        assertThat(fuelRecord).isNotNull
+        assertThat(fuelRecord?.odometer).isEqualTo(12356)
+        assertThat(fuelRecord?.amount).isEqualTo(12.2)
+        assertThat(fuelRecord?.costNOK).isNull()
+        assertThat(fuelRecord?.pricePerLiter()).isNull()
+        assertThat(fuelRecord?.dateTime).isAfterOrEqualTo(before)
     }
 }

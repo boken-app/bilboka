@@ -1,7 +1,5 @@
 package bilboka.config
 
-import bilboka.core.repository.InMemoryStorage
-import bilboka.core.repository.VehicleRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.LocaleResolver
@@ -18,10 +16,10 @@ class CarBookSpringConfig {
         return slr
     }
 
-    @Bean
-    fun vehicleRepository(): VehicleRepository {
-        return InMemoryStorage()
-    }
+//    @Bean
+//    fun vehicleRepository(): VehicleRepository {
+//        return InMemoryStorage()
+//    }
 
 
 }

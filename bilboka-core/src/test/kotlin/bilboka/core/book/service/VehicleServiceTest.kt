@@ -1,24 +1,20 @@
 package bilboka.core.book.service
 
+import bilboka.core.H2Test
 import bilboka.core.domain.vehicle.FuelType
-import bilboka.core.domain.vehicle.Vehicle
-import bilboka.core.repository.InMemoryStorage
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-internal class VehicleServiceTest {
+internal class VehicleServiceTest : H2Test() {
 
-    val vehicleService: VehicleService = VehicleService(InMemoryStorage())
+    val vehicleService: VehicleService = VehicleService()
 
     @Test
-    @Disabled
     fun makeNewVehicle() {
-        val bil = vehicleService.addVehicle(Vehicle(name = "Testbil", fuelType = FuelType.DIESEL))
+        val bil = vehicleService.addVehicle("Testbil", FuelType.DIESEL)
 
-        assertThat(vehicleService.findVehicle("Testbil")).isEqualTo(bil)
-        assertThat(vehicleService.findVehicle("Testbil")?.bookEntries).isNotNull
-
+        assertThat(vehicleService.findVehicle("Testbil").name).isEqualTo(bil.name)
     }
+
 
 }

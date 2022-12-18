@@ -25,7 +25,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.postgresql:postgresql")
 
-//	implementation("org.postgresql:postgresql:42.3.1") // TODO Database burde automatisk funke med Heroku
+	dependencies {
+		implementation("org.jetbrains.exposed:exposed-core:${bilboka.dependencies.Versions.exposed}")
+		implementation("org.jetbrains.exposed:exposed-dao:${bilboka.dependencies.Versions.exposed}")
+		implementation("org.jetbrains.exposed:exposed-jdbc:${bilboka.dependencies.Versions.exposed}")
+		implementation("org.jetbrains.exposed:exposed-java-time:${bilboka.dependencies.Versions.exposed}")
+	}
+
+	implementation("org.postgresql:postgresql:42.3.1") // TODO Database burde automatisk funke med Heroku
 
 	runtimeOnly("com.h2database:h2")
 }

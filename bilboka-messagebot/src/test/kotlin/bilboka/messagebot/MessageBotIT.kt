@@ -3,18 +3,13 @@ package bilboka.messagebot;
 import bilboka.core.Book
 import bilboka.core.book.service.VehicleService
 import bilboka.core.domain.vehicle.FuelType
-import bilboka.core.domain.vehicle.Vehicle
-import bilboka.core.repository.InMemoryStorage
-import bilboka.core.repository.VehicleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 
-@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, RepoConfig::class])
+@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MessageBotIT {
 
@@ -30,19 +25,15 @@ class MessageBotIT {
     @BeforeAll
     fun setup() {
         vehicleService.addVehicle(
-            Vehicle(
-                name = "XC 70",
-                nicknames = setOf("xc70", "crosser"),
-                fuelType = FuelType.DIESEL,
-                tegnkombinasjonNormalisert = "KT65881"
-            )
+            name = "XC 70",
+            // nicknames = setOf("xc70", "crosser"),
+            fuelType = FuelType.DIESEL,
+            tegnkombinasjonNormalisert = "KT65881"
         )
         vehicleService.addVehicle(
-            Vehicle(
-                name = "en testbil",
-                nicknames = setOf("testbil"),
-                fuelType = FuelType.BENSIN
-            )
+            name = "en testbil",
+//                nicknames = setOf("testbil"),
+            fuelType = FuelType.BENSIN
         )
     }
 
@@ -123,12 +114,12 @@ class TestMessenger : BotMessenger {
 
 }
 
-@Configuration
-class RepoConfig {
-
-    @Bean
-    fun vehicleRepository(): VehicleRepository {
-        return InMemoryStorage()
-    }
-
-}
+//@Configuration
+//class RepoConfig {
+//
+//    @Bean
+//    fun vehicleRepository(): VehicleRepository {
+//        return InMemoryStorage()
+//    }
+//
+//}
