@@ -55,11 +55,11 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastRecord(): Record? {
-        return records.lastOrNull()
+        return transaction { records.lastOrNull() }
     }
 
     fun lastRecord(type: RecordType): Record? {
-        return records.lastOrNull { record -> record.type == type }
+        return transaction { records.lastOrNull { record -> record.type == type } }
     }
 
     fun fuelType(): FuelType {

@@ -27,16 +27,16 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70_succeeds() {
-        val vehicle =
-            vehicleService.addVehicle("p1800", FuelType.BENSIN)
+        vehicleService.addVehicle("xc70", FuelType.BENSIN)
 
         book.addFuelForVehicle(
-            "p1800",
+            "xc70",
             1234,
             amount = 12.4,
             costNOK = 22.43
         )
 
+        val vehicle = vehicleService.findVehicle("xc70")
         assertThat(vehicle.lastRecord(RecordType.FUEL)).isNotNull
     }
 }

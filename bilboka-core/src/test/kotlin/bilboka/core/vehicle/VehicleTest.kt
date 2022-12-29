@@ -18,7 +18,7 @@ internal class VehicleTest : H2Test() {
     fun setup() {
         vehicle = transaction {
             Vehicle.new {
-                name = "testbil"
+                name = "testbilen"
                 fuelType = FuelType.DIESEL
             }
         }
@@ -35,7 +35,9 @@ internal class VehicleTest : H2Test() {
             source = "test"
         )
 
-        assertThat(vehicle.records).hasSize(1)
+        transaction {
+            assertThat(Vehicle[vehicle.id].records).hasSize(1)
+        }
     }
 
     @Test
@@ -48,12 +50,16 @@ internal class VehicleTest : H2Test() {
             source = "test"
         )
 
-        val fuelRecord = vehicle.lastRecord(RecordType.FUEL)
+        val fuelRecord = getVehicle().lastRecord(RecordType.FUEL)
         assertThat(fuelRecord).isNotNull
         assertThat(fuelRecord?.odometer).isEqualTo(12356)
         assertThat(fuelRecord?.amount).isEqualTo(12.2)
         assertThat(fuelRecord?.costNOK).isNull()
         assertThat(fuelRecord?.pricePerLiter()).isNull()
         assertThat(fuelRecord?.dateTime).isAfterOrEqualTo(before)
+    }
+
+    private fun getVehicle(): Vehicle {
+        return transaction { Vehicle[vehicle.id] }
     }
 }
