@@ -1,13 +1,13 @@
-package bilboka.core
+package bilboka.core.book
 
-import bilboka.core.book.service.VehicleService
-import bilboka.core.domain.book.Record
-import bilboka.core.domain.book.RecordType
+import bilboka.core.book.domain.Record
+import bilboka.core.book.domain.RecordType
+import bilboka.core.vehicle.VehicleService
 import org.springframework.stereotype.Component
 
 @Component
 class Book(
-    val bookService: VehicleService
+    val vehicleService: VehicleService
 ) {
 
     fun addFuelForVehicle(
@@ -17,7 +17,7 @@ class Book(
         costNOK: Double,
         isFull: Boolean = false
     ): Record {
-        val vehicle = bookService.findVehicle(vehicleName)
+        val vehicle = vehicleService.findVehicle(vehicleName)
         return vehicle.addFuel(
             odometer = odoReading,
             amount = amount,
@@ -28,7 +28,7 @@ class Book(
     }
 
     fun getLastFuelRecord(vehicle: String): Record? {
-        return bookService.findVehicle(vehicle).lastRecord(RecordType.FUEL)
+        return vehicleService.findVehicle(vehicle).lastRecord(RecordType.FUEL)
     }
 
 }

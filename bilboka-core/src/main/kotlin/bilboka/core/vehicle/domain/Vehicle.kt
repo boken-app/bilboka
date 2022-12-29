@@ -1,9 +1,9 @@
-package bilboka.core.domain.vehicle
+package bilboka.core.vehicle.domain
 
-import bilboka.core.book.service.normaliserTegnkombinasjon
-import bilboka.core.domain.book.Record
-import bilboka.core.domain.book.RecordType
-import bilboka.core.domain.book.Records
+import bilboka.core.book.domain.Record
+import bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.Records
+import bilboka.core.vehicle.normaliserTegnkombinasjon
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

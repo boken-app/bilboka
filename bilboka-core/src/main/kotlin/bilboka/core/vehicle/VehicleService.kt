@@ -1,10 +1,9 @@
-package bilboka.core.book.service
+package bilboka.core.vehicle
 
-import bilboka.core.domain.vehicle.FuelType
-import bilboka.core.domain.vehicle.OdometerUnit
-import bilboka.core.domain.vehicle.Vehicle
-import bilboka.core.domain.vehicle.Vehicles
-import bilboka.core.vehicle.VehicleNotFoundException
+import bilboka.core.vehicle.domain.FuelType
+import bilboka.core.vehicle.domain.OdometerUnit
+import bilboka.core.vehicle.domain.Vehicle
+import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -12,12 +11,12 @@ import org.springframework.stereotype.Service
 @Service
 class VehicleService() {
 
-    fun addVehicle(name: String, fuelType: FuelType, tegnkombinasjonNormalisert: String? = null): Vehicle {
+    fun addVehicle(name: String, fuelType: FuelType, tegnkombinasjon: String? = null): Vehicle {
         return transaction {
             Vehicle.new {
-                this.name = name
+                this.name = name.lowercase()
                 this.fuelType = fuelType
-                this.tegnkombinasjonNormalisert = tegnkombinasjonNormalisert
+                this.tegnkombinasjonNormalisert = tegnkombinasjon?.normaliserTegnkombinasjon()
                 this.odometerUnit = OdometerUnit.KILOMETERS
             }
         }
@@ -26,7 +25,7 @@ class VehicleService() {
     fun findVehicle(vehicleName: String): Vehicle {
         return transaction {
             Vehicle.find {
-                Vehicles.name eq vehicleName or (Vehicles.tegnkombinasjonNormalisert eq vehicleName.normaliserTegnkombinasjon())
+                Vehicles.name eq vehicleName.lowercase() or (Vehicles.tegnkombinasjonNormalisert eq vehicleName.normaliserTegnkombinasjon())
             }
                 .singleOrNull() ?: throw VehicleNotFoundException(
                 "Fant ikke bil $vehicleName",

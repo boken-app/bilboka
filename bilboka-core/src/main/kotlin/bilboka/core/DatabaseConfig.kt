@@ -10,5 +10,4 @@ class DatabaseConfig {
         Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
     }
 
-
 }

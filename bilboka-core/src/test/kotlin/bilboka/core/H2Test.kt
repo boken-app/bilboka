@@ -1,10 +1,12 @@
 package bilboka.core
 
-import bilboka.core.domain.book.Records
-import bilboka.core.domain.vehicle.Vehicles
+import bilboka.core.book.domain.Records
+import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 
@@ -16,6 +18,14 @@ abstract class H2Test {
         transaction(db) {
             SchemaUtils.create(Records, Vehicles)
             commit()
+        }
+    }
+
+    @AfterEach
+    fun wipeDatabase() {
+        transaction {
+            Records.deleteAll()
+            Vehicles.deleteAll()
         }
     }
 }

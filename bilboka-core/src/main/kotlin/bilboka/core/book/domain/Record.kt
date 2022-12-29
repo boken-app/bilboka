@@ -1,7 +1,7 @@
-package bilboka.core.domain.book
+package bilboka.core.book.domain
 
-import bilboka.core.domain.vehicle.Vehicle
-import bilboka.core.domain.vehicle.Vehicles
+import bilboka.core.vehicle.domain.Vehicle
+import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -19,7 +19,7 @@ object Records : IntIdTable() {
     val costNOK = double("cost_nok").nullable()
     val isFullTank = bool("is_full").nullable()
     val dataSource = varchar("source", 50)
-    val creationTimestamp = timestamp("created_timestamp").default(now())
+    val creationTimestamp = timestamp("created_timestamp").clientDefault { now() }
 }
 
 class Record(id: EntityID<Int>) : IntEntity(id) {
