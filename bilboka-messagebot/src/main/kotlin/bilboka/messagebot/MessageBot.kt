@@ -1,6 +1,6 @@
 package bilboka.messagebot
 
-import bilboka.core.Book
+import bilboka.core.book.Book
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.messagebot.commands.FuelRecordAdder
 import bilboka.messagebot.commands.FuelRecordGetter

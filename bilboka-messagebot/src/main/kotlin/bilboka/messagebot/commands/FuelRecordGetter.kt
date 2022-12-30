@@ -1,8 +1,8 @@
 package bilboka.messagebot.commands
 
-import bilboka.core.Book
-import bilboka.core.domain.book.FuelRecord
-import bilboka.core.domain.vehicle.Vehicle
+import bilboka.core.book.Book
+import bilboka.core.book.domain.Record
+import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.format
 
@@ -32,7 +32,7 @@ class FuelRecordGetter(
 
     private fun replyWithLastRecord(
         vehicle: Vehicle,
-        lastRecord: FuelRecord,
+        lastRecord: Record,
         senderID: String
     ) {
         botMessenger.sendMessage(
