@@ -3,7 +3,6 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm")
-	kotlin("plugin.jpa")
 
     id("bilboka.plugin")
 }
@@ -21,9 +20,7 @@ dependencyManagement {
 
 dependencies {
     //	implementation("org.flywaydb:flyway-core")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.postgresql:postgresql")
+    // implementation("org.postgresql:postgresql") // TODO
 
     implementation("org.jetbrains.exposed:exposed-core:${bilboka.dependencies.Versions.exposed}")
     implementation("org.jetbrains.exposed:exposed-dao:${bilboka.dependencies.Versions.exposed}")
