@@ -1,7 +1,7 @@
-package bilboka.core.domain.book
+package bilboka.core.book.domain
 
 enum class RecordType {
-
+    BASIC,
     FUEL,
     MAINTENANCE,
 }

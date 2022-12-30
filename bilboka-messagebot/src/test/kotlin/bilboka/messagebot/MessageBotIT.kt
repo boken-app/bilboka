@@ -1,10 +1,8 @@
 package bilboka.messagebot;
 
-import bilboka.core.Book
-import bilboka.core.book.service.VehicleService
-import bilboka.core.config.BilbokaCoreConfig
-import bilboka.core.domain.vehicle.FuelType
-import bilboka.core.domain.vehicle.Vehicle
+import bilboka.core.book.Book
+import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.FuelType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -14,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 
-@SpringBootTest(classes = [MessageBot::class, BilbokaCoreConfig::class, TestMessenger::class, Book::class, VehicleService::class])
+@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MessageBotIT {
+class MessageBotIT : H2Test() {
 
     @Autowired
     lateinit var testMessenger: TestMessenger
@@ -30,19 +28,15 @@ class MessageBotIT {
     @BeforeAll
     fun setup() {
         vehicleService.addVehicle(
-            Vehicle(
-                name = "XC 70",
-                nicknames = setOf("xc70", "crosser"),
-                fuelType = FuelType.DIESEL,
-                tegnkombinasjonNormalisert = "KT65881"
-            )
+            name = "XC 70",
+            // nicknames = setOf("xc70", "crosser"),
+            fuelType = FuelType.DIESEL,
+            tegnkombinasjon = "KT65881"
         )
         vehicleService.addVehicle(
-            Vehicle(
-                name = "en testbil",
-                nicknames = setOf("testbil"),
-                fuelType = FuelType.BENSIN
-            )
+            name = "en testbil",
+//                nicknames = setOf("testbil"),
+            fuelType = FuelType.BENSIN
         )
     }
 
@@ -54,8 +48,8 @@ class MessageBotIT {
     @Test
     fun sendAddFuelRequest() {
         processMessagaAndAssertReply(
-            message = "Drivstoff testbil 34567 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            message = "Drivstoff en testbil 34567 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 34567: 30 liter for 300 kr, 10 kr/l"
         )
     }
 
@@ -63,7 +57,7 @@ class MessageBotIT {
     fun sendAddFuelRequestDifferentCase() {
         processMessagaAndAssertReply(
             message = "fylt en testbil 5555 30.2 L 302.0 Kr",
-            reply = "Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
+            reply = "Registrert tanking av en testbil ved 5555: 30,2 liter for 302 kr, 10 kr/l"
         )
     }
 
@@ -71,7 +65,7 @@ class MessageBotIT {
     fun sendAddFuelRequestDifferentCaseWithComma() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
-            reply = "Registrert tanking av XC 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "Registrert tanking av XC 70 ved 1234: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }
 
@@ -120,3 +114,13 @@ class TestMessenger : BotMessenger {
     }
 
 }
+
+//@Configuration
+//class RepoConfig {
+//
+//    @Bean
+//    fun vehicleRepository(): VehicleRepository {
+//        return InMemoryStorage()
+//    }
+//
+//}

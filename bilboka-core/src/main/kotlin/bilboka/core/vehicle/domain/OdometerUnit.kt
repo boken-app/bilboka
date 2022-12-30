@@ -1,4 +1,4 @@
-package bilboka.core.domain.vehicle
+package bilboka.core.vehicle.domain
 
 enum class OdometerUnit(val displayValue: String) {
     KILOMETERS("km"),

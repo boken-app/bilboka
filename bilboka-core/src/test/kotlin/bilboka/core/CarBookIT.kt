@@ -1,18 +1,16 @@
 package bilboka.core
 
-import bilboka.core.book.service.VehicleService
-import bilboka.core.config.BilbokaCoreConfig
-import bilboka.core.domain.vehicle.FuelType
-import bilboka.core.domain.vehicle.Vehicle
+import bilboka.core.book.Book
+import bilboka.core.book.domain.RecordType
+import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.FuelType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@SpringBootTest(classes = [VehicleService::class, BilbokaCoreConfig::class, Book::class])
-class CarBookIT {
+@SpringBootTest(classes = [VehicleService::class, Book::class])
+class CarBookIT : H2Test() {
 
     @Autowired
     lateinit var vehicleService: VehicleService
@@ -21,25 +19,17 @@ class CarBookIT {
     lateinit var book: Book
 
     @Test
-    fun vehicleExistsAfterSave() {
-        vehicleService.addVehicle(Vehicle("760", fuelType = FuelType.DIESEL))
-
-        val vehicle = vehicleService.findVehicle("760")
-        assertThat(vehicle).isNotNull
-    }
-
-    @Test
     fun addFuelForXC70_succeeds() {
-        val vehicle =
-            vehicleService.addVehicle(Vehicle(name = "xc70", nicknames = setOf("crosser"), fuelType = FuelType.BENSIN))
+        vehicleService.addVehicle("Xc70", FuelType.BENSIN)
 
         book.addFuelForVehicle(
-            "crosser",
+            "XC70",
             1234,
             amount = 12.4,
             costNOK = 22.43
         )
 
-        assertThat(vehicle.bookEntries).isNotEmpty
+        val vehicle = vehicleService.findVehicle("xc70")
+        assertThat(vehicle.lastRecord(RecordType.FUEL)).isNotNull
     }
 }

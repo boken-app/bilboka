@@ -16,4 +16,10 @@ class CarBookSpringConfig {
         return slr
     }
 
+//    @Bean
+//    fun vehicleRepository(): VehicleRepository {
+//        return InMemoryStorage()
+//    }
+
+
 }

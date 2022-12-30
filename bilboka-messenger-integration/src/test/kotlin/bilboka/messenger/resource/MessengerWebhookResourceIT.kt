@@ -1,7 +1,5 @@
 package bilboka.messenger.resource
 
-import bilboka.core.repository.BookEntriesRepository
-import bilboka.core.repository.VehicleRepository
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -38,12 +36,6 @@ internal class MessengerWebhookResourceIT {
 
     @MockkBean
     lateinit var messengerSendAPIConsumer: MessengerSendAPIConsumer
-
-    @MockkBean
-    lateinit var repository: VehicleRepository
-
-    @MockkBean
-    lateinit var bookEntriesRepository: BookEntriesRepository
 
     @Autowired
     lateinit var mvc: MockMvc
