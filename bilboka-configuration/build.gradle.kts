@@ -21,6 +21,8 @@ dependencyManagement {
 dependencies {
 	implementation(project(":bilboka-core"))
 	implementation(project(":bilboka-messenger-integration"))
+
+	implementation("org.postgresql:postgresql:42.3.1")
 }
 
 application {

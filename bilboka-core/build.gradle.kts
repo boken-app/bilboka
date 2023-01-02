@@ -27,8 +27,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:${bilboka.dependencies.Versions.exposed}")
     implementation("org.jetbrains.exposed:exposed-java-time:${bilboka.dependencies.Versions.exposed}")
 
-    implementation("org.postgresql:postgresql:42.3.1") // TODO Database burde automatisk funke med Heroku
-
     runtimeOnly("com.h2database:h2")
 
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
