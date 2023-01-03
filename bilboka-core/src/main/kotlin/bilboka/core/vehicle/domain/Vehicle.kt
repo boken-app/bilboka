@@ -1,8 +1,8 @@
 package bilboka.core.vehicle.domain
 
-import bilboka.core.book.domain.Record
-import bilboka.core.book.domain.RecordType
-import bilboka.core.book.domain.Records
+import bilboka.core.book.domain.BookEntries
+import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.EntryType
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -28,7 +28,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     var tegnkombinasjonNormalisert by Vehicles.tegnkombinasjonNormalisert
     var odometerUnit by Vehicles.odometerUnit
     var fuelType by Vehicles.fuelType
-    val records by Record referrersOn Records.vehicle
+    val bookEntries by BookEntry referrersOn BookEntries.vehicle
 
     fun addFuel(
         odometer: Int?,
@@ -37,12 +37,12 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         isFull: Boolean = false,
         source: String,
         dateTime: LocalDateTime = LocalDateTime.now()
-    ): Record {
+    ): BookEntry {
         val thisVehicle = this
         return transaction {
-            Record.new {
+            BookEntry.new {
                 this.dateTime = dateTime
-                this.type = RecordType.FUEL
+                this.type = EntryType.FUEL
                 this.odometer = odometer
                 this.vehicle = thisVehicle
                 this.amount = amount
@@ -53,12 +53,12 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
-    fun lastRecord(): Record? {
-        return transaction { records.lastOrNull() }
+    fun lastEntry(): BookEntry? {
+        return transaction { bookEntries.lastOrNull() }
     }
 
-    fun lastRecord(type: RecordType): Record? {
-        return transaction { records.lastOrNull { record -> record.type == type } }
+    fun lastEntry(type: EntryType): BookEntry? {
+        return transaction { bookEntries.lastOrNull { entry -> entry.type == type } }
     }
 
     fun fuelType(): FuelType {

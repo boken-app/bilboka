@@ -1,6 +1,6 @@
 package bilboka.core
 
-import bilboka.core.book.domain.Records
+import bilboka.core.book.domain.BookEntries
 import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -16,7 +16,7 @@ abstract class H2Test {
     fun setupDatabase() {
         val db = Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         transaction(db) {
-            SchemaUtils.create(Records, Vehicles)
+            SchemaUtils.create(BookEntries, Vehicles)
             commit()
         }
     }
@@ -24,7 +24,7 @@ abstract class H2Test {
     @AfterEach
     fun wipeDatabase() {
         transaction {
-            Records.deleteAll()
+            BookEntries.deleteAll()
             Vehicles.deleteAll()
         }
     }

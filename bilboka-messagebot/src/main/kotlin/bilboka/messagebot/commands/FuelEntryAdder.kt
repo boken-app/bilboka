@@ -5,7 +5,7 @@ import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
-class FuelRecordAdder(
+class FuelEntryAdder(
     private val botMessenger: BotMessenger,
     private val book: Book
 ) : CarBookCommand(botMessenger) {

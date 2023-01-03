@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class FuelRecordAdderTest : AbstractMessageBotTest() {
+class FuelEntryAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequest_callsAddFuelExecutor() {
@@ -36,7 +36,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
     }
 
     private fun testAddFuelRequest(message: String) {
-        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any()) } returns fuelRecord(
+        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any()) } returns fuelEntry(
             vehicle = vehicle("Testbil", fuelType = FuelType.BENSIN),
             odometer = 34567,
             costNOK = 123.3,

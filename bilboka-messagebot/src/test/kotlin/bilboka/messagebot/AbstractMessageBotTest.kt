@@ -1,8 +1,8 @@
 package bilboka.messagebot
 
 import bilboka.core.book.Book
-import bilboka.core.book.domain.Record
-import bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
@@ -57,25 +57,25 @@ abstract class AbstractMessageBotTest {
         return vehicle
     }
 
-    protected fun fuelRecord(
+    protected fun fuelEntry(
         vehicle: Vehicle,
         dateTime: LocalDateTime = LocalDateTime.now(),
         odometer: Int,
         amount: Double?,
         costNOK: Double?,
         isFull: Boolean = false
-    ): Record {
-        val record = mockk<Record>()
-        every { record.vehicle } returns vehicle
-        every { record.dateTime } returns dateTime
-        every { record.type } returns RecordType.FUEL
-        every { record.odometer } returns odometer
-        every { record.amount } returns amount
-        every { record.costNOK } returns costNOK
-        every { record.isFullTank } returns isFull
-        every { record.isFullTank } returns isFull
-        every { record.pricePerLiter() } answers { callOriginal() }
-        return record
+    ): BookEntry {
+        val entry = mockk<BookEntry>()
+        every { entry.vehicle } returns vehicle
+        every { entry.dateTime } returns dateTime
+        every { entry.type } returns EntryType.FUEL
+        every { entry.odometer } returns odometer
+        every { entry.amount } returns amount
+        every { entry.costNOK } returns costNOK
+        every { entry.isFullTank } returns isFull
+        every { entry.isFullTank } returns isFull
+        every { entry.pricePerLiter() } answers { callOriginal() }
+        return entry
     }
 
 }

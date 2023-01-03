@@ -1,8 +1,8 @@
 package bilboka.core.book
 
 import bilboka.core.H2Test
-import bilboka.core.book.domain.Record
-import bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDateTime
 
-internal class RecordsIT : H2Test() {
+internal class BookEntriesIT : H2Test() {
 
     private val before: Instant = Instant.now()
 
     private lateinit var testVehicle: Vehicle
-    private lateinit var testRecord: Record
+    private lateinit var testBookEntry: BookEntry
 
     @BeforeEach
     fun createTestData() {
@@ -30,9 +30,9 @@ internal class RecordsIT : H2Test() {
                 tegnkombinasjonNormalisert = "AB1234"
                 odometerUnit = OdometerUnit.KILOMETERS
             }
-            testRecord = Record.new {
+            testBookEntry = BookEntry.new {
                 dateTime = LocalDateTime.now()
-                type = RecordType.FUEL
+                type = EntryType.FUEL
                 source = "test"
                 amount = 12.2
                 vehicle = testVehicle
@@ -41,21 +41,21 @@ internal class RecordsIT : H2Test() {
     }
 
     @Test
-    fun recordAssociatesWithVehicle() {
+    fun entryAssociatesWithVehicle() {
         transaction {
-            val fetchedRecord = Record[testRecord.id]
+            val fetchedEntry = BookEntry[testBookEntry.id]
 
-            assertThat(fetchedRecord.vehicle.id).isEqualTo(testVehicle.id)
-            assertThat(fetchedRecord.vehicle.records).contains(fetchedRecord)
+            assertThat(fetchedEntry.vehicle.id).isEqualTo(testVehicle.id)
+            assertThat(fetchedEntry.vehicle.bookEntries).contains(fetchedEntry)
         }
     }
 
     @Test
-    fun recordGetsGeneratedValues() {
-        val fetchedRecord = transaction {
-            Record[testRecord.id]
+    fun entryGetsGeneratedValues() {
+        val fetchedEntry = transaction {
+            BookEntry[testBookEntry.id]
         }
-        assertThat(fetchedRecord.creationTimestamp).isAfter(before)
+        assertThat(fetchedEntry.creationTimestamp).isAfter(before)
     }
 
 }

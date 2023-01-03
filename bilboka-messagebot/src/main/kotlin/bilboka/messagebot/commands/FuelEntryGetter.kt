@@ -1,12 +1,12 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
-import bilboka.core.book.domain.Record
+import bilboka.core.book.domain.BookEntry
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.format
 
-class FuelRecordGetter(
+class FuelEntryGetter(
     private val botMessenger: BotMessenger,
     private val book: Book
 ) : CarBookCommand(botMessenger) {
@@ -22,24 +22,24 @@ class FuelRecordGetter(
     override fun execute(senderID: String, message: String) {
         val (vehicleName) = matcher.find(message)!!.destructured
 
-        book.getLastFuelRecord(vehicleName)?.apply {
-            replyWithLastRecord(this.vehicle, this, senderID)
+        book.getLastFuelEntry(vehicleName)?.apply {
+            replyWithLastEntry(this.vehicle, this, senderID)
         } ?: botMessenger.sendMessage(
             "Finner ingen tankinger for $vehicleName",
             senderID
         )
     }
 
-    private fun replyWithLastRecord(
+    private fun replyWithLastEntry(
         vehicle: Vehicle,
-        lastRecord: Record,
+        lastBookEntry: BookEntry,
         senderID: String
     ) {
         botMessenger.sendMessage(
-            "Siste tanking av ${vehicle.name}: ${lastRecord.amount.format()} liter " +
-                    "for ${lastRecord.costNOK.format()} kr (${lastRecord.pricePerLiter().format()} kr/l) ${
-                        lastRecord.dateTime?.format()
-                    } ved ${lastRecord.odometer} ${vehicle.odometerUnit}",
+            "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
+                    "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
+                        lastBookEntry.dateTime?.format()
+                    } ved ${lastBookEntry.odometer} ${vehicle.odometerUnit}",
             senderID
         )
     }

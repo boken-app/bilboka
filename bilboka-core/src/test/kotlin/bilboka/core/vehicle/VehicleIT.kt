@@ -1,7 +1,7 @@
 package bilboka.core.vehicle
 
 import bilboka.core.H2Test
-import bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.Vehicle
 import org.assertj.core.api.Assertions
@@ -36,7 +36,7 @@ internal class VehicleIT : H2Test() {
         )
 
         transaction {
-            Assertions.assertThat(Vehicle[vehicle.id].records).hasSize(1)
+            Assertions.assertThat(Vehicle[vehicle.id].bookEntries).hasSize(1)
         }
     }
 
@@ -50,13 +50,13 @@ internal class VehicleIT : H2Test() {
             source = "test"
         )
 
-        val fuelRecord = getVehicle().lastRecord(RecordType.FUEL)
-        Assertions.assertThat(fuelRecord).isNotNull
-        Assertions.assertThat(fuelRecord?.odometer).isEqualTo(12356)
-        Assertions.assertThat(fuelRecord?.amount).isEqualTo(12.2)
-        Assertions.assertThat(fuelRecord?.costNOK).isNull()
-        Assertions.assertThat(fuelRecord?.pricePerLiter()).isNull()
-        Assertions.assertThat(fuelRecord?.dateTime).isAfterOrEqualTo(before)
+        val fuelEntry = getVehicle().lastEntry(EntryType.FUEL)
+        Assertions.assertThat(fuelEntry).isNotNull
+        Assertions.assertThat(fuelEntry?.odometer).isEqualTo(12356)
+        Assertions.assertThat(fuelEntry?.amount).isEqualTo(12.2)
+        Assertions.assertThat(fuelEntry?.costNOK).isNull()
+        Assertions.assertThat(fuelEntry?.pricePerLiter()).isNull()
+        Assertions.assertThat(fuelEntry?.dateTime).isAfterOrEqualTo(before)
     }
 
     private fun getVehicle(): Vehicle {

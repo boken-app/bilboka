@@ -1,7 +1,7 @@
 package bilboka.core
 
 import bilboka.core.book.Book
-import bilboka.core.book.domain.RecordType
+import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import org.assertj.core.api.Assertions.assertThat
@@ -31,6 +31,6 @@ class CarBookIT : H2Test() {
         )
 
         val vehicle = vehicleService.findVehicle("xc70")
-        assertThat(vehicle.lastRecord(RecordType.FUEL)).isNotNull
+        assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
     }
 }

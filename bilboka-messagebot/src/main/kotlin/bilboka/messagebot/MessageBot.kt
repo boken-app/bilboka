@@ -2,8 +2,8 @@ package bilboka.messagebot
 
 import bilboka.core.book.Book
 import bilboka.core.vehicle.VehicleNotFoundException
-import bilboka.messagebot.commands.FuelRecordAdder
-import bilboka.messagebot.commands.FuelRecordGetter
+import bilboka.messagebot.commands.FuelEntryAdder
+import bilboka.messagebot.commands.FuelEntryGetter
 import bilboka.messagebot.commands.Helper
 import bilboka.messagebot.commands.SmallTalk
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -27,8 +27,8 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            FuelRecordAdder(botMessenger, book),
-            FuelRecordGetter(botMessenger, book),
+            FuelEntryAdder(botMessenger, book),
+            FuelEntryGetter(botMessenger, book),
             SmallTalk(botMessenger),
             Helper(botMessenger)
         )

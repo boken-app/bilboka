@@ -10,11 +10,11 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.time.Instant.now
 
-object Records : IntIdTable() {
+object BookEntries : IntIdTable() {
     val dateTime = datetime("datetime")
     val vehicle = reference("vehicle", Vehicles)
     val odometer = integer("odometer").nullable()
-    val type = enumerationByName("type", 50, RecordType::class)
+    val type = enumerationByName("type", 50, EntryType::class)
     val amount = double("amount").nullable()
     val costNOK = double("cost_nok").nullable()
     val isFullTank = bool("is_full").nullable()
@@ -22,18 +22,18 @@ object Records : IntIdTable() {
     val creationTimestamp = timestamp("created_timestamp").clientDefault { now() }
 }
 
-class Record(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Record>(Records)
+class BookEntry(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<BookEntry>(BookEntries)
 
-    var dateTime by Records.dateTime
-    var vehicle by Vehicle referencedOn Records.vehicle
-    var odometer by Records.odometer
-    var type by Records.type
-    var amount by Records.amount
-    var costNOK by Records.costNOK
-    var isFullTank by Records.isFullTank
-    var source by Records.dataSource
-    var creationTimestamp by Records.creationTimestamp
+    var dateTime by BookEntries.dateTime
+    var vehicle by Vehicle referencedOn BookEntries.vehicle
+    var odometer by BookEntries.odometer
+    var type by BookEntries.type
+    var amount by BookEntries.amount
+    var costNOK by BookEntries.costNOK
+    var isFullTank by BookEntries.isFullTank
+    var source by BookEntries.dataSource
+    var creationTimestamp by BookEntries.creationTimestamp
 
     fun pricePerLiter(): Double? {
         if (costNOK == null || amount == null) {
