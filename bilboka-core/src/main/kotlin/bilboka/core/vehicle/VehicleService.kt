@@ -25,7 +25,7 @@ class VehicleService() {
     fun findVehicle(vehicleName: String): Vehicle {
         return transaction {
             Vehicle.find {
-                Vehicles.name eq vehicleName.lowercase() or (Vehicles.tegnkombinasjonNormalisert eq vehicleName.normaliserTegnkombinasjon())
+                Vehicles.name.lowerCase() eq vehicleName.lowercase() or (Vehicles.tegnkombinasjonNormalisert eq vehicleName.normaliserTegnkombinasjon())
             }
                 .singleOrNull() ?: throw VehicleNotFoundException(
                 "Fant ikke bil $vehicleName",
