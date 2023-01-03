@@ -34,7 +34,7 @@ class FuelRecordAdder(
         )
 
         botMessenger.sendMessage(
-            "Registrert tanking av $vehicleName ved ${addedFuel.odometer}: ${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, ${
+            "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: ${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, ${
                 addedFuel.pricePerLiter().format()
             } kr/l",
             senderID

@@ -6,6 +6,7 @@ import bilboka.messagebot.commands.FuelRecordAdder
 import bilboka.messagebot.commands.FuelRecordGetter
 import bilboka.messagebot.commands.Helper
 import bilboka.messagebot.commands.SmallTalk
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -36,7 +37,7 @@ class MessageBot {
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
         try {
-            runCommands(message, senderID)
+            transaction { runCommands(message, senderID) }
         } catch (e: VehicleNotFoundException) {
             botMessenger.sendMessage("Kjenner ikke til bil ${e.vehicleName}", senderID)
         } catch (e: Exception) {

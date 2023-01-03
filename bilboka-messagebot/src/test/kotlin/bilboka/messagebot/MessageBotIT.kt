@@ -49,7 +49,7 @@ class MessageBotIT : H2Test() {
     fun sendAddFuelRequest() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 34567 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 34567: 30 liter for 300 kr, 10 kr/l"
+            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
         )
     }
 
@@ -57,7 +57,7 @@ class MessageBotIT : H2Test() {
     fun sendAddFuelRequestDifferentCase() {
         processMessagaAndAssertReply(
             message = "fylt en testbil 5555 30.2 L 302.0 Kr",
-            reply = "Registrert tanking av en testbil ved 5555: 30,2 liter for 302 kr, 10 kr/l"
+            reply = "Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
         )
     }
 
@@ -65,7 +65,7 @@ class MessageBotIT : H2Test() {
     fun sendAddFuelRequestDifferentCaseWithComma() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
-            reply = "Registrert tanking av XC 70 ved 1234: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }
 

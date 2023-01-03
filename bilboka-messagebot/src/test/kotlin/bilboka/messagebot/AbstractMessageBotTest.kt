@@ -12,6 +12,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
+import org.jetbrains.exposed.sql.Database
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDateTime
 
@@ -30,6 +31,7 @@ abstract class AbstractMessageBotTest {
 
     @BeforeEach
     fun setupMessenger() {
+        Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
         every { botMessenger.sourceName } returns "Testmessenger"
         justRun { botMessenger.sendMessage(any(), any()) }
     }
