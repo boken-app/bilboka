@@ -19,8 +19,7 @@ dependencyManagement {
 }
 
 dependencies {
-    //	implementation("org.flywaydb:flyway-core")
-    // implementation("org.postgresql:postgresql") // TODO
+    //	implementation("org.flywaydb:flyway-core") // TODO
 
     implementation("org.jetbrains.exposed:exposed-core:${bilboka.dependencies.Versions.exposed}")
     implementation("org.jetbrains.exposed:exposed-dao:${bilboka.dependencies.Versions.exposed}")

@@ -1,9 +1,7 @@
 package bilboka.core.vehicle
 
-import bilboka.core.vehicle.domain.FuelType
-import bilboka.core.vehicle.domain.OdometerUnit
-import bilboka.core.vehicle.domain.Vehicle
-import bilboka.core.vehicle.domain.Vehicles
+import bilboka.core.vehicle.domain.*
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -34,8 +32,4 @@ class VehicleService() {
         }
     }
 
-}
-
-fun String.normaliserTegnkombinasjon(): String {
-    return this.uppercase().replace(" ", "").replace("-", "")
 }

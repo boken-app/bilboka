@@ -117,13 +117,3 @@ class TestMessenger : BotMessenger {
     }
 
 }
-
-//@Configuration
-//class RepoConfig {
-//
-//    @Bean
-//    fun vehicleRepository(): VehicleRepository {
-//        return InMemoryStorage()
-//    }
-//
-//}

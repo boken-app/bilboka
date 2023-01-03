@@ -3,7 +3,6 @@ package bilboka.core.vehicle.domain
 import bilboka.core.book.domain.Record
 import bilboka.core.book.domain.RecordType
 import bilboka.core.book.domain.Records
-import bilboka.core.vehicle.normaliserTegnkombinasjon
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -76,4 +75,8 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert
     }
 
+}
+
+fun String.normaliserTegnkombinasjon(): String {
+    return this.uppercase().replace(" ", "").replace("-", "")
 }
