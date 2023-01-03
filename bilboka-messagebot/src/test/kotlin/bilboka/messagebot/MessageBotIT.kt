@@ -96,6 +96,9 @@ class MessageBotIT : H2Test() {
 
 @Component
 class TestMessenger : BotMessenger {
+    override val sourceName: String
+        get() = "Test messenger"
+
     var messageSent: String? = null
     var recipient: String? = null
 

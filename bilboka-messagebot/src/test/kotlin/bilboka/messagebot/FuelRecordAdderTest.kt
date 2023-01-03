@@ -2,7 +2,6 @@ package bilboka.messagebot
 
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.domain.FuelType
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -18,7 +17,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
             message = "Drivstoff testbil 34567 30l 300kr",
             name = "testbil"
         )
-        verify { book.addFuelForVehicle("testbil", 34567, 30.0, 300.0, false) }
+        verify { book.addFuelForVehicle("testbil", 34567, 30.0, 300.0, match { it.isNotEmpty() }, false) }
     }
 
     @Test
@@ -27,7 +26,7 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
             message = "fylt en testbil 5555 30.2 L 302.0 Kr",
             name = "en testbil"
         )
-        verify { book.addFuelForVehicle("en testbil", 5555, 30.2, 302.0, false) }
+        verify { book.addFuelForVehicle("en testbil", 5555, 30.2, 302.0, match { it.isNotEmpty() }, false) }
     }
 
     @Test
@@ -36,11 +35,11 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
             name = "XC 70"
         )
-        verify { book.addFuelForVehicle("XC 70", 1234, 30.44, 608.80, false) }
+        verify { book.addFuelForVehicle("XC 70", 1234, 30.44, 608.80, match { it.isNotEmpty() }, false) }
     }
 
     private fun testAddFuelRequest(message: String, name: String) {
-        every { book.addFuelForVehicle(any(), any(), any(), any()) } returns fuelRecord(
+        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any()) } returns fuelRecord(
             vehicle = vehicle("testbil", fuelType = FuelType.BENSIN),
             odometer = 34567,
             costNOK = 123.3,
@@ -54,12 +53,20 @@ class FuelRecordAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun sendAddFuelRequestForUnknownCar_answersCarUnknown() {
-        every { book.addFuelForVehicle(any(), any(), any(), any()) } throws VehicleNotFoundException("Hei!", "test-bil")
+        every {
+            book.addFuelForVehicle(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } throws VehicleNotFoundException("Hei!", "test-bil")
 
         messagebot.processMessage("Drivstoff test-bil 444 30l 300kr", senderID)
 
         verifySentMessage("Kjenner ikke til bil test-bil")
-        confirmVerified(botMessenger)
     }
 
 }

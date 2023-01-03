@@ -30,6 +30,7 @@ abstract class AbstractMessageBotTest {
 
     @BeforeEach
     fun setupMessenger() {
+        every { botMessenger.sourceName } returns "Testmessenger"
         justRun { botMessenger.sendMessage(any(), any()) }
     }
 

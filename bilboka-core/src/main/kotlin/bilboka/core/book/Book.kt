@@ -15,6 +15,7 @@ class Book(
         odoReading: Int,
         amount: Double,
         costNOK: Double,
+        source: String,
         isFull: Boolean = false
     ): Record {
         val vehicle = vehicleService.findVehicle(vehicleName)
@@ -23,7 +24,7 @@ class Book(
             amount = amount,
             costNOK = costNOK,
             isFull = isFull,
-            source = "test"
+            source = source
         )
     }
 

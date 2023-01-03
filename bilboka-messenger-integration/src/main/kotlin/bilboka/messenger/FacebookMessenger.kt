@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component
 class FacebookMessenger(
     val messengerConsumer: MessengerSendAPIConsumer
 ) : BotMessenger {
+    override val sourceName: String
+        get() = "Facebook Messenger"
+
     override fun sendMessage(message: String, recipientID: String) {
         sendReply(message, recipientID)
     }

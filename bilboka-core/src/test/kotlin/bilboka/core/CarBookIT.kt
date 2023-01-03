@@ -26,7 +26,8 @@ class CarBookIT : H2Test() {
             "XC70",
             1234,
             amount = 12.4,
-            costNOK = 22.43
+            costNOK = 22.43,
+            "test"
         )
 
         val vehicle = vehicleService.findVehicle("xc70")

@@ -30,6 +30,7 @@ class FuelRecordAdder(
             odoReading = odoReading.toInt(),
             amount = amount.convertToDouble(),
             costNOK = cost.convertToDouble(),
+            source = botMessenger.sourceName,
         )
 
         botMessenger.sendMessage(
