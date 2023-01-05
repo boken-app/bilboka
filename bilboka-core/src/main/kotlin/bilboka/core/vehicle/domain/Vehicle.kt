@@ -12,19 +12,22 @@ import java.time.LocalDateTime
 
 object Vehicles : IntIdTable() {
     val name = varchar("name", 50).uniqueIndex()
-
-    // TODO nicknames
+    val nicknames = text("nicknames").default("")
     val tegnkombinasjonNormalisert = varchar("tegnkombinasjon_normalisert", 15).nullable()
     val odometerUnit = enumerationByName("odo_unit", 20, OdometerUnit::class).nullable()
     val fuelType = enumerationByName("fuel_type", 15, FuelType::class).nullable()
 }
 
 class Vehicle(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Vehicle>(Vehicles)
+    companion object : IntEntityClass<Vehicle>(Vehicles, Vehicle::class.java) {
+        const val SEPARATOR = "|"
+    }
 
     var name by Vehicles.name
-
-    //val nicknames: Set<String> = setOf(),
+    var nicknames by Vehicles.nicknames.transform(
+        { a -> a.joinToString(SEPARATOR) },
+        { str -> str.split(SEPARATOR).toSet() }
+    )
     var tegnkombinasjonNormalisert by Vehicles.tegnkombinasjonNormalisert
     var odometerUnit by Vehicles.odometerUnit
     var fuelType by Vehicles.fuelType
@@ -67,7 +70,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
 
     fun isCalled(calledName: String): Boolean {
         return calledName.lowercase() == name.lowercase()
-                //  || nicknames.map { it.lowercase() }.contains(calledName.lowercase())
+                || nicknames.map { it.lowercase() }.contains(calledName.lowercase())
                 || hasTegnkombinasjon(calledName)
     }
 

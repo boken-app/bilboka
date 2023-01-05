@@ -29,13 +29,12 @@ class MessageBotIT : H2Test() {
     fun setup() {
         vehicleService.addVehicle(
             name = "XC 70",
-            // nicknames = setOf("xc70", "crosser"),
+            nicknames = setOf("xc70", "crosser"),
             fuelType = FuelType.DIESEL,
             tegnkombinasjon = "KT65881"
         )
         vehicleService.addVehicle(
             name = "en testbil",
-//                nicknames = setOf("testbil"),
             fuelType = FuelType.BENSIN
         )
     }
@@ -65,6 +64,14 @@ class MessageBotIT : H2Test() {
     fun sendAddFuelRequestDifferentCaseWithComma() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
+            reply = "Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequestNickname() {
+        processMessagaAndAssertReply(
+            message = "Hei drivstoff crosser 1234 km 30.44 l 608.80 kr",
             reply = "Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }

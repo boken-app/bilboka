@@ -20,7 +20,7 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70_succeeds() {
-        vehicleService.addVehicle("Xc70", FuelType.BENSIN)
+        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
 
         book.addFuelForVehicle(
             "XC70",

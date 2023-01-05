@@ -11,7 +11,7 @@ internal class VehicleServiceIT : H2Test() {
 
     @Test
     fun vehicleExistsAfterSave() {
-        vehicleService.addVehicle("760", FuelType.DIESEL)
+        vehicleService.addVehicle("760", fuelType = FuelType.DIESEL)
 
         val vehicle = vehicleService.findVehicle("760")
         assertThat(vehicle).isNotNull
@@ -19,7 +19,7 @@ internal class VehicleServiceIT : H2Test() {
 
     @Test
     fun canMakeNewVehicle() {
-        val bil = vehicleService.addVehicle("Testbil", FuelType.DIESEL)
+        val bil = vehicleService.addVehicle("Testbil", fuelType = FuelType.DIESEL)
 
         assertThat(vehicleService.findVehicle("Testbil").name).isEqualTo(bil.name)
     }
