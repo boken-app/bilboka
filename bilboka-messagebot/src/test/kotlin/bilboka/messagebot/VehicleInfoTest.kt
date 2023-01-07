@@ -23,6 +23,7 @@ class VehicleInfoTest : AbstractMessageBotTest() {
                 message = match { msg -> msg.contains("Bil-navn: En Testbil") },
                 senderID
             )
+            vehicleService.findVehicle("testbil")
         }
         confirmVerified(botMessenger)
     }

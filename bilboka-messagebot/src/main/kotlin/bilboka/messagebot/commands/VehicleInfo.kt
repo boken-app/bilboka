@@ -9,7 +9,7 @@ class VehicleInfo(
     private val vehicleService: VehicleService
 ) : CarBookCommand(botMessenger) {
     private val matcher = Regex(
-        "inf|info|kjøretøyinfo\\s+(\\w+([\\s-]+?\\w+)?)",
+        "(inf|info|kjøretøyinfo)\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE
     )
 
@@ -18,7 +18,8 @@ class VehicleInfo(
     }
 
     override fun execute(senderID: String, message: String) {
-        val (vehicleName) = matcher.find(message)!!.destructured
+        val values = matcher.find(message)!!.groupValues
+        val vehicleName = values[2]
 
         vehicleService.findVehicle(vehicleName).apply {
             replyWithInfo(this, senderID)
