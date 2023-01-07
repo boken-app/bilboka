@@ -57,7 +57,7 @@ class MessageBotTest : AbstractMessageBotTest() {
     fun sendSomethingStrange_returnsDefaultMessage() {
         messagebot.processMessage("Her kommer en rar melding", senderID)
 
-        verify { botMessenger.sendMessage(DEFAULT_MESSAGE, senderID) }
+        verify { botMessenger.sendMessage(FALLBACK_MESSAGE, senderID) }
         confirmVerified(botMessenger)
     }
 }

@@ -3,6 +3,7 @@ package bilboka.messagebot
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
@@ -23,6 +24,9 @@ abstract class AbstractMessageBotTest {
 
     @MockK
     lateinit var botMessenger: BotMessenger
+
+    @MockK
+    lateinit var vehicleService: VehicleService
 
     @InjectMockKs
     lateinit var messagebot: MessageBot

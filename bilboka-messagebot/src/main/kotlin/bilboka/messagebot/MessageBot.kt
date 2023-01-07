@@ -2,16 +2,14 @@ package bilboka.messagebot
 
 import bilboka.core.book.Book
 import bilboka.core.vehicle.VehicleNotFoundException
-import bilboka.messagebot.commands.FuelEntryAdder
-import bilboka.messagebot.commands.FuelEntryGetter
-import bilboka.messagebot.commands.Helper
-import bilboka.messagebot.commands.SmallTalk
+import bilboka.core.vehicle.VehicleService
+import bilboka.messagebot.commands.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-internal const val DEFAULT_MESSAGE =
+internal const val FALLBACK_MESSAGE =
     "Forstod ikke helt hva du mente. Prøv igjen eller skriv 'hjelp' om du trenger informasjon."
 
 @Component
@@ -23,6 +21,9 @@ class MessageBot {
     lateinit var botMessenger: BotMessenger
 
     @Autowired
+    lateinit var vehicleService: VehicleService
+
+    @Autowired
     lateinit var book: Book
 
     private val commandRegistry by lazy {
@@ -30,7 +31,8 @@ class MessageBot {
             FuelEntryAdder(botMessenger, book),
             FuelEntryGetter(botMessenger, book),
             SmallTalk(botMessenger),
-            Helper(botMessenger)
+            Helper(botMessenger),
+            VehicleInfo(botMessenger, vehicleService)
         )
     }
 
@@ -60,7 +62,7 @@ class MessageBot {
 
         if (noMatches) {
             botMessenger.sendMessage(
-                DEFAULT_MESSAGE,
+                FALLBACK_MESSAGE,
                 senderID
             )
         }
