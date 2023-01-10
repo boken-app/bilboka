@@ -7,7 +7,9 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 import java.time.LocalDateTime
 
 object Vehicles : IntIdTable() {
@@ -16,6 +18,7 @@ object Vehicles : IntIdTable() {
     val tegnkombinasjonNormalisert = varchar("tegnkombinasjon_normalisert", 15).nullable()
     val odometerUnit = enumerationByName("odo_unit", 20, OdometerUnit::class).nullable()
     val fuelType = enumerationByName("fuel_type", 15, FuelType::class).nullable()
+    val creationTimestamp = timestamp("created_timestamp").clientDefault { Instant.now() }
 }
 
 class Vehicle(id: EntityID<Int>) : IntEntity(id) {
@@ -32,6 +35,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     var odometerUnit by Vehicles.odometerUnit
     var fuelType by Vehicles.fuelType
     val bookEntries by BookEntry referrersOn BookEntries.vehicle
+    val creationTimestamp by Vehicles.creationTimestamp
 
     fun addFuel(
         odometer: Int?,

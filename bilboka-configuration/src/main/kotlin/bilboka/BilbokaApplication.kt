@@ -1,6 +1,9 @@
 package bilboka
 
 import bilboka.core.book.domain.BookEntries
+import bilboka.core.user.domain.RegistrationKeys
+import bilboka.core.user.domain.UserRegistrations
+import bilboka.core.user.domain.Users
 import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -18,7 +21,7 @@ private val logger = LoggerFactory.getLogger(BilbokaApplication::class.java)
 fun main(args: Array<String>) {
     val db = configureDatabase()
     transaction(db) {
-        SchemaUtils.create(BookEntries, Vehicles)
+        SchemaUtils.create(BookEntries, Vehicles, Users, UserRegistrations, RegistrationKeys)
         commit()
     }
 
