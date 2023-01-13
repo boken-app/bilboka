@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.book.Book
+import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.commands.*
@@ -24,21 +25,25 @@ class MessageBot {
     lateinit var vehicleService: VehicleService
 
     @Autowired
+    lateinit var userService: UserService
+
+    @Autowired
     lateinit var book: Book
 
     private val commandRegistry by lazy {
         setOf(
-            FuelEntryAdder(botMessenger, book),
-            FuelEntryGetter(botMessenger, book),
+            FuelEntryAdder(botMessenger, book, userService),
+            FuelEntryGetter(botMessenger, book, userService),
             SmallTalk(botMessenger),
             Helper(botMessenger),
-            VehicleInfo(botMessenger, vehicleService)
+            VehicleInfo(botMessenger, vehicleService, userService)
         )
     }
 
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
         try {
+            // TODO catche duplikater her?
             transaction { runCommands(message, senderID) }
         } catch (e: VehicleNotFoundException) {
             botMessenger.sendMessage("Kjenner ikke til bil ${e.vehicleName}", senderID)
@@ -52,7 +57,7 @@ class MessageBot {
         var noMatches = true
 
         commandRegistry.forEach {
-            if (noMatches && it.isMatch(message)) {
+            if (noMatches && it.isMatch(message) && it.validUser(botMessenger.sourceID, senderID)) {
                 it.execute(senderID, message)
                 noMatches = false
             } else {

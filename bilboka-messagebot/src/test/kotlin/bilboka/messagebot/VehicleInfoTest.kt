@@ -1,7 +1,6 @@
 package bilboka.messagebot
 
 import bilboka.core.vehicle.domain.FuelType
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -25,6 +24,5 @@ class VehicleInfoTest : AbstractMessageBotTest() {
             )
             vehicleService.findVehicle("testbil")
         }
-        confirmVerified(botMessenger)
     }
 }

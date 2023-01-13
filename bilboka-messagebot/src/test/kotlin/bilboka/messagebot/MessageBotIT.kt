@@ -1,9 +1,12 @@
 package bilboka.messagebot;
 
 import bilboka.core.book.Book
+import bilboka.core.user.UserService
+import bilboka.core.user.domain.RegistrationKey
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -12,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 
-@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class])
+@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, UserService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MessageBotIT : H2Test() {
 
@@ -24,6 +27,11 @@ class MessageBotIT : H2Test() {
 
     @Autowired
     lateinit var vehicleService: VehicleService
+
+    @Autowired
+    lateinit var userService: UserService
+
+    val validSender = "2345"
 
     @BeforeAll
     fun setup() {
@@ -37,6 +45,15 @@ class MessageBotIT : H2Test() {
             name = "en testbil",
             fuelType = FuelType.BENSIN
         )
+        val key = "some_key-lol"
+        val user = userService.addUser("tester_user")
+        transaction {
+            RegistrationKey.new {
+                this.user = user
+                this.key = key
+            }
+        }
+        userService.register("regtype", validSender, key)
     }
 
     @AfterEach
@@ -92,19 +109,28 @@ class MessageBotIT : H2Test() {
         )
     }
 
-    private fun processMessagaAndAssertReply(message: String, reply: String) {
-        messageBot.processMessage(message, "123")
+    @Test
+    fun sendAddFuelRequestInvalidUser_pretendsToNotUnderstand() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34567 30l 300kr",
+            reply = FALLBACK_MESSAGE,
+            sender = "3333"
+        )
+    }
+
+    private fun processMessagaAndAssertReply(message: String, reply: String, sender: String = validSender) {
+        messageBot.processMessage(message, sender)
 
         assertThat(testMessenger.messageSent).isEqualTo(reply)
-        assertThat(testMessenger.recipient).isEqualTo("123")
+        assertThat(testMessenger.recipient).isEqualTo(sender)
     }
 
 }
 
 @Component
 class TestMessenger : BotMessenger {
-    override val sourceName: String
-        get() = "Test messenger"
+    override val sourceID: String
+        get() = "test_messenger"
 
     var messageSent: String? = null
     var recipient: String? = null

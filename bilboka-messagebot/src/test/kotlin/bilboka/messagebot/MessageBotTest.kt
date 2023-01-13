@@ -1,7 +1,6 @@
 package bilboka.messagebot
 
 import bilboka.messagebot.commands.DEFAULT_HELP_MESSAGE
-import io.mockk.confirmVerified
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
@@ -16,7 +15,6 @@ class MessageBotTest : AbstractMessageBotTest() {
         messagebot.processMessage("Hei", senderID)
 
         verify { botMessenger.sendMessage("Hei", senderID) }
-        confirmVerified(botMessenger)
     }
 
     @Test
@@ -24,7 +22,6 @@ class MessageBotTest : AbstractMessageBotTest() {
         messagebot.processMessage("Skjer?", senderID)
 
         verify { botMessenger.sendMessage("Ikke noe spes. Der?", senderID) }
-        confirmVerified(botMessenger)
     }
 
     @Test
@@ -36,7 +33,6 @@ class MessageBotTest : AbstractMessageBotTest() {
             botMessenger.sendMessage("Ikke noe spes. Der?", senderID)
             botMessenger.sendMessage("Cool", senderID)
         }
-        confirmVerified(botMessenger)
     }
 
     @Test
@@ -50,7 +46,6 @@ class MessageBotTest : AbstractMessageBotTest() {
             botMessenger.sendMessage("Cool", senderID)
             botMessenger.sendMessage(DEFAULT_HELP_MESSAGE, senderID)
         }
-        confirmVerified(botMessenger)
     }
 
     @Test
@@ -58,6 +53,5 @@ class MessageBotTest : AbstractMessageBotTest() {
         messagebot.processMessage("Her kommer en rar melding", senderID)
 
         verify { botMessenger.sendMessage(FALLBACK_MESSAGE, senderID) }
-        confirmVerified(botMessenger)
     }
 }

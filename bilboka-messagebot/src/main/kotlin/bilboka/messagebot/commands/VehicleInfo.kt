@@ -1,13 +1,15 @@
 package bilboka.messagebot.commands
 
+import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.BotMessenger
 
 class VehicleInfo(
     private val botMessenger: BotMessenger,
-    private val vehicleService: VehicleService
-) : CarBookCommand(botMessenger) {
+    private val vehicleService: VehicleService,
+    userService: UserService
+) : CarBookCommand(botMessenger, userService) {
     private val matcher = Regex(
         "(inf|info|kjøretøyinfo)\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE

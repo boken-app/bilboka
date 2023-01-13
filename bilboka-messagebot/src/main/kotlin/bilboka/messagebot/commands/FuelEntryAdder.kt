@@ -1,14 +1,16 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
+import bilboka.core.user.UserService
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
 class FuelEntryAdder(
     private val botMessenger: BotMessenger,
-    private val book: Book
-) : CarBookCommand(botMessenger) {
+    private val book: Book,
+    userService: UserService
+) : CarBookCommand(botMessenger, userService) {
     private val matcher = Regex(
         "(drivstoff|tank|fylt|fuel|bensin|diesel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s([0-9]{1,7})\\s?(km|mi)?\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
         IGNORE_CASE
@@ -30,7 +32,7 @@ class FuelEntryAdder(
             odoReading = odoReading.toInt(),
             amount = amount.convertToDouble(),
             costNOK = cost.convertToDouble(),
-            source = botMessenger.sourceName,
+            source = botMessenger.sourceID,
         )
 
         botMessenger.sendMessage(

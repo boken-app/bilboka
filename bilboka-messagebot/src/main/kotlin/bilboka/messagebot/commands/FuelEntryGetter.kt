@@ -2,14 +2,16 @@ package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
+import bilboka.core.user.UserService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.format
 
 class FuelEntryGetter(
     private val botMessenger: BotMessenger,
-    private val book: Book
-) : CarBookCommand(botMessenger) {
+    private val book: Book,
+    userService: UserService
+) : CarBookCommand(botMessenger, userService) {
     private val matcher = Regex(
         "siste\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE

@@ -3,6 +3,7 @@ package bilboka.messagebot
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
@@ -28,6 +29,9 @@ abstract class AbstractMessageBotTest {
     @MockK
     lateinit var vehicleService: VehicleService
 
+    @MockK
+    lateinit var userService: UserService
+
     @InjectMockKs
     lateinit var messagebot: MessageBot
 
@@ -36,8 +40,13 @@ abstract class AbstractMessageBotTest {
     @BeforeEach
     fun setupMessenger() {
         Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
-        every { botMessenger.sourceName } returns "Testmessenger"
+        every { botMessenger.sourceID } returns "Testmessenger"
         justRun { botMessenger.sendMessage(any(), any()) }
+    }
+
+    @BeforeEach
+    fun setupUser() {
+        every { userService.getUserByRegistration("Testmessenger", senderID) } returns mockk(relaxed = true)
     }
 
     protected fun verifySentMessage(message: String) {
