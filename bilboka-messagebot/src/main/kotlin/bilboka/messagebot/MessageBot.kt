@@ -57,7 +57,7 @@ class MessageBot {
         var noMatches = true
 
         commandRegistry.forEach {
-            if (noMatches && it.isMatch(message) && it.validUser(botMessenger.sourceID, senderID)) {
+            if (noMatches && it.isMatch(message) && it.byValidUser(senderID)) {
                 it.execute(senderID, message)
                 noMatches = false
             } else {
@@ -72,4 +72,8 @@ class MessageBot {
             )
         }
     }
+
+    private fun ChatCommand.byValidUser(senderID: String) =
+        this.validUser(botMessenger.sourceID, senderID)
+            .also { if (!it) logger.warn("Uregistrert bruker $senderID fra ${botMessenger.sourceID} prøver å gjøre bilbok-ting") }
 }

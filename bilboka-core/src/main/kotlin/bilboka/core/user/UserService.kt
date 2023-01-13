@@ -19,9 +19,7 @@ class UserService {
 
     fun register(regTypeID: String, idToRegister: String, regKey: String) {
         transaction {
-            unlockUser(regKey).let {
-                registerUserAs(it, regTypeID, idToRegister)
-            }
+            registerUserAs(unlockUser(regKey), regTypeID, idToRegister)
         }
     }
 
