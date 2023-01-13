@@ -1,5 +1,7 @@
 package bilboka.core.book.domain
 
+import bilboka.core.user.domain.User
+import bilboka.core.user.domain.Users
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.dao.IntEntity
@@ -18,6 +20,7 @@ object BookEntries : IntIdTable() {
     val amount = double("amount").nullable()
     val costNOK = double("cost_nok").nullable()
     val isFullTank = bool("is_full").nullable()
+    val enteredBy = reference("entered_by", Users).nullable()
     val dataSource = varchar("source", 50)
     val creationTimestamp = timestamp("created_timestamp").clientDefault { now() }
 }
@@ -32,6 +35,7 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id) {
     var amount by BookEntries.amount
     var costNOK by BookEntries.costNOK
     var isFullTank by BookEntries.isFullTank
+    val enteredBy by User optionalReferencedOn BookEntries.enteredBy
     var source by BookEntries.dataSource
     var creationTimestamp by BookEntries.creationTimestamp
 
