@@ -37,6 +37,7 @@ class MessageBot {
             SmallTalk(botMessenger),
             Helper(botMessenger),
             VehicleInfo(botMessenger, vehicleService, userService),
+            UserInfo(botMessenger, userService),
             RegisterUser(botMessenger, userService)
         )
     }

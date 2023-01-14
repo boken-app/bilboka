@@ -171,6 +171,15 @@ class MessageBotIT : H2Test() {
         )
     }
 
+    @Test
+    fun brukerinfo() {
+        processMessagaAndAssertReply(
+            message = "brukerinfo",
+            reply = "Du er registrert! \n" +
+                    "Brukernavn: tester_user"
+        )
+    }
+
     private fun processMessagaAndAssertReply(message: String, reply: String, sender: String = validSender) {
         messageBot.processMessage(message, sender)
 
