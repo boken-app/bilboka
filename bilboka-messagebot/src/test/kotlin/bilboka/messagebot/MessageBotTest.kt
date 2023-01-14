@@ -12,46 +12,46 @@ class MessageBotTest : AbstractMessageBotTest() {
 
     @Test
     fun sendHei_returnsHei() {
-        messagebot.processMessage("Hei", senderID)
+        messagebot.processMessage("Hei", registeredSenderID)
 
-        verify { botMessenger.sendMessage("Hei", senderID) }
+        verify { botMessenger.sendMessage("Hei", registeredSenderID) }
     }
 
     @Test
     fun sendSkjer_returnsIkkenospes() {
-        messagebot.processMessage("Skjer?", senderID)
+        messagebot.processMessage("Skjer?", registeredSenderID)
 
-        verify { botMessenger.sendMessage("Ikke noe spes. Der?", senderID) }
+        verify { botMessenger.sendMessage("Ikke noe spes. Der?", registeredSenderID) }
     }
 
     @Test
     fun sendSkjerThenSomethingElse_returnsCool() {
-        messagebot.processMessage("Skjer?", senderID)
-        messagebot.processMessage("Holder på med noe greier", senderID)
+        messagebot.processMessage("Skjer?", registeredSenderID)
+        messagebot.processMessage("Holder på med noe greier", registeredSenderID)
 
         verifyOrder {
-            botMessenger.sendMessage("Ikke noe spes. Der?", senderID)
-            botMessenger.sendMessage("Cool", senderID)
+            botMessenger.sendMessage("Ikke noe spes. Der?", registeredSenderID)
+            botMessenger.sendMessage("Cool", registeredSenderID)
         }
     }
 
     @Test
     fun sendSkjerThenSomethingMatcinghOtherRule_returnsOtherRuleResponse() {
-        messagebot.processMessage("Skjer?", senderID)
-        messagebot.processMessage("Stuff skjer", senderID)
-        messagebot.processMessage("Help", senderID)
+        messagebot.processMessage("Skjer?", registeredSenderID)
+        messagebot.processMessage("Stuff skjer", registeredSenderID)
+        messagebot.processMessage("Help", registeredSenderID)
 
         verifyOrder {
-            botMessenger.sendMessage("Ikke noe spes. Der?", senderID)
-            botMessenger.sendMessage("Cool", senderID)
-            botMessenger.sendMessage(DEFAULT_HELP_MESSAGE, senderID)
+            botMessenger.sendMessage("Ikke noe spes. Der?", registeredSenderID)
+            botMessenger.sendMessage("Cool", registeredSenderID)
+            botMessenger.sendMessage(DEFAULT_HELP_MESSAGE, registeredSenderID)
         }
     }
 
     @Test
     fun sendSomethingStrange_returnsDefaultMessage() {
-        messagebot.processMessage("Her kommer en rar melding", senderID)
+        messagebot.processMessage("Her kommer en rar melding", registeredSenderID)
 
-        verify { botMessenger.sendMessage(FALLBACK_MESSAGE, senderID) }
+        verify { botMessenger.sendMessage(FALLBACK_MESSAGE, registeredSenderID) }
     }
 }

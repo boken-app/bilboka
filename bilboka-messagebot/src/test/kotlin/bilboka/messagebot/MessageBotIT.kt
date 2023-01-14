@@ -7,10 +7,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
@@ -32,6 +29,7 @@ class MessageBotIT : H2Test() {
     lateinit var userService: UserService
 
     val validSender = "2345"
+    val keyForNewUser = "some_new_key-lol"
 
     @BeforeAll
     fun setup() {
@@ -47,10 +45,15 @@ class MessageBotIT : H2Test() {
         )
         val key = "some_key-lol"
         val user = userService.addUser("tester_user")
+        val userForReg = userService.addUser("tester_user_for_reg")
         transaction {
             RegistrationKey.new {
                 this.user = user
                 this.key = key
+            }
+            RegistrationKey.new {
+                this.user = userForReg
+                this.key = keyForNewUser
             }
         }
         userService.register("regtype", validSender, key)
@@ -114,7 +117,57 @@ class MessageBotIT : H2Test() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 34567 30l 300kr",
             reply = FALLBACK_MESSAGE,
+            sender = "5678"
+        )
+    }
+
+    @Test
+    fun sendRegisterRequestRegisteredUser_saysAlreadyRegisteredAndIsReadyForOtherStuff() {
+        processMessagaAndAssertReply(
+            message = "registrer",
+            reply = "Du er allerede registrert."
+        )
+        processMessagaAndAssertReply(
+            message = "hei",
+            reply = "Hei"
+        )
+    }
+
+    @Test
+    fun sendRegisterRequestUnregisteredUser_canRegister() {
+        processMessagaAndAssertReply(
+            message = "registrer",
+            reply = "Klar for registrering! Skriv din hemmelige kode.",
             sender = "3333"
+        )
+        processMessagaAndAssertReply(
+            message = keyForNewUser,
+            reply = "Du er registrert!",
+            sender = "3333"
+        )
+        processMessagaAndAssertReply(
+            message = "hei",
+            reply = "Hei",
+            sender = "3333"
+        )
+    }
+
+    @Test
+    @Disabled // TODO dette må fikses på generell basis
+    fun usersCanRunRegisteringIndependently() {
+        processMessagaAndAssertReply(
+            message = "registrer",
+            reply = "Klar for registrering! Skriv din hemmelige kode.",
+            sender = "238845"
+        )
+        processMessagaAndAssertReply(
+            message = "registrer",
+            reply = "Klar for registrering! Skriv din hemmelige kode.",
+            sender = "838845"
+        )
+        processMessagaAndAssertReply(
+            message = "hei",
+            reply = "Hei"
         )
     }
 

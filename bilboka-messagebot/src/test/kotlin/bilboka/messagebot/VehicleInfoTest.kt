@@ -15,12 +15,12 @@ class VehicleInfoTest : AbstractMessageBotTest() {
         val vehicle = vehicle(name = "En Testbil", fuelType = FuelType.DIESEL)
         every { vehicleService.findVehicle(any()) } returns vehicle
 
-        messagebot.processMessage("Info testbil", senderID)
+        messagebot.processMessage("Info testbil", registeredSenderID)
 
         verify {
             botMessenger.sendMessage(
                 message = match { msg -> msg.contains("Bil-navn: En Testbil") },
-                senderID
+                registeredSenderID
             )
             vehicleService.findVehicle("testbil")
         }

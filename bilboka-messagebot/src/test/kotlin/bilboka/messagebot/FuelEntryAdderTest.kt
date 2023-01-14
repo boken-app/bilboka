@@ -43,7 +43,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             amount = 123.32
         )
 
-        messagebot.processMessage(message, senderID)
+        messagebot.processMessage(message, registeredSenderID)
 
         verifySentMessage("Registrert tanking av Testbil ved 34567 km: 123,32 liter for 123,3 kr, 1 kr/l")
     }
@@ -61,7 +61,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             )
         } throws VehicleNotFoundException("Hei!", "test-bil")
 
-        messagebot.processMessage("Drivstoff test-bil 444 30l 300kr", senderID)
+        messagebot.processMessage("Drivstoff test-bil 444 30l 300kr", registeredSenderID)
 
         verifySentMessage("Kjenner ikke til bil test-bil")
     }

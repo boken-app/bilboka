@@ -22,12 +22,12 @@ class FuelEntryGetterTest : AbstractMessageBotTest() {
             vehicle = vehicle, dateTime = time, odometer = 1234, amount = 30.0, costNOK = 100.0
         )
 
-        messagebot.processMessage("Siste testbil", senderID)
+        messagebot.processMessage("Siste testbil", registeredSenderID)
 
         verify {
             botMessenger.sendMessage(
                 message = "Siste tanking av En Testbil: 30 liter for 100 kr (3,33 kr/l) ${time.format()} ved 1234 km",
-                senderID
+                registeredSenderID
             )
         }
     }
@@ -36,12 +36,12 @@ class FuelEntryGetterTest : AbstractMessageBotTest() {
     fun sendGetLastEntryWhenNoEntries_repliesSomethingUseful() {
         every { book.getLastFuelEntry(any()) } returns null
 
-        messagebot.processMessage("Siste testbil", senderID)
+        messagebot.processMessage("Siste testbil", registeredSenderID)
 
         verify {
             botMessenger.sendMessage(
                 "Finner ingen tankinger for testbil",
-                senderID
+                registeredSenderID
             )
         }
     }
@@ -50,12 +50,12 @@ class FuelEntryGetterTest : AbstractMessageBotTest() {
     fun sendGetLastEntryWhenCarNotFound_repliesSomethingUseful() {
         every { book.getLastFuelEntry(any()) } throws VehicleNotFoundException("Ops", "bil")
 
-        messagebot.processMessage("Siste testbil", senderID)
+        messagebot.processMessage("Siste testbil", registeredSenderID)
 
         verify {
             botMessenger.sendMessage(
                 any(),
-                senderID
+                registeredSenderID
             )
         }
     }

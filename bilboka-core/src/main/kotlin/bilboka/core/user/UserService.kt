@@ -33,12 +33,12 @@ class UserService {
     }
 
     private fun registerUserAs(user: User, regTypeID: String, id: String) {
-        return transaction {
-            UserRegistration.new {
-                this.user = user
-                this.registrationTypeID = regTypeID
-                this.registeredID = id
-            }
+        if (getUserByRegistration(regTypeID, id) != null)
+            throw UserAlreadyRegisteredException("Bruker med id $id er allerede registrert for $regTypeID")
+        UserRegistration.new {
+            this.user = user
+            this.registrationTypeID = regTypeID
+            this.registeredID = id
         }
     }
 

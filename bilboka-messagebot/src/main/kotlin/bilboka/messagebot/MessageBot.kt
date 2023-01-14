@@ -36,7 +36,8 @@ class MessageBot {
             FuelEntryGetter(botMessenger, book, userService),
             SmallTalk(botMessenger),
             Helper(botMessenger),
-            VehicleInfo(botMessenger, vehicleService, userService)
+            VehicleInfo(botMessenger, vehicleService, userService),
+            RegisterUser(botMessenger, userService)
         )
     }
 

@@ -3,6 +3,7 @@ package bilboka.messagebot
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
@@ -35,21 +36,31 @@ abstract class AbstractMessageBotTest {
     @InjectMockKs
     lateinit var messagebot: MessageBot
 
-    internal val senderID = "1267"
+    internal val messengerSourceID = "Test_msgr"
+    internal val unregisteredSenderID = "1237"
+    internal val registeredSenderID = "1267"
 
     @BeforeEach
     fun setupMessenger() {
         Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
-        every { botMessenger.sourceID } returns "Testmessenger"
+        every { botMessenger.sourceID } returns messengerSourceID
         justRun { botMessenger.sendMessage(any(), any()) }
     }
 
     @BeforeEach
     fun setupUser() {
-        every { userService.getUserByRegistration("Testmessenger", senderID) } returns mockk(relaxed = true)
+        every { userService.getUserByRegistration(any(), any()) } returns null
+        every { userService.getUserByRegistration(messengerSourceID, registeredSenderID) } returns mockk(relaxed = true)
+        every {
+            userService.register(
+                messengerSourceID,
+                registeredSenderID,
+                any()
+            )
+        } throws UserAlreadyRegisteredException("Allerede Registrert!")
     }
 
-    protected fun verifySentMessage(message: String) {
+    protected fun verifySentMessage(message: String, senderID: String = registeredSenderID) {
         verify {
             botMessenger.sendMessage(
                 message,
