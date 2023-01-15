@@ -11,7 +11,7 @@ class FuelEntryGetter(
     private val botMessenger: BotMessenger,
     private val book: Book,
     userService: UserService
-) : CarBookCommand(botMessenger, userService) {
+) : CarBookCommand(userService) {
     private val matcher = Regex(
         "siste\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE

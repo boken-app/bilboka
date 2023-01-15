@@ -9,7 +9,7 @@ import kotlin.text.RegexOption.IGNORE_CASE
 class RegisterUser(
     private val botMessenger: BotMessenger,
     private val userService: UserService
-) : GeneralChatCommand(botMessenger) {
+) : GeneralChatCommand() {
     private val matcher = Regex(
         "(reg|registrer)",
         IGNORE_CASE

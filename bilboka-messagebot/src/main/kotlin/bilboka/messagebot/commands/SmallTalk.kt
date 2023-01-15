@@ -2,7 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.messagebot.BotMessenger
 
-class SmallTalk(private val botMessenger: BotMessenger) : GeneralChatCommand(botMessenger) {
+class SmallTalk(private val botMessenger: BotMessenger) : GeneralChatCommand() {
 
     private var hasAskedSomething = false
     // TODO: Denne må håndteres pr. senderID for å fungere for flere brukere.

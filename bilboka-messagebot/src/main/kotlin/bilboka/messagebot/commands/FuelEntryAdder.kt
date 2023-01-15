@@ -10,7 +10,7 @@ class FuelEntryAdder(
     private val botMessenger: BotMessenger,
     private val book: Book,
     userService: UserService
-) : CarBookCommand(botMessenger, userService) {
+) : CarBookCommand(userService) {
     private val matcher = Regex(
         "(drivstoff|tank|fylt|fuel|bensin|diesel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s([0-9]{1,7})\\s?(km|mi)?\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
         IGNORE_CASE

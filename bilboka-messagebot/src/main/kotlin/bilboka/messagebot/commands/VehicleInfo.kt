@@ -9,7 +9,7 @@ class VehicleInfo(
     private val botMessenger: BotMessenger,
     private val vehicleService: VehicleService,
     userService: UserService
-) : CarBookCommand(botMessenger, userService) {
+) : CarBookCommand(userService) {
     private val matcher = Regex(
         "(inf|info|kjøretøyinfo)\\s+(\\w+([\\s-]+?\\w+)?)",
         RegexOption.IGNORE_CASE

@@ -7,7 +7,7 @@ import bilboka.messagebot.BotMessenger
 class UserInfo(
     private val botMessenger: BotMessenger,
     private val userService: UserService
-) : GeneralChatCommand(botMessenger) {
+) : GeneralChatCommand() {
     private val matcher = Regex(
         "(brukerinfo)",
         RegexOption.IGNORE_CASE
