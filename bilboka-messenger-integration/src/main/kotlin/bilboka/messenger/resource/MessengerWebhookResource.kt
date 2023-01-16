@@ -43,6 +43,7 @@ class MessengerWebhookResource(
     fun post(@RequestBody request: MessengerWebhookRequest): ResponseEntity<String> {
         return if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             logger.info("Handling incoming page request!")
+            // TODO valider request med SHA256 signatur / app secret 
             request.entry.stream()
                 .forEach { facebookEntry -> facebookMessageHandler.handleMessage(facebookEntry) }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
