@@ -144,7 +144,7 @@ class MessageBotIT : H2Test() {
     fun sendRegisterRequestRegisteredUser_saysAlreadyRegisteredAndIsReadyForOtherStuff() {
         processMessagaAndAssertReply(
             message = "registrer",
-            reply = "Du er allerede registrert."
+            reply = { it.contains("Du er allerede registrert") },
         )
         processMessagaAndAssertReply(
             message = "hei",
@@ -156,12 +156,12 @@ class MessageBotIT : H2Test() {
     fun sendRegisterRequestUnregisteredUser_canRegister() {
         processMessagaAndAssertReply(
             message = "registrer",
-            reply = "Klar for registrering! Skriv din hemmelige kode.",
+            reply = { it.contains("Klar for registrering! Skriv din hemmelige kode") },
             sender = "3333"
         )
         processMessagaAndAssertReply(
             message = keyForNewUser,
-            reply = "Du er registrert!",
+            reply = { it.contains("Du er registrert!") },
             sender = "3333"
         )
         processMessagaAndAssertReply(

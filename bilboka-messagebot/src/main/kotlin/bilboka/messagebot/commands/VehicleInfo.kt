@@ -32,7 +32,7 @@ class VehicleInfo(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "Bil-navn: ${vehicle.name} \n" +
+            "Bil-navn: ${vehicle.name} 🚗\n" +
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ikke registrert)"} \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +

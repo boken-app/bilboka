@@ -19,14 +19,14 @@ internal class RegisterUserTest : AbstractMessageBotTest() {
     fun startRegister_repliesReadyForRegister() {
         messagebot.processMessage("registrer", unregisteredSenderID)
 
-        verifySentMessage("Klar for registrering! Skriv din hemmelige kode.", unregisteredSenderID)
+        verifySentMessage("Klar for registrering! Skriv din hemmelige kode \uD83D\uDDDD", unregisteredSenderID)
     }
 
     @Test
     fun startRegisterAlreadyRegistered_repliesAlreadyRegistered() {
         messagebot.processMessage("registrer", registeredSenderID)
 
-        verifySentMessage("Du er allerede registrert.")
+        verifySentMessage("Du er allerede registrert ¯\\_(ツ)_/¯")
     }
 
     @Nested
@@ -49,21 +49,21 @@ internal class RegisterUserTest : AbstractMessageBotTest() {
         @Test
         fun startRegisterAndContinueSendingKey_completesRegistration() {
             messagebot.processMessage("registrer", unregisteredSenderID)
-            verifySentMessage("Klar for registrering! Skriv din hemmelige kode.", unregisteredSenderID)
+            verifySentMessage("Klar for registrering! Skriv din hemmelige kode \uD83D\uDDDD", unregisteredSenderID)
             every { userService.findUserByRegistration(any(), any()) } returns mockk(relaxed = true)
             messagebot.processMessage("hemmelig_kode", unregisteredSenderID)
 
             verify { userService.register(messengerSourceID, unregisteredSenderID, key) }
-            verifySentMessage("Du er registrert!", unregisteredSenderID)
+            verifySentMessage("Du er registrert! \uD83C\uDF89", unregisteredSenderID)
         }
 
         @Test
         fun startRegisterAndContinueSendingWrongKey_repliesInvalidKey() {
             messagebot.processMessage("registrer", unregisteredSenderID)
-            verifySentMessage("Klar for registrering! Skriv din hemmelige kode.", unregisteredSenderID)
+            verifySentMessage("Klar for registrering! Skriv din hemmelige kode \uD83D\uDDDD", unregisteredSenderID)
             messagebot.processMessage("feil_kode", unregisteredSenderID)
 
-            verifySentMessage("Feil kode! :(", unregisteredSenderID)
+            verifySentMessage("Feil kode! \uD83E\uDD28", unregisteredSenderID)
         }
     }
 }

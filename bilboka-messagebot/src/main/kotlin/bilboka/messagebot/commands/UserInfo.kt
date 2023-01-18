@@ -17,7 +17,7 @@ class UserInfo : GeneralChatCommand() {
         conversation.user?.apply {
             replyWithInfo(this, conversation)
         } ?: conversation.sendReply(
-            "Du har ikke en registrert bruker. :("
+            "Du har ikke en registrert bruker. 😢"
         )
     }
 

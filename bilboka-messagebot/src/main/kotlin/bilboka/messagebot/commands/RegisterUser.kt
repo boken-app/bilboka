@@ -31,15 +31,15 @@ class RegisterUser(
                     ) ?: throw IllegalStateException("Registrerte en bruker men finner den ikke")
                 )
                 conversation.sendReply(
-                    "Du er registrert!"
+                    "Du er registrert! 🎉"
                 )
             } catch (ex: UserAlreadyRegisteredException) {
                 conversation.sendReply(
-                    "Du er allerede registrert."
+                    "Du er allerede registrert 😱"
                 )
             } catch (ex: InvalidRegistrationKeyException) {
                 conversation.sendReply(
-                    "Feil kode! :("
+                    "Feil kode! 🤨"
                 )
             } finally {
                 resetState()
@@ -47,11 +47,11 @@ class RegisterUser(
         } else if (userService.findUserByRegistration(conversation.getSource(), conversation.senderID) == null) {
             regInProrgess = true
             conversation.sendReply(
-                "Klar for registrering! Skriv din hemmelige kode."
+                "Klar for registrering! Skriv din hemmelige kode 🗝"
             )
         } else {
             conversation.sendReply(
-                "Du er allerede registrert."
+                "Du er allerede registrert ¯\\_(ツ)_/¯"
             )
         }
     }
