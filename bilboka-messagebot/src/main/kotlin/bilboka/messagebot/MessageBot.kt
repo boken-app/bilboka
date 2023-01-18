@@ -32,15 +32,17 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            FuelEntryAdder(botMessenger, book, userService),
-            FuelEntryGetter(botMessenger, book, userService),
-            SmallTalk(botMessenger),
-            Helper(botMessenger),
-            VehicleInfo(botMessenger, vehicleService, userService),
-            UserInfo(botMessenger, userService),
-            RegisterUser(botMessenger, userService)
+            FuelEntryAdder(book, userService),
+            FuelEntryGetter(book, userService),
+            SmallTalk(),
+            Helper(),
+            VehicleInfo(vehicleService, userService),
+            UserInfo(),
+            RegisterUser(userService)
         )
     }
+
+    private val conversationBank = mutableMapOf<String, Conversation>()
 
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
@@ -60,7 +62,10 @@ class MessageBot {
 
         commandRegistry.forEach {
             if (noMatches && it.isMatch(message) && it.byValidUser(senderID)) {
-                it.execute(senderID, message)
+                it.execute(
+                    findConversationOrCreateNew(senderID),
+                    message
+                )
                 noMatches = false
             } else {
                 it.resetState()
@@ -73,6 +78,19 @@ class MessageBot {
                 senderID
             )
         }
+    }
+
+    private fun findConversationOrCreateNew(senderID: String) =
+        (conversationBank[conversationKey(senderID, botMessenger.sourceID)]
+            ?: Conversation(
+                user = userService.findUserByRegistration(botMessenger.sourceID, senderID),
+                senderID = senderID,
+                botMessenger = botMessenger
+            )
+                .also { conversationBank[conversationKey(senderID, botMessenger.sourceID)] = it })
+
+    private fun conversationKey(sender: String, sourceID: String): String {
+        return "$sourceID-$sender"
     }
 
     private fun ChatCommand.byValidUser(senderID: String) =

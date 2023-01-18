@@ -4,11 +4,10 @@ import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.domain.Vehicle
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 import bilboka.messagebot.format
 
 class FuelEntryGetter(
-    private val botMessenger: BotMessenger,
     private val book: Book,
     userService: UserService
 ) : CarBookCommand(userService) {
@@ -21,28 +20,26 @@ class FuelEntryGetter(
         return matcher.containsMatchIn(message)
     }
 
-    override fun execute(senderID: String, message: String) {
+    override fun execute(conversation: Conversation, message: String) {
         val (vehicleName) = matcher.find(message)!!.destructured
 
         book.getLastFuelEntry(vehicleName)?.apply {
-            replyWithLastEntry(this.vehicle, this, senderID)
-        } ?: botMessenger.sendMessage(
-            "Finner ingen tankinger for $vehicleName",
-            senderID
+            replyWithLastEntry(this.vehicle, this, conversation)
+        } ?: conversation.sendReply(
+            "Finner ingen tankinger for $vehicleName"
         )
     }
 
     private fun replyWithLastEntry(
         vehicle: Vehicle,
         lastBookEntry: BookEntry,
-        senderID: String
+        conversation: Conversation
     ) {
-        botMessenger.sendMessage(
+        conversation.sendReply(
             "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
                     "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
                         lastBookEntry.dateTime?.format()
                     } ved ${lastBookEntry.odometer} ${vehicle.odometerUnit}",
-            senderID
         )
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService {
 
-    fun getUserByRegistration(regTypeID: String, id: String): User? {
+    fun findUserByRegistration(regTypeID: String, id: String): User? {
         return transaction {
             UserRegistration.find {
                 UserRegistrations.registrationTypeID eq regTypeID
@@ -33,7 +33,7 @@ class UserService {
     }
 
     private fun registerUserAs(user: User, regTypeID: String, id: String) {
-        if (getUserByRegistration(regTypeID, id) != null)
+        if (findUserByRegistration(regTypeID, id) != null)
             throw UserAlreadyRegisteredException("Bruker med id $id er allerede registrert for $regTypeID")
         UserRegistration.new {
             this.user = user

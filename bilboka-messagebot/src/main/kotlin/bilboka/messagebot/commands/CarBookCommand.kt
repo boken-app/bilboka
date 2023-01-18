@@ -6,6 +6,6 @@ abstract class CarBookCommand(
     private val userService: UserService
 ) : ChatCommand() {
     override fun validUser(regTypeID: String, senderID: String): Boolean {
-        return userService.getUserByRegistration(regTypeID, senderID) != null
+        return userService.findUserByRegistration(regTypeID, senderID) != null
     }
 }

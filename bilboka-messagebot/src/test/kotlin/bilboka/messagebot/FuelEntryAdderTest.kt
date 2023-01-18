@@ -16,7 +16,17 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         testAddFuelRequest(
             message = "Drivstoff testbil 34567 30l 300kr",
         )
-        verify { book.addFuelForVehicle("testbil", 34567, 30.0, 300.0, match { it.isNotEmpty() }, false) }
+        verify {
+            book.addFuelForVehicle(
+                vehicleName = "testbil",
+                enteredBy = registeredUser,
+                odoReading = 34567,
+                amount = 30.0,
+                costNOK = 300.0,
+                isFull = false,
+                source = match { it.isNotEmpty() }
+            )
+        }
     }
 
     @Test
@@ -24,7 +34,17 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         testAddFuelRequest(
             message = "fylt en testbil 5555 30.2 L 302.0 Kr",
         )
-        verify { book.addFuelForVehicle("en testbil", 5555, 30.2, 302.0, match { it.isNotEmpty() }, false) }
+        verify {
+            book.addFuelForVehicle(
+                vehicleName = "en testbil",
+                enteredBy = registeredUser,
+                odoReading = 5555,
+                amount = 30.2,
+                costNOK = 302.0,
+                isFull = false,
+                source = match { it.isNotEmpty() }
+            )
+        }
     }
 
     @Test
@@ -32,7 +52,17 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         testAddFuelRequest(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
         )
-        verify { book.addFuelForVehicle("XC 70", 1234, 30.44, 608.80, match { it.isNotEmpty() }, false) }
+        verify {
+            book.addFuelForVehicle(
+                vehicleName = "XC 70",
+                enteredBy = registeredUser,
+                odoReading = 1234,
+                amount = 30.44,
+                costNOK = 608.80,
+                isFull = false,
+                source = match { it.isNotEmpty() }
+            )
+        }
     }
 
     private fun testAddFuelRequest(message: String) {

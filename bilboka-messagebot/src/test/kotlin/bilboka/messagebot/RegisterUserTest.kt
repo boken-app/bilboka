@@ -4,6 +4,7 @@ import bilboka.core.user.InvalidRegistrationKeyException
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -49,6 +50,7 @@ internal class RegisterUserTest : AbstractMessageBotTest() {
         fun startRegisterAndContinueSendingKey_completesRegistration() {
             messagebot.processMessage("registrer", unregisteredSenderID)
             verifySentMessage("Klar for registrering! Skriv din hemmelige kode.", unregisteredSenderID)
+            every { userService.findUserByRegistration(any(), any()) } returns mockk(relaxed = true)
             messagebot.processMessage("hemmelig_kode", unregisteredSenderID)
 
             verify { userService.register(messengerSourceID, unregisteredSenderID, key) }
@@ -63,7 +65,5 @@ internal class RegisterUserTest : AbstractMessageBotTest() {
 
             verifySentMessage("Feil kode! :(", unregisteredSenderID)
         }
-
     }
-
 }

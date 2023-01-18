@@ -3,6 +3,7 @@ package bilboka.core.vehicle.domain
 import bilboka.core.book.domain.BookEntries
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.user.domain.User
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -42,6 +43,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         amount: Double?,
         costNOK: Double?,
         isFull: Boolean = false,
+        enteredBy: User? = null,
         source: String,
         dateTime: LocalDateTime = LocalDateTime.now()
     ): BookEntry {
@@ -50,6 +52,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
             BookEntry.new {
                 this.dateTime = dateTime
                 this.type = EntryType.FUEL
+                this.enteredBy = enteredBy
                 this.odometer = odometer
                 this.vehicle = thisVehicle
                 this.amount = amount

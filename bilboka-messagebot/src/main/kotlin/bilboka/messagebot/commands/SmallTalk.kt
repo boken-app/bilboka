@@ -1,8 +1,8 @@
 package bilboka.messagebot.commands
 
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 
-class SmallTalk(private val botMessenger: BotMessenger) : GeneralChatCommand() {
+class SmallTalk() : GeneralChatCommand() {
 
     private var hasAskedSomething = false
     // TODO: Denne må håndteres pr. senderID for å fungere for flere brukere.
@@ -31,14 +31,13 @@ class SmallTalk(private val botMessenger: BotMessenger) : GeneralChatCommand() {
         return hasAskedSomething || conversations.keys.contains(message.lowercase())
     }
 
-    override fun execute(senderID: String, message: String) {
+    override fun execute(conversation: Conversation, message: String) {
         if (hasAskedSomething) {
-            botMessenger.sendMessage("Cool", senderID)
+            conversation.sendReply("Cool")
             resetState()
         } else {
-            botMessenger.sendMessage(
-                conversations[message.lowercase()] ?: "Usikker på hva du mener med $message",
-                senderID
+            conversation.sendReply(
+                conversations[message.lowercase()] ?: "Usikker på hva du mener med $message"
             )
         }
         if (message.lowercase() == "skjer?") {

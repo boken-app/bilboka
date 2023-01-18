@@ -1,13 +1,9 @@
 package bilboka.messagebot.commands
 
-import bilboka.core.user.UserService
 import bilboka.core.user.domain.User
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 
-class UserInfo(
-    private val botMessenger: BotMessenger,
-    private val userService: UserService
-) : GeneralChatCommand() {
+class UserInfo : GeneralChatCommand() {
     private val matcher = Regex(
         "(brukerinfo)",
         RegexOption.IGNORE_CASE
@@ -17,23 +13,21 @@ class UserInfo(
         return matcher.containsMatchIn(message)
     }
 
-    override fun execute(senderID: String, message: String) {
-        userService.getUserByRegistration(botMessenger.sourceID, senderID)?.apply {
-            replyWithInfo(this, senderID)
-        } ?: botMessenger.sendMessage(
-            "Du har ikke en registrert bruker. :(",
-            senderID
+    override fun execute(conversation: Conversation, message: String) {
+        conversation.user?.apply {
+            replyWithInfo(this, conversation)
+        } ?: conversation.sendReply(
+            "Du har ikke en registrert bruker. :("
         )
     }
 
     private fun replyWithInfo(
         user: User,
-        senderID: String
+        conversation: Conversation
     ) {
-        botMessenger.sendMessage(
+        conversation.sendReply(
             "Du er registrert! \n" +
-                    "Brukernavn: ${user.username}",
-            senderID
+                    "Brukernavn: ${user.username}"
         )
     }
 

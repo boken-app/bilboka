@@ -3,11 +3,10 @@ package bilboka.messagebot.commands
 import bilboka.core.user.InvalidRegistrationKeyException
 import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 import kotlin.text.RegexOption.IGNORE_CASE
 
 class RegisterUser(
-    private val botMessenger: BotMessenger,
     private val userService: UserService
 ) : GeneralChatCommand() {
     private val matcher = Regex(
@@ -21,37 +20,38 @@ class RegisterUser(
         return matcher.containsMatchIn(message) || regInProrgess
     }
 
-    override fun execute(senderID: String, message: String) {
+    override fun execute(conversation: Conversation, message: String) {
         if (regInProrgess) {
             try {
-                userService.register(botMessenger.sourceID, senderID, message)
-                botMessenger.sendMessage(
-                    "Du er registrert!",
-                    senderID
+                userService.register(conversation.getSource(), conversation.senderID, message)
+                conversation.registerUser(
+                    userService.findUserByRegistration(
+                        conversation.getSource(),
+                        conversation.senderID
+                    ) ?: throw IllegalStateException("Registrerte en bruker men finner den ikke")
+                )
+                conversation.sendReply(
+                    "Du er registrert!"
                 )
             } catch (ex: UserAlreadyRegisteredException) {
-                botMessenger.sendMessage(
-                    "Du er allerede registrert.",
-                    senderID
+                conversation.sendReply(
+                    "Du er allerede registrert."
                 )
             } catch (ex: InvalidRegistrationKeyException) {
-                botMessenger.sendMessage(
-                    "Feil kode! :(",
-                    senderID
+                conversation.sendReply(
+                    "Feil kode! :("
                 )
             } finally {
                 resetState()
             }
-        } else if (userService.getUserByRegistration(botMessenger.sourceID, senderID) == null) {
+        } else if (userService.findUserByRegistration(conversation.getSource(), conversation.senderID) == null) {
             regInProrgess = true
-            botMessenger.sendMessage(
-                "Klar for registrering! Skriv din hemmelige kode.",
-                senderID
+            conversation.sendReply(
+                "Klar for registrering! Skriv din hemmelige kode."
             )
         } else {
-            botMessenger.sendMessage(
-                "Du er allerede registrert.",
-                senderID
+            conversation.sendReply(
+                "Du er allerede registrert."
             )
         }
     }

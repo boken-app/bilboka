@@ -3,10 +3,9 @@ package bilboka.messagebot.commands
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 
 class VehicleInfo(
-    private val botMessenger: BotMessenger,
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService) {
@@ -19,28 +18,27 @@ class VehicleInfo(
         return matcher.containsMatchIn(message)
     }
 
-    override fun execute(senderID: String, message: String) {
+    override fun execute(conversation: Conversation, message: String) {
         val values = matcher.find(message)!!.groupValues
         val vehicleName = values[2]
 
         vehicleService.findVehicle(vehicleName).apply {
-            replyWithInfo(this, senderID)
+            replyWithInfo(this, conversation)
         }
     }
 
     private fun replyWithInfo(
         vehicle: Vehicle,
-        senderID: String
+        conversation: Conversation
     ) {
-        botMessenger.sendMessage(
+        conversation.sendReply(
             "Bil-navn: ${vehicle.name} \n" +
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ikke registrert)"} \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Drivstofftype: ${vehicle.fuelType} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    "Sist registrert km-stand: ${vehicle.lastEntry()?.odometer ?: "?"}",
-            senderID
+                    "Sist registrert km-stand: ${vehicle.lastEntry()?.odometer ?: "?"}"
         )
     }
 

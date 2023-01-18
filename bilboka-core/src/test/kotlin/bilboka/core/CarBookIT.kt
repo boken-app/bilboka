@@ -23,11 +23,11 @@ class CarBookIT : H2Test() {
         vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
 
         book.addFuelForVehicle(
-            "XC70",
-            1234,
+            vehicleName = "XC70",
+            odoReading = 1234,
             amount = 12.4,
             costNOK = 22.43,
-            "test"
+            source = "test"
         )
 
         val vehicle = vehicleService.findVehicle("xc70")

@@ -11,6 +11,8 @@ import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
+import java.util.function.Predicate
+import java.util.function.Predicate.isEqual
 
 @SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, UserService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -122,6 +124,23 @@ class MessageBotIT : H2Test() {
     }
 
     @Test
+    fun sendGetLastFueling() {
+        processMessagaAndAssertReply(
+            message = "Siste xc70",
+            reply = { it.contains("Siste tanking av xc 70: 30,44 liter for 608,8 kr (20 kr/l)") }
+        )
+    }
+
+    @Test
+    fun sendGetLastFuelingInvalidUser_pretendsToNotUnderstand() {
+        processMessagaAndAssertReply(
+            message = "Siste xc70",
+            reply = FALLBACK_MESSAGE,
+            sender = "5678"
+        )
+    }
+
+    @Test
     fun sendRegisterRequestRegisteredUser_saysAlreadyRegisteredAndIsReadyForOtherStuff() {
         processMessagaAndAssertReply(
             message = "registrer",
@@ -157,13 +176,13 @@ class MessageBotIT : H2Test() {
     fun usersCanRunRegisteringIndependently() {
         processMessagaAndAssertReply(
             message = "registrer",
-            reply = "Klar for registrering! Skriv din hemmelige kode.",
-            sender = "238845"
+            sender = "238845",
+            reply = "Klar for registrering! Skriv din hemmelige kode."
         )
         processMessagaAndAssertReply(
             message = "registrer",
-            reply = "Klar for registrering! Skriv din hemmelige kode.",
-            sender = "838845"
+            sender = "838845",
+            reply = "Klar for registrering! Skriv din hemmelige kode."
         )
         processMessagaAndAssertReply(
             message = "hei",
@@ -181,9 +200,18 @@ class MessageBotIT : H2Test() {
     }
 
     private fun processMessagaAndAssertReply(message: String, reply: String, sender: String = validSender) {
+        processMessagaAndAssertReply(message, isEqual(reply), "replies \"$reply\"", sender)
+    }
+
+    private fun processMessagaAndAssertReply(
+        message: String,
+        reply: Predicate<String>,
+        matcherDescriptor: String = "",
+        sender: String = validSender
+    ) {
         messageBot.processMessage(message, sender)
 
-        assertThat(testMessenger.messageSent).isEqualTo(reply)
+        assertThat(testMessenger.messageSent).matches(reply, matcherDescriptor)
         assertThat(testMessenger.recipient).isEqualTo(sender)
     }
 

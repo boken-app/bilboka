@@ -5,6 +5,7 @@ import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
 import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
+import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
@@ -39,6 +40,7 @@ abstract class AbstractMessageBotTest {
     internal val messengerSourceID = "Test_msgr"
     internal val unregisteredSenderID = "1237"
     internal val registeredSenderID = "1267"
+    internal val registeredUser: User = mockk(relaxed = true)
 
     @BeforeEach
     fun setupMessenger() {
@@ -49,8 +51,8 @@ abstract class AbstractMessageBotTest {
 
     @BeforeEach
     fun setupUser() {
-        every { userService.getUserByRegistration(any(), any()) } returns null
-        every { userService.getUserByRegistration(messengerSourceID, registeredSenderID) } returns mockk(relaxed = true)
+        every { userService.findUserByRegistration(any(), any()) } returns null
+        every { userService.findUserByRegistration(messengerSourceID, registeredSenderID) } returns registeredUser
         every {
             userService.register(
                 messengerSourceID,

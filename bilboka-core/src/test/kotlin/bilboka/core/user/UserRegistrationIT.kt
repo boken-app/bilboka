@@ -35,7 +35,7 @@ class UserRegistrationIT : H2Test() {
         val id = "2345"
         userService.register("fb_messenger", id, theKey)
 
-        val userByRegistration = userService.getUserByRegistration("fb_messenger", id)
+        val userByRegistration = userService.findUserByRegistration("fb_messenger", id)
         assertThat(userByRegistration?.username).isEqualTo(testusername)
         assertThat(userByRegistration?.creationTimestamp).isAfterOrEqualTo(justNow)
         assertThat(userByRegistration?.getIDRegisteredFor("fb_messenger")).isEqualTo(id)
@@ -49,7 +49,7 @@ class UserRegistrationIT : H2Test() {
             userService.register("fb_messenger", id, "wrongKey")
         }
 
-        assertThat(userService.getUserByRegistration("fb_messenger", id)).isNull()
+        assertThat(userService.findUserByRegistration("fb_messenger", id)).isNull()
     }
 
     @Test
@@ -61,7 +61,7 @@ class UserRegistrationIT : H2Test() {
             userService.register("fb_messenger", id, theKey)
         }
 
-        val userByRegistration = userService.getUserByRegistration("fb_messenger", id)
+        val userByRegistration = userService.findUserByRegistration("fb_messenger", id)
         assertThat(userByRegistration?.username).isEqualTo(testusername)
     }
 }

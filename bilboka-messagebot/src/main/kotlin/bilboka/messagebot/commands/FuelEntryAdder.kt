@@ -2,12 +2,11 @@ package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
 import bilboka.core.user.UserService
-import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.Conversation
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
 class FuelEntryAdder(
-    private val botMessenger: BotMessenger,
     private val book: Book,
     userService: UserService
 ) : CarBookCommand(userService) {
@@ -20,7 +19,7 @@ class FuelEntryAdder(
         return matcher.containsMatchIn(message)
     }
 
-    override fun execute(senderID: String, message: String) {
+    override fun execute(conversation: Conversation, message: String) {
         val values = matcher.find(message)!!.groupValues
         val vehicleName = values[2]
         val odoReading = values[3]
@@ -28,18 +27,18 @@ class FuelEntryAdder(
         val cost = values[6]
 
         val addedFuel = book.addFuelForVehicle(
-            vehicleName,
+            vehicleName = vehicleName,
+            enteredBy = conversation.withWhom(),
             odoReading = odoReading.toInt(),
             amount = amount.convertToDouble(),
             costNOK = cost.convertToDouble(),
-            source = botMessenger.sourceID,
+            source = conversation.getSource(),
         )
 
-        botMessenger.sendMessage(
+        conversation.sendReply(
             "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: ${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, ${
                 addedFuel.pricePerLiter().format()
-            } kr/l",
-            senderID
+            } kr/l"
         )
     }
 

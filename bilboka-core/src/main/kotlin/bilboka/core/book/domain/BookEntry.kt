@@ -35,7 +35,7 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id) {
     var amount by BookEntries.amount
     var costNOK by BookEntries.costNOK
     var isFullTank by BookEntries.isFullTank
-    val enteredBy by User optionalReferencedOn BookEntries.enteredBy
+    var enteredBy by User optionalReferencedOn BookEntries.enteredBy
     var source by BookEntries.dataSource
     var creationTimestamp by BookEntries.creationTimestamp
 
