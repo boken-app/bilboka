@@ -2,7 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.messagebot.Conversation
 
-class SmallTalk() : GeneralChatCommand() {
+class SmallTalk : GeneralChatCommand() {
 
     private var hasAskedSomething = false
     // TODO: Denne må håndteres pr. senderID for å fungere for flere brukere.
@@ -18,13 +18,15 @@ class SmallTalk() : GeneralChatCommand() {
         Pair("driver med", "Ikke noe spes. Der?"),
         Pair("skjer", "Ikke noe spes. Der?"),
         Pair("skjer?", "Ikke noe spes. Der?"),
-        Pair("sup", "sup"),
+        Pair("sup", "sup 😎"),
         Pair("hvem der", "Bare meg!"),
         Pair("ikke noe", "ok"),
         Pair("ingenting", "ok"),
         Pair("jada", "Joda så"),
         Pair(":)", "^^"),
         Pair("😊", ":D"),
+        Pair("bil", "🏎"),
+        Pair("lol", "😂"),
     )
 
     override fun isMatch(message: String): Boolean {
