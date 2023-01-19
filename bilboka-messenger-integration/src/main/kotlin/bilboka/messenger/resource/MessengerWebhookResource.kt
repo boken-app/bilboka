@@ -1,6 +1,7 @@
 package bilboka.messenger.resource
 
 import bilboka.messenger.MessengerProperties
+import bilboka.messenger.dto.FacebookEntry
 import bilboka.messenger.dto.MessengerWebhookRequest
 import bilboka.messenger.service.FacebookMessageHandler
 import org.slf4j.LoggerFactory
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.Duration
+import java.time.Instant
+import java.time.Instant.now
 
 object MessengerWebhookConfig {
     const val SUBSCRIBE_MODE = "subscribe"
@@ -21,6 +25,8 @@ class MessengerWebhookResource(
     private val messengerProperties: MessengerProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private val duplicateBuster = DuplicateBuster()
 
     @Autowired
     lateinit var facebookMessageHandler: FacebookMessageHandler
@@ -45,11 +51,35 @@ class MessengerWebhookResource(
             logger.info("Handling incoming page request!")
             // TODO valider request med SHA256 signatur / app secret 
             request.entry.stream()
-                .forEach { facebookEntry -> facebookMessageHandler.handleMessage(facebookEntry) }
+                .forEach { facebookEntry ->
+                    duplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
+                }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
             logger.info("Unknown request object {}. Replying not found!", request.requestObject)
             ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+    }
+
+    inner class DuplicateBuster {
+        private val timeout = Duration.ofMinutes(5)
+        private var lastId: String = ""
+        private var lastTime: Instant = now().minus(timeout)
+
+        fun filterDuplicates(entry: FacebookEntry): FacebookEntry? {
+            return (if (notDuplicate(entry))
+                entry
+            else null)
+                .also { updateLastWith(entry) }
+        }
+
+        private fun notDuplicate(entry: FacebookEntry) =
+            lastId != entry.id || lastTime.plus(timeout).isBefore(now())
+                .also { if (!it) logger.debug("Duplikat! (id=${entry.id})") }
+
+        private fun updateLastWith(entry: FacebookEntry) {
+            lastTime = now()
+            lastId = entry.id
         }
     }
 
