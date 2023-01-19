@@ -1,13 +1,6 @@
 package bilboka
 
-import bilboka.core.book.domain.BookEntries
-import bilboka.core.user.domain.RegistrationKeys
-import bilboka.core.user.domain.UserRegistrations
-import bilboka.core.user.domain.Users
-import bilboka.core.vehicle.domain.Vehicles
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -19,12 +12,7 @@ class BilbokaApplication
 private val logger = LoggerFactory.getLogger(BilbokaApplication::class.java)
 
 fun main(args: Array<String>) {
-    val db = configureDatabase()
-    transaction(db) {
-        SchemaUtils.create(BookEntries, Vehicles, Users, UserRegistrations, RegistrationKeys)
-        commit()
-    }
-
+    configureDatabase()
     runApplication<BilbokaApplication>(*args)
 }
 

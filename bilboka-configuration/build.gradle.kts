@@ -5,6 +5,7 @@ plugins {
 	application
 
 	id("bilboka.plugin")
+//	id("org.flywaydb.flyway") version "9.8.1"
 }
 
 group = "ivaralek"
@@ -22,6 +23,7 @@ dependencies {
 	implementation(project(":bilboka-messenger-integration"))
 
 	implementation("org.postgresql:postgresql:42.3.1")
+	implementation("org.flywaydb:flyway-core")
 }
 
 application {

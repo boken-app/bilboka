@@ -7,6 +7,7 @@ import org.gradle.kotlin.dsl.dependencies
 
 val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
 val springBootStarter = "org.springframework.boot:spring-boot-starter"
+val springBootStarterJdbc = "org.springframework.boot:spring-boot-starter-jdbc"
 val springBootStarterTest = "org.springframework.boot:spring-boot-starter-test"
 
 val jUnitApi = "org.junit.jupiter:junit-jupiter-api:${Versions.jUnitJupiter}"
@@ -23,6 +24,7 @@ val locbackCore = "ch.qos.logback:logback-core:${Versions.logback}"
 
 internal fun Project.configureDependencies() = dependencies {
     add("implementation", springBootStarter)
+    add("implementation", springBootStarterJdbc)
     add("implementation", kotlinStandardLibrary)
     add("implementation", kotlinReflect)
 
