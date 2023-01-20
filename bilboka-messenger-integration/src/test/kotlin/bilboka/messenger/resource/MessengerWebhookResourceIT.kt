@@ -177,7 +177,7 @@ internal class MessengerWebhookResourceIT {
             verify { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
-        @Test // TODO hvorfor i alle dager feiler denne?
+        @Test
         fun postRequestSomeListWithMessagingWithMuchContent_returnsOk() {
             postAsJson(
                 MessengerWebhookRequest(
@@ -211,7 +211,7 @@ internal class MessengerWebhookResourceIT {
                             )
                         ),
                         FacebookEntry(
-                            "126", 125L, listOf(
+                            "125", 125L, listOf(
                                 FacebookMessaging(
                                     1234L,
                                     null,
@@ -233,6 +233,47 @@ internal class MessengerWebhookResourceIT {
                 .andExpect(status().isOk).andExpect(okResponseContent())
 
             verify(exactly = 3) { messengerSendAPIConsumer.sendMessage(any()) }
+        }
+
+        @Test
+        fun postDuplicate_sendsOnlyOneReply() {
+            postAsJson(
+                MessengerWebhookRequest(
+                    requestObject = "page", entry = listOf(
+                        FacebookEntry(
+                            "124", 123L, listOf(
+                                FacebookMessaging(
+                                    1234L,
+                                    null,
+                                    personWithId("456"),
+                                    personWithId("354"),
+                                    FacebookMessage(
+                                        text = "Test"
+                                    ),
+                                    null
+                                )
+                            )
+                        ),
+                        FacebookEntry(
+                            "124", 123L, listOf(
+                                FacebookMessaging(
+                                    1234L,
+                                    null,
+                                    personWithId("456"),
+                                    personWithId("354"),
+                                    FacebookMessage(
+                                        text = "Test"
+                                    ),
+                                    null
+                                )
+                            )
+                        ),
+                    )
+                )
+            )
+                .andExpect(status().isOk).andExpect(okResponseContent())
+
+            verify(exactly = 1) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
         @Test
