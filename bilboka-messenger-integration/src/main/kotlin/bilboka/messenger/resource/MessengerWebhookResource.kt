@@ -49,21 +49,22 @@ class MessengerWebhookResource(
     fun post(@RequestBody request: MessengerWebhookRequest): ResponseEntity<String> {
         return if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             logger.info("Handling incoming page request!")
-            // TODO valider request med SHA256 signatur / app secret 
+            // TODO valider request med SHA256 signatur / app secret
             request.entry.stream()
                 .forEach { facebookEntry ->
+                    logger.debug("Received entry: {}", facebookEntry)
                     duplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
                 }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
-            logger.info("Unknown request object {}. Replying not found!", request.requestObject)
+            logger.warn("Unknown request object {}. Replying not found!", request.requestObject)
             ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
     }
 
     inner class DuplicateBuster {
         private val timeout = Duration.ofMinutes(1)
-        private var last: FacebookEntry? = null
+        private var last: String = ""
         private var lastTime: Instant = now().minus(timeout)
 
         fun filterDuplicates(entry: FacebookEntry): FacebookEntry? {
@@ -74,14 +75,16 @@ class MessengerWebhookResource(
         }
 
         private fun duplicate(entry: FacebookEntry) =
-            last == entry && now().isBefore(lastTime.plus(timeout))
+            entry.identifier() != null && last == entry.identifier() && now().isBefore(lastTime.plus(timeout))
                 .also { if (it) logger.debug("Duplikat! (id=${entry.id})") }
 
         private fun updateLastWith(entry: FacebookEntry): FacebookEntry {
             lastTime = now()
-            last = entry
+            last = entry.identifier() ?: ""
             return entry
         }
+
+        private fun FacebookEntry.identifier() = this.messaging.firstOrNull()?.message?.seq
     }
 
 }

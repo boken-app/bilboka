@@ -190,7 +190,8 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("456"),
                                     personWithId("354"),
                                     FacebookMessage(
-                                        text = "Test"
+                                        text = "Test",
+                                        seq = "1"
                                     ),
                                     null
                                 )
@@ -204,7 +205,8 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("457"),
                                     personWithId("3565"),
                                     FacebookMessage(
-                                        text = "TestMsg2"
+                                        text = "TestMsg2",
+                                        seq = "2"
                                     ),
                                     null
                                 )
@@ -248,7 +250,8 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("456"),
                                     personWithId("354"),
                                     FacebookMessage(
-                                        text = "Test"
+                                        text = "Test",
+                                        seq = "3"
                                     ),
                                     null
                                 )
@@ -262,7 +265,8 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("456"),
                                     personWithId("354"),
                                     FacebookMessage(
-                                        text = "Test"
+                                        text = "Test",
+                                        seq = "3"
                                     ),
                                     null
                                 )

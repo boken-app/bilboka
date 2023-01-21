@@ -49,7 +49,6 @@ internal class MessengerSendAPIConsumerIT {
 
     @Test
     fun sendMessage_correctPostCall() {
-
         // Arrange
         mockBackEnd.enqueue(
             MockResponse()
@@ -88,7 +87,7 @@ internal class MessengerSendAPIConsumerIT {
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
         assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
         assertThat(takeRequest.body.readUtf8())
-            .contains("{\"text\":\"$testMessage\"}}")
+            .contains("\"text\":\"$testMessage\"")
             .contains("{\"recipient\":{\"id\":\"123\"}")
     }
 
