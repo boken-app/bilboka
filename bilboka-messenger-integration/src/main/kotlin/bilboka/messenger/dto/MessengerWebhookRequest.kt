@@ -30,6 +30,7 @@ data class FacebookMessaging(
 
 data class FacebookMessage(
     val mid: String? = null,
+    @Deprecated("Fjern denne, aner ikke hvorfor den nekter å kjøre uten")
     val seq: Long? = null,
     val text: String?
 ) : Serializable

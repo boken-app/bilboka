@@ -64,7 +64,7 @@ class MessengerWebhookResource(
 
     inner class DuplicateBuster {
         private val timeout = Duration.ofMinutes(2)
-        private var last: Long? = null
+        private var last: String? = null
         private var lastTime: Instant = now().minus(timeout)
 
         fun filterDuplicates(entry: FacebookEntry): FacebookEntry? {
@@ -84,7 +84,7 @@ class MessengerWebhookResource(
             return entry
         }
 
-        private fun FacebookEntry.identifier() = this.messaging.firstOrNull()?.message?.seq
+        private fun FacebookEntry.identifier() = this.messaging.firstOrNull()?.message?.mid
     }
 
 }

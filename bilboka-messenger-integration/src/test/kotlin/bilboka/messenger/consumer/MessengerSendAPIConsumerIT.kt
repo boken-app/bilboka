@@ -64,7 +64,8 @@ internal class MessengerSendAPIConsumerIT {
         val testFBMessage = FacebookMessaging(
             recipient = recipient,
             message = FacebookMessage(
-                text = testMessage
+                text = testMessage,
+                mid = null
             )
         )
 

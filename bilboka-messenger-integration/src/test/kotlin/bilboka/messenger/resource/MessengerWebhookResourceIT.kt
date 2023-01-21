@@ -1,10 +1,13 @@
 package bilboka.messenger.resource
 
+import bilboka.messagebot.BotMessenger
+import bilboka.messagebot.MessageBot
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.justRun
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
@@ -37,12 +40,19 @@ internal class MessengerWebhookResourceIT {
     @MockkBean
     lateinit var messengerSendAPIConsumer: MessengerSendAPIConsumer
 
+    @MockkBean // TODO Kan gi mening med en integrasjonstest som ikke mocker denne
+    lateinit var messageBot: MessageBot
+
     @Autowired
     lateinit var mvc: MockMvc
+
+    @Autowired
+    lateinit var botMessenger: BotMessenger
 
     @BeforeEach
     fun setUp() {
         justRun { messengerSendAPIConsumer.sendMessage(any()) }
+        every { messageBot.processMessage(any(), any()) } answers { botMessenger.sendMessage("Et svar!", secondArg()) }
     }
 
     @AfterEach
@@ -191,7 +201,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = 1L
+                                        mid = "1"
                                     ),
                                     null
                                 )
@@ -206,7 +216,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("3565"),
                                     FacebookMessage(
                                         text = "TestMsg2",
-                                        seq = 2L
+                                        mid = "2"
                                     ),
                                     null
                                 )
@@ -251,7 +261,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = 3L
+                                        mid = "3"
                                     ),
                                     null
                                 )
@@ -266,7 +276,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = 3L
+                                        mid = "3"
                                     ),
                                     null
                                 )
