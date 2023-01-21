@@ -30,7 +30,7 @@ data class FacebookMessaging(
 
 data class FacebookMessage(
     val mid: String = "",
-    val seq: String = "",
+    val seq: Long? = null,
     val text: String?
 ) : Serializable
 

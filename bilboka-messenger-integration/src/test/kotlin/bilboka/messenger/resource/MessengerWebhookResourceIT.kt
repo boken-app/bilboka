@@ -191,7 +191,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = "1"
+                                        seq = 1L
                                     ),
                                     null
                                 )
@@ -206,7 +206,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("3565"),
                                     FacebookMessage(
                                         text = "TestMsg2",
-                                        seq = "2"
+                                        seq = 2L
                                     ),
                                     null
                                 )
@@ -251,7 +251,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = "3"
+                                        seq = 3L
                                     ),
                                     null
                                 )
@@ -266,7 +266,7 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     FacebookMessage(
                                         text = "Test",
-                                        seq = "3"
+                                        seq = 3L
                                     ),
                                     null
                                 )

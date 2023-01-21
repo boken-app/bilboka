@@ -52,7 +52,7 @@ class MessengerWebhookResource(
             // TODO valider request med SHA256 signatur / app secret
             request.entry.stream()
                 .forEach { facebookEntry ->
-                    logger.debug("Received entry: {}", facebookEntry)
+                    logger.debug("Received entry payload: {}", facebookEntry)
                     duplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
                 }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
@@ -64,7 +64,7 @@ class MessengerWebhookResource(
 
     inner class DuplicateBuster {
         private val timeout = Duration.ofMinutes(2)
-        private var last: String = ""
+        private var last: Long? = null
         private var lastTime: Instant = now().minus(timeout)
 
         fun filterDuplicates(entry: FacebookEntry): FacebookEntry? {
@@ -75,12 +75,12 @@ class MessengerWebhookResource(
         }
 
         private fun FacebookEntry.isDuplicate() =
-            last == this.identifier() && now().isBefore(lastTime.plus(timeout))
+            this.identifier() != null && last == this.identifier() && now().isBefore(lastTime.plus(timeout))
                 .also { if (it) logger.debug("Duplikat! (id=${this.identifier()})") }
 
         private fun updateLastWith(entry: FacebookEntry): FacebookEntry {
             lastTime = now()
-            last = entry.identifier() ?: ""
+            last = entry.identifier()
             return entry
         }
 
