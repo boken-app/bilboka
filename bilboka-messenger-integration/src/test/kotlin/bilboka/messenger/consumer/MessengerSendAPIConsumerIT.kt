@@ -89,6 +89,7 @@ internal class MessengerSendAPIConsumerIT {
         assertThat(takeRequest.body.readUtf8())
             .contains("\"text\":\"$testMessage\"")
             .contains("{\"recipient\":{\"id\":\"123\"}")
+            .doesNotContain("mid").doesNotContain("seq")
     }
 
 }
