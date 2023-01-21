@@ -76,7 +76,7 @@ class MessengerWebhookResource(
 
         private fun FacebookEntry.isDuplicate() =
             last == this.identifier() && now().isBefore(lastTime.plus(timeout))
-                .also { if (it) logger.debug("Duplikat! (id=${this.id})") }
+                .also { if (it) logger.debug("Duplikat! (id=${this.identifier()})") }
 
         private fun updateLastWith(entry: FacebookEntry): FacebookEntry {
             lastTime = now()
