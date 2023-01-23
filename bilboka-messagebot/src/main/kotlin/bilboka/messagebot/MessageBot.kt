@@ -45,8 +45,6 @@ class MessageBot {
         )
     }
 
-    private val conversationBank = mutableMapOf<String, Conversation>()
-
     fun processMessage(message: String, senderID: String) {
         logger.info("Mottok melding $message")
         try {
@@ -71,7 +69,7 @@ class MessageBot {
         commandRegistry.forEach {
             if (noMatches && it.isMatch(message) && it.byValidUser(senderID)) {
                 it.execute(
-                    findConversationOrCreateNew(senderID),
+                    findConversationOrInitiateNew(senderID),
                     message
                 )
                 noMatches = false
@@ -88,22 +86,47 @@ class MessageBot {
         }
     }
 
-    private fun findConversationOrCreateNew(senderID: String) =
-        (conversationBank[conversationKey(senderID, botMessenger.sourceID)]
-            ?: Conversation(
-                user = userService.findUserByRegistration(botMessenger.sourceID, senderID),
-                senderID = senderID,
-                botMessenger = botMessenger
-            )
-                .also { conversationBank[conversationKey(senderID, botMessenger.sourceID)] = it })
-
-    private fun conversationKey(sender: String, sourceID: String): String {
-        return "$sourceID-$sender"
+    private fun ChatCommand.byValidUser(senderID: String): Boolean {
+        return this.validUser(botMessenger.sourceID, senderID)
+            .also { if (!it) logger.warn("Uregistrert bruker $senderID fra ${botMessenger.sourceID} prøver å gjøre bilbok-ting") }
     }
 
-    private fun ChatCommand.byValidUser(senderID: String) =
-        this.validUser(botMessenger.sourceID, senderID)
-            .also { if (!it) logger.warn("Uregistrert bruker $senderID fra ${botMessenger.sourceID} prøver å gjøre bilbok-ting") }
+    private fun findConversationOrInitiateNew(senderID: String): Conversation {
+        return ConversationBank.find(senderID, botMessenger.sourceID)
+            ?: ConversationBank.initiate(
+                Conversation(
+                    user = userService.findUserByRegistration(botMessenger.sourceID, senderID),
+                    senderID = senderID,
+                    botMessenger = botMessenger
+                )
+            )
+    }
+
+    fun reset() {
+        ConversationBank.reset()
+        DuplicateBuster.reset()
+    }
+
+    object ConversationBank {
+        private val conversations = mutableMapOf<String, Conversation>()
+
+        internal fun find(sender: String, sourceID: String): Conversation? {
+            return conversations[key(sender, sourceID)]
+        }
+
+        internal fun initiate(conversation: Conversation): Conversation {
+            conversations[key(conversation.senderID, conversation.getSource())] = conversation
+            return conversation
+        }
+
+        private fun key(sender: String, sourceID: String): String {
+            return "$sourceID-$sender"
+        }
+
+        internal fun reset() {
+            conversations.clear()
+        }
+    }
 
     object DuplicateBuster {
         private val timeout = Duration.ofSeconds(10)
@@ -127,6 +150,11 @@ class MessageBot {
         }
 
         private fun identifier(message: String, sender: String) = "$sender:$message"
+
+        internal fun reset() {
+            last = null
+            lastTime = now().minus(timeout)
+        }
     }
 
     class DuplicateChatMessageException : RuntimeException()
