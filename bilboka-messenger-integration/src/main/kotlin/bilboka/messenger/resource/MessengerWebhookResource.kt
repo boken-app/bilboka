@@ -26,8 +26,6 @@ class MessengerWebhookResource(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val duplicateBuster = DuplicateBuster()
-
     @Autowired
     lateinit var facebookMessageHandler: FacebookMessageHandler
 
@@ -53,7 +51,7 @@ class MessengerWebhookResource(
             request.entry.stream()
                 .forEach { facebookEntry ->
                     logger.debug("Received entry payload: {}", facebookEntry)
-                    duplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
+                    DuplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
                 }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)
         } else {
@@ -62,7 +60,8 @@ class MessengerWebhookResource(
         }
     }
 
-    inner class DuplicateBuster {
+    object DuplicateBuster {
+        private val logger = LoggerFactory.getLogger(javaClass)
         private val timeout = Duration.ofMinutes(2)
         private var last: String? = null
         private var lastTime: Instant = now().minus(timeout)
