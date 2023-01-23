@@ -105,6 +105,7 @@ class MessageBot {
     fun reset() {
         ConversationBank.reset()
         DuplicateBuster.reset()
+        commandRegistry.forEach { it.resetState() }
     }
 
     object ConversationBank {
