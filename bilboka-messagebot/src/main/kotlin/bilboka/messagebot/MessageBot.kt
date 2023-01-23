@@ -46,7 +46,7 @@ class MessageBot {
         logger.info("Mottok melding $message")
         try {
             val conversation = findConversationOrInitiateNew(senderID)
-            conversation.checkDuplicate(message)
+            conversation.validate(message)
             transaction { runCommands(message, conversation) }
         } catch (e: DuplicateChatMessageException) {
             botMessenger.sendMessage(
@@ -122,7 +122,6 @@ class MessageBot {
         }
 
         internal fun reset() {
-            Conversation.DuplicateBuster.reset()
             conversations.clear()
         }
     }

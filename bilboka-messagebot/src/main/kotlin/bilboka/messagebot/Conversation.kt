@@ -9,6 +9,8 @@ class Conversation(
     val senderID: String,
     val botMessenger: BotMessenger
 ) {
+    private val duplicateBuster = DuplicateBuster(senderID)
+
     fun getSource(): String {
         return botMessenger.sourceID
     }
@@ -32,16 +34,16 @@ class Conversation(
         )
     }
 
-    fun checkDuplicate(message: String) {
-        DuplicateBuster.catchDuplicates(message, senderID)
+    fun validate(message: String) {
+        duplicateBuster.catchDuplicates(message)
     }
 
-    object DuplicateBuster {
+    internal class DuplicateBuster(private val sender: String) {
         private val timeout = Duration.ofSeconds(10)
         private var last: String? = null
         private var lastTime: Instant = Instant.now().minus(timeout)
 
-        fun catchDuplicates(message: String, sender: String) {
+        fun catchDuplicates(message: String) {
             if (isDuplicate(message, sender)) {
                 throw DuplicateChatMessageException()
             } else {
@@ -58,11 +60,6 @@ class Conversation(
         }
 
         private fun identifier(message: String, sender: String) = "$sender:$message"
-
-        internal fun reset() {
-            last = null
-            lastTime = Instant.now().minus(timeout)
-        }
     }
 }
 
