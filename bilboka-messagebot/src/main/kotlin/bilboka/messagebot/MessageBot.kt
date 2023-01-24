@@ -48,9 +48,9 @@ class MessageBot {
             val conversation = findConversationOrInitiateNew(senderID)
             conversation.validate(message)
             transaction { runCommands(message, conversation) }
-        } catch (e: DuplicateChatMessageException) {
+        } catch (e: StopRepeatingYourselfException) {
             botMessenger.sendMessage(
-                "Nå sendte du det samme to ganger. Om det var meningen, vent 10 sekunder og send igjen.",
+                "Nå sendte du det samme to ganger. 🧐 Om det var meningen, send på nytt etter 10 sekunder.",
                 senderID
             )
         } catch (e: VehicleNotFoundException) {

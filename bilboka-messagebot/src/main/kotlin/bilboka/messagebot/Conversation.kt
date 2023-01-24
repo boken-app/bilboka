@@ -45,7 +45,7 @@ class Conversation(
 
         fun catchDuplicates(message: String) {
             if (isDuplicate(message, sender)) {
-                throw DuplicateChatMessageException()
+                throw StopRepeatingYourselfException()
             } else {
                 updateLastWith(message, sender)
             }
@@ -63,5 +63,5 @@ class Conversation(
     }
 }
 
-class DuplicateChatMessageException : RuntimeException()
+class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)
