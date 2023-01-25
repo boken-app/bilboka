@@ -10,6 +10,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.verify
+import org.apache.commons.codec.binary.Hex
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -29,9 +30,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.Collections.emptyList
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 @RunWith(SpringRunner::class)
-@WebMvcTest(MockMvc::class, properties = ["messenger.verify-token = detteerettesttoken"])
+@WebMvcTest(
+    MockMvc::class, properties = [
+        "messenger.verify-token = detteerettesttoken",
+        "messenger.appSecret = totallyLegitIPromise",
+    ]
+)
 @ContextConfiguration(classes = [MessengerWebhookResourceIT.MessengerIntegrationConfig::class])
 internal class MessengerWebhookResourceIT {
 
@@ -331,16 +339,55 @@ internal class MessengerWebhookResourceIT {
             verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
         }
 
-        private fun okResponseContent() = content().string("EVENT_RECEIVED")
-
-        private fun postAsJson(request: MessengerWebhookRequest): ResultActions {
-            return mvc.perform(
+        @Test
+        fun postRequestWithoutSignatureHeader_returnsBadRequest() {
+            mvc.perform(
                 post("/webhook")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         asJsonString(
-                            request
+                            MessengerWebhookRequest(
+                                requestObject = "page",
+                                entry = emptyList()
+                            )
                         )
+                    )
+            )
+                .andExpect(status().isBadRequest)
+
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
+        }
+
+        @Test
+        fun postRequestWithWrongSignatureHeader_returnsForbidden() {
+            mvc.perform(
+                post("/webhook")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("x-hub-signature-256", "totallyNotLegit")
+                    .content(
+                        asJsonString(
+                            MessengerWebhookRequest(
+                                requestObject = "page",
+                                entry = emptyList()
+                            )
+                        )
+                    )
+            )
+                .andExpect(status().isForbidden)
+
+            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
+        }
+
+        private fun okResponseContent() = content().string("EVENT_RECEIVED")
+
+        private fun postAsJson(request: MessengerWebhookRequest): ResultActions {
+            val jsonString = asJsonString(request)
+            return mvc.perform(
+                post("/webhook")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("x-hub-signature-256", "sha256=${jsonString.hash("totallyLegitIPromise")}")
+                    .content(
+                        jsonString
                     )
             )
         }
@@ -356,6 +403,13 @@ internal class MessengerWebhookResourceIT {
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+
+    fun String.hash(key: String): String {
+        val secretKeySpec = SecretKeySpec(key.toByteArray(), "HmacSHA256")
+        val mac = Mac.getInstance("HmacSHA256")
+        mac.init(secretKeySpec)
+        return Hex.encodeHexString(mac.doFinal(this.toByteArray()))
     }
 
     @Configuration

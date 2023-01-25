@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @TestInstance(PER_CLASS)
+// TODO prop inject?
 internal class MessengerSendAPIConsumerIT {
 
     lateinit var webhookConsumer: MessengerSendAPIConsumer
