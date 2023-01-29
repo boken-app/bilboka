@@ -416,8 +416,6 @@ internal class MessengerWebhookResourceIT {
 
     @Configuration
     @ComponentScan(basePackages = ["bilboka"])
-    class MessengerIntegrationConfig {
-
-    }
+    class MessengerIntegrationConfig
 
 }

@@ -34,11 +34,11 @@ class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST)
         } else {
             try {
-                val req = CachedBodyHttpServletRequest(request)
-                val body: ByteArray = StreamUtils.copyToByteArray(req.inputStream)
+                val cachedRequest = CachedBodyHttpServletRequest(request)
+                val body: ByteArray = StreamUtils.copyToByteArray(cachedRequest.inputStream)
 
                 validateSignature(body, signature)
-                filterChain.doFilter(req, response)
+                filterChain.doFilter(cachedRequest, response)
             } catch (e: InvalidRequestSignatureException) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN)
             }
@@ -68,4 +68,3 @@ fun ByteArray.hash(key: String): String {
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
 class InvalidRequestSignatureException : InvalidKeyException()
-// TODO extend InvalidKeyException?
