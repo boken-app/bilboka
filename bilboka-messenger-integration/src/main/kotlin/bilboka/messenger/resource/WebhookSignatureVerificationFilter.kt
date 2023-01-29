@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StreamUtils
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
 import java.security.InvalidKeyException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.servlet.FilterChain
-import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -23,7 +21,11 @@ class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
     @Autowired
     lateinit var messengerProperties: MessengerProperties
 
-    @Throws(ServletException::class, IOException::class)
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return !request.requestURI.equals("/${MessengerWebhookConfig.WEBHOOK_URL}")
+                || !request.method.equals(HttpMethod.POST.toString())
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -51,11 +53,6 @@ class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
             logger.warn("Signatur ugyldig!")
             throw InvalidRequestSignatureException()
         }
-    }
-
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        return !request.requestURI.equals("/${MessengerWebhookConfig.WEBHOOK_URL}")
-                || !request.method.equals(HttpMethod.POST.toString())
     }
 }
 
