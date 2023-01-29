@@ -4,12 +4,11 @@ import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.MessageBot
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
+import bilboka.messenger.service.FacebookMessageHandler
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.justRun
-import io.mockk.verify
+import com.ninjasquad.springmockk.SpykBean
+import io.mockk.*
 import org.apache.commons.codec.binary.Hex
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -50,6 +49,9 @@ internal class MessengerWebhookResourceIT {
 
     @MockkBean // TODO Kan gi mening med en integrasjonstest som ikke mocker denne
     lateinit var messageBot: MessageBot
+
+    @SpykBean
+    lateinit var facebookMessageHandler: FacebookMessageHandler
 
     @Autowired
     lateinit var mvc: MockMvc
@@ -375,7 +377,8 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isForbidden)
 
-            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
+            verify { messengerSendAPIConsumer wasNot Called }
+            verify { facebookMessageHandler wasNot Called }
         }
 
         private fun okResponseContent() = content().string("EVENT_RECEIVED")
