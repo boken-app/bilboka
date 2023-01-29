@@ -14,13 +14,14 @@ import java.time.Instant
 import java.time.Instant.now
 
 object MessengerWebhookConfig {
+    const val WEBHOOK_URL = "webhook"
     const val SUBSCRIBE_MODE = "subscribe"
     const val PAGE_SUBSCRIPTION = "page"
     const val EVENT_RECEIVED_RESPONSE = "EVENT_RECEIVED"
 }
 
 @RestController
-@RequestMapping("webhook")
+@RequestMapping(MessengerWebhookConfig.WEBHOOK_URL)
 class MessengerWebhookResource(
     private val messengerProperties: MessengerProperties
 ) {

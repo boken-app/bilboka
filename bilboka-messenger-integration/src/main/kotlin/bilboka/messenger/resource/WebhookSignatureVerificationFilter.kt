@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
-    // TODO hvordan få denne til å treffe kun på det som går til webhook-post?
     @Autowired
     lateinit var messengerProperties: MessengerProperties
 
@@ -47,7 +46,6 @@ class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
     }
 
     private fun validateSignature(body: ByteArray, signature: String) {
-        logger.debug("request=$body valideres") // TODO rydd i logging
         val signatureHash = signature.split("sha256=").last()
         if (signatureHash != body.hash(messengerProperties.appSecret)) {
             logger.warn("Signatur ugyldig!")
@@ -56,7 +54,8 @@ class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
     }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        return request.requestURI.equals("/webhook") && request.method.equals(HttpMethod.GET.toString())
+        return !request.requestURI.equals("/${MessengerWebhookConfig.WEBHOOK_URL}")
+                || !request.method.equals(HttpMethod.POST.toString())
     }
 }
 

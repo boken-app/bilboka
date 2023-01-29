@@ -4,6 +4,7 @@ import bilboka.messagebot.BotMessenger
 import bilboka.messagebot.MessageBot
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.*
+import bilboka.messenger.resource.MessengerWebhookConfig.WEBHOOK_URL
 import bilboka.messenger.service.FacebookMessageHandler
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
@@ -76,7 +77,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun getRequestWithoutParams_returnsBadRequest() {
             mvc.perform(
-                get("/webhook")
+                get("/$WEBHOOK_URL")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isBadRequest)
@@ -85,7 +86,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun getRequestMissingParams_returnsBadRequest() {
             mvc.perform(
-                get("/webhook?hub.verify_token=detteerettesttoken&hub.mode=subscribe")
+                get("/$WEBHOOK_URL?hub.verify_token=detteerettesttoken&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isBadRequest)
@@ -94,7 +95,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun validGetRequest_returnsChallengeAccepted() {
             mvc.perform(
-                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
+                get("/$WEBHOOK_URL?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(content().string("CHALLENGE_ACCEPTED"))
@@ -103,7 +104,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun validGetRequest_returnsSomeOtherChallenge() {
             mvc.perform(
-                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=rullekake&hub.mode=subscribe")
+                get("/$WEBHOOK_URL?hub.verify_token=detteerettesttoken&hub.challenge=rullekake&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(content().string("rullekake"))
@@ -112,7 +113,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun invalidToken_returns403() {
             mvc.perform(
-                get("/webhook?hub.verify_token=blah&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
+                get("/$WEBHOOK_URL?hub.verify_token=blah&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=subscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isForbidden)
@@ -121,7 +122,7 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun invalidMode_returns403() {
             mvc.perform(
-                get("/webhook?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=unsubscribe")
+                get("/$WEBHOOK_URL?hub.verify_token=detteerettesttoken&hub.challenge=CHALLENGE_ACCEPTED&hub.mode=unsubscribe")
                     .contentType(MediaType.TEXT_HTML)
             )
                 .andExpect(status().isForbidden)
@@ -333,18 +334,18 @@ internal class MessengerWebhookResourceIT {
         @Test
         fun postRequestWithoutBody_returnsBadRequest() {
             mvc.perform(
-                post("/webhook")
+                post("/$WEBHOOK_URL")
                     .contentType(MediaType.APPLICATION_JSON)
             )
                 .andExpect(status().isBadRequest)
 
-            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
+            verify { messengerSendAPIConsumer wasNot Called }
         }
 
         @Test
         fun postRequestWithoutSignatureHeader_returnsBadRequest() {
             mvc.perform(
-                post("/webhook")
+                post("/$WEBHOOK_URL")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         asJsonString(
@@ -357,13 +358,13 @@ internal class MessengerWebhookResourceIT {
             )
                 .andExpect(status().isBadRequest)
 
-            verify(exactly = 0) { messengerSendAPIConsumer.sendMessage(any()) }
+            verify { messengerSendAPIConsumer wasNot Called }
         }
 
         @Test
         fun postRequestWithWrongSignatureHeader_returnsForbidden() {
             mvc.perform(
-                post("/webhook")
+                post("/$WEBHOOK_URL")
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("x-hub-signature-256", "totallyNotLegit")
                     .content(
@@ -386,12 +387,10 @@ internal class MessengerWebhookResourceIT {
         private fun postAsJson(request: MessengerWebhookRequest): ResultActions {
             val jsonString = asJsonString(request)
             return mvc.perform(
-                post("/webhook")
+                post("/$WEBHOOK_URL")
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("x-hub-signature-256", "sha256=${jsonString.hash("totallyLegitIPromise")}")
-                    .content(
-                        jsonString
-                    )
+                    .content(jsonString)
             )
         }
 
