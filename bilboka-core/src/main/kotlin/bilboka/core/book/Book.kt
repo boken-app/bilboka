@@ -24,7 +24,7 @@ class Book(
         isFull: Boolean = false
     ): BookEntry {
         val vehicle = vehicleService.findVehicle(vehicleName)
-        validateFuelRequest(vehicle, odoReading, amount, costNOK)
+        validateFuelRequest(vehicle, dateTime, odoReading, amount, costNOK)
         return vehicle.addFuel(
             enteredBy = enteredBy,
             dateTime = dateTime,
@@ -36,12 +36,34 @@ class Book(
         )
     }
 
-    private fun validateFuelRequest(vehicle: Vehicle, odoReading: Int?, amount: Double?, costNOK: Double?) {
+    private fun validateFuelRequest(
+        vehicle: Vehicle,
+        dateTime: LocalDateTime?,
+        odoReading: Int?,
+        amount: Double?,
+        costNOK: Double?
+    ) {
         val lastEntry = vehicle.lastEntry(EntryType.FUEL)
         if (lastEntry != null && lastEntry.odometer == odoReading
             && lastEntry.amount == amount && lastEntry.costNOK == costNOK
         ) {
             throw DuplicateBookEntryException("Kan ikke opprette to identiske drivstoff-oppføringer etter hverandre.")
+        }
+        if (odoReading != null && odoReading > 10000000) {
+            throw BookEntryException("Usannsynlig verdi for kilometerstand.")
+        }
+        if (amount != null && amount > 1000) {
+            throw BookEntryException("Usannsynlig verdi for mengde.")
+        }
+        if (costNOK != null && costNOK > 10000) {
+            throw BookEntryException("Usannsynlig verdi for kostnad.")
+        }
+        vehicle.lastEntry()?.apply {
+            if (odoReading != null
+                && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()) != this.odometer?.compareTo(odoReading)
+            ) {
+                throw BookEntryCronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
+            }
         }
     }
 
