@@ -20,6 +20,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             book.addFuelForVehicle(
                 vehicleName = "testbil",
                 enteredBy = registeredUser,
+                dateTime = any(),
                 odoReading = 34567,
                 amount = 30.0,
                 costNOK = 300.0,
@@ -38,6 +39,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             book.addFuelForVehicle(
                 vehicleName = "en testbil",
                 enteredBy = registeredUser,
+                dateTime = any(),
                 odoReading = 5555,
                 amount = 30.2,
                 costNOK = 302.0,
@@ -56,6 +58,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             book.addFuelForVehicle(
                 vehicleName = "XC 70",
                 enteredBy = registeredUser,
+                dateTime = any(),
                 odoReading = 1234,
                 amount = 30.44,
                 costNOK = 608.80,
@@ -66,7 +69,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
     }
 
     private fun testAddFuelRequest(message: String) {
-        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any()) } returns fuelEntry(
+        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any(), any()) } returns fuelEntry(
             vehicle = vehicle("Testbil", fuelType = FuelType.BENSIN),
             odometer = 34567,
             costNOK = 123.3,
@@ -82,6 +85,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
     fun sendAddFuelRequestForUnknownCar_answersCarUnknown() {
         every {
             book.addFuelForVehicle(
+                any(),
                 any(),
                 any(),
                 any(),

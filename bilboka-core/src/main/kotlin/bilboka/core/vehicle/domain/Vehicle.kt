@@ -45,12 +45,12 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         isFull: Boolean = false,
         enteredBy: User? = null,
         source: String,
-        dateTime: LocalDateTime = LocalDateTime.now()
+        dateTime: LocalDateTime? = null
     ): BookEntry {
         val thisVehicle = this
         return transaction {
             BookEntry.new {
-                this.dateTime = dateTime
+                this.dateTime = dateTime ?: LocalDateTime.now()
                 this.type = EntryType.FUEL
                 this.enteredBy = enteredBy
                 this.odometer = odometer

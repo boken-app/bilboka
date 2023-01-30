@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.time.LocalDate
 
 @SpringBootTest(classes = [VehicleService::class, Book::class])
 class CarBookIT : H2Test() {
@@ -32,5 +33,6 @@ class CarBookIT : H2Test() {
 
         val vehicle = vehicleService.findVehicle("xc70")
         assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+        assertThat(vehicle.lastEntry(EntryType.FUEL)?.dateTime?.toLocalDate()).isEqualTo(LocalDate.now())
     }
 }

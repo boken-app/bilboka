@@ -93,8 +93,8 @@ class MessageBotIT : H2Test() {
     @Test
     fun sendAddFuelRequestNickname() {
         processMessagaAndAssertReply(
-            message = "Hei drivstoff crosser 1234 km 30.44 l 608.80 kr",
-            reply = "Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            message = "Hei drivstoff crosser 1235 km 30.44 l 608.80 kr",
+            reply = "Registrert tanking av xc 70 ved 1235 km: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }
 
