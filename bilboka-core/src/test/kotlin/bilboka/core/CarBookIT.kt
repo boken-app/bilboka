@@ -1,7 +1,7 @@
 package bilboka.core
 
 import bilboka.core.book.Book
-import bilboka.core.book.BookEntryCronologyException
+import bilboka.core.book.BookEntryChronologyException
 import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
@@ -57,7 +57,7 @@ class CarBookIT : H2Test() {
             costNOK = 22.43,
             source = "test"
         )
-        assertThrows<BookEntryCronologyException> {
+        assertThrows<BookEntryChronologyException> {
             book.addFuelForVehicle(
                 vehicleName = "XC70",
                 odoReading = 1217,

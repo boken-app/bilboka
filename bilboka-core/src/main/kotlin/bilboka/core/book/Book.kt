@@ -43,32 +43,49 @@ class Book(
         amount: Double?,
         costNOK: Double?
     ) {
-        val lastEntry = vehicle.lastEntry(EntryType.FUEL)
-        if (lastEntry != null && lastEntry.odometer == odoReading
-            && lastEntry.amount == amount && lastEntry.costNOK == costNOK
-        ) {
-            throw DuplicateBookEntryException("Kan ikke opprette to identiske drivstoff-oppføringer etter hverandre.")
-        }
-        if (odoReading != null && odoReading > 10000000) {
-            throw BookEntryException("Usannsynlig verdi for kilometerstand.")
-        }
-        if (amount != null && amount > 1000) {
-            throw BookEntryException("Usannsynlig verdi for mengde.")
-        }
-        if (costNOK != null && costNOK > 10000) {
-            throw BookEntryException("Usannsynlig verdi for kostnad.")
-        }
-        vehicle.lastEntry()?.apply {
-            if (odoReading != null
-                && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()) != this.odometer?.compareTo(odoReading)
-            ) {
-                throw BookEntryCronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
-            }
-        }
+        vehicle.lastEntry(EntryType.FUEL)?.checkIfDuplicate(odoReading, amount, costNOK)
+        odoReading?.validateAsOdometer()
+        amount?.validateAsAmount()
+        costNOK?.validateAsCost()
+        vehicle.lastEntry()?.checkChronologyAgainst(dateTime, odoReading)
     }
 
     fun getLastFuelEntry(vehicle: String): BookEntry? {
         return vehicleService.findVehicle(vehicle).lastEntry(EntryType.FUEL)
     }
+}
 
+private fun BookEntry.checkIfDuplicate(odoReading: Int?, amount: Double?, costNOK: Double?) {
+    if (this.odometer == odoReading
+        && this.amount == amount
+        && this.costNOK == costNOK
+    ) {
+        throw DuplicateBookEntryException()
+    }
+}
+
+fun Double.validateAsAmount() {
+    if (this > 1000) {
+        throw BookEntryException("Usannsynlig verdi for mengde.")
+    }
+}
+
+fun Double.validateAsCost() {
+    if (this > 10000) {
+        throw BookEntryException("Usannsynlig verdi for kostnad.")
+    }
+}
+
+fun Int.validateAsOdometer() {
+    if (this > 10000000) {
+        throw BookEntryException("Usannsynlig verdi for kilometerstand.")
+    }
+}
+
+private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {
+    if (odoReading != null
+        && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()) != this.odometer?.compareTo(odoReading)
+    ) {
+        throw BookEntryChronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
+    }
 }
