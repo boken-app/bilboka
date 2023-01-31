@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.user.domain.User
+import bilboka.messagebot.commands.Undoable
 import java.time.Duration
 import java.time.Instant
 
@@ -10,6 +11,8 @@ class Conversation(
     val botMessenger: BotMessenger
 ) {
     private val duplicateBuster = DuplicateBuster(senderID)
+
+    private var lastUndoable: UndoableEvent<Any>? = null // TODO når skal denne nullstilles?
 
     fun getSource(): String {
         return botMessenger.sourceID
@@ -38,6 +41,20 @@ class Conversation(
         duplicateBuster.catchDuplicates(message)
     }
 
+    fun setUndoable(action: Undoable<Any>, item: Any) {
+        lastUndoable = UndoableEvent(action, item)
+    }
+
+    fun resetUndoable() {
+        lastUndoable = null
+    }
+
+    fun undoLast() {
+        lastUndoable?.apply {
+            action.undo(item)
+        } ?: throw NothingToUndoException("Ingen handling å angre")
+    }
+
     internal class DuplicateBuster(private val sender: String) {
         private val timeout = Duration.ofSeconds(10)
         private var last: String? = null
@@ -63,5 +80,8 @@ class Conversation(
     }
 }
 
+data class UndoableEvent<T>(val action: Undoable<T>, val item: T)
+
 class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)
+class NothingToUndoException(message: String) : RuntimeException(message)

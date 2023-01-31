@@ -199,6 +199,55 @@ class MessageBotIT : H2Test() {
         )
     }
 
+    @Test
+    fun canUndo() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 35589 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l"
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 35592 20l 200kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 35592 km: 20 liter for 200 kr") }
+        )
+        processMessagaAndAssertReply(
+            message = "Angre",
+            reply = "Angret"
+        )
+        processMessagaAndAssertReply(
+            message = "Siste en testbil",
+            reply = { it.contains("Siste tanking av en testbil: 30 liter for 300 kr") }
+        )
+    }
+
+    @Test
+    @Disabled // TODO lage dette
+    fun canNotUndoAfterAnotherMessage() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34589 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 34589 km: 30 liter for 300 kr, 10 kr/l"
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34592 20l 200kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 34592 km: 20 liter for 200 kr") }
+        )
+        processMessagaAndAssertReply(
+            message = "Siste en testbil",
+            reply = { it.contains("Siste tanking av en testbil: 20 liter for 200 kr (10 kr/l)") }
+        )
+        processMessagaAndAssertReply(
+            message = "Hei",
+            reply = "Hei"
+        )
+        processMessagaAndAssertReply(
+            message = "Angre",
+            reply = { it.contains("Ingen handling å angre") }
+        )
+        processMessagaAndAssertReply(
+            message = "Siste en testbil",
+            reply = { it.contains("Siste tanking av en testbil: 20 liter for 200 kr (10 kr/l)") }
+        )
+    }
+
     private fun processMessagaAndAssertReply(message: String, reply: String, sender: String = validSender) {
         processMessagaAndAssertReply(message, isEqual(reply), "replies \"$reply\"", sender)
     }

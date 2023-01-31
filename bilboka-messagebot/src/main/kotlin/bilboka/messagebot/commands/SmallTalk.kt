@@ -47,7 +47,7 @@ class SmallTalk : GeneralChatCommand() {
         }
     }
 
-    override fun resetState() {
+    override fun resetState(conversation: Conversation?) {
         hasAskedSomething = false
     }
 }

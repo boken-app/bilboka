@@ -42,7 +42,7 @@ class VehicleInfo(
         )
     }
 
-    override fun resetState() {
+    override fun resetState(conversation: Conversation?) {
 
     }
 }

@@ -1,6 +1,7 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
+import bilboka.core.book.domain.BookEntry
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.format
@@ -9,7 +10,7 @@ import kotlin.text.RegexOption.IGNORE_CASE
 class FuelEntryAdder(
     private val book: Book,
     userService: UserService
-) : CarBookCommand(userService) {
+) : CarBookCommand(userService), Undoable<BookEntry> {
     private val matcher = Regex(
         "(drivstoff|tank|fylt|fuel|bensin|diesel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s([0-9]{1,7})\\s?(km|mi)?\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
         IGNORE_CASE
@@ -34,6 +35,7 @@ class FuelEntryAdder(
             costNOK = cost.convertToDouble(),
             source = conversation.getSource(),
         )
+        conversation.setUndoable(this as Undoable<Any>, addedFuel) // TODO hva er greia her?
 
         conversation.sendReply(
             "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: ${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, ${
@@ -42,8 +44,12 @@ class FuelEntryAdder(
         )
     }
 
-    override fun resetState() {
+    override fun resetState(conversation: Conversation?) {
 
+    }
+
+    override fun undo(item: BookEntry) {
+        item.delete()
     }
 }
 

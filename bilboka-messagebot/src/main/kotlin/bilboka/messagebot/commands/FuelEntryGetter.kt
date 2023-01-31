@@ -43,7 +43,7 @@ class FuelEntryGetter(
         )
     }
 
-    override fun resetState() {
+    override fun resetState(conversation: Conversation?) {
 
     }
 }

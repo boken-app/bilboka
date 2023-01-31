@@ -56,7 +56,7 @@ class RegisterUser(
         }
     }
 
-    override fun resetState() {
+    override fun resetState(conversation: Conversation?) {
         regInProrgess = false
     }
 }

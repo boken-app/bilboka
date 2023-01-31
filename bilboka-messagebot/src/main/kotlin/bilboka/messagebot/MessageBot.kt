@@ -39,7 +39,8 @@ class MessageBot {
             Helper(),
             VehicleInfo(vehicleService, userService),
             UserInfo(),
-            RegisterUser(userService)
+            RegisterUser(userService),
+            UndoLast(userService),
         )
     }
 
@@ -75,7 +76,7 @@ class MessageBot {
                 )
                 noMatches = false
             } else {
-                it.resetState()
+                it.resetState(conversation)
             }
         }
 
