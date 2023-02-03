@@ -1,12 +1,10 @@
 package bilboka.messagebot.commands
 
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.GeneralChatCommand
 
 class SmallTalk : GeneralChatCommand() {
-
-    private var hasAskedSomething = false
-    // TODO: Denne må håndteres pr. senderID for å fungere for flere brukere.
 
     val conversations = mapOf(
         Pair("hei", "Hei"),
@@ -31,11 +29,11 @@ class SmallTalk : GeneralChatCommand() {
     )
 
     override fun isMatch(message: String): Boolean {
-        return hasAskedSomething || conversations.keys.contains(message.lowercase())
+        return conversations.keys.contains(message.lowercase())
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        if (hasAskedSomething) {
+        if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
             conversation.sendReply("Cool")
             resetState()
         } else {
@@ -44,11 +42,13 @@ class SmallTalk : GeneralChatCommand() {
             )
         }
         if (message.lowercase() == "skjer?") {
-            hasAskedSomething = true
+            conversation.claim(this, State(hasAskedSomething = true))
         }
     }
 
     override fun resetState(conversation: Conversation?) {
-        hasAskedSomething = false
+
     }
+
+    class State(val hasAskedSomething: Boolean) : ChatState()
 }

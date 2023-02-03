@@ -1,6 +1,5 @@
 package bilboka.messagebot;
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class MessageBotIT : AbstractMessageBotIT() {
@@ -115,17 +114,16 @@ class MessageBotIT : AbstractMessageBotIT() {
     }
 
     @Test
-    @Disabled // TODO dette må fikses på generell basis
     fun usersCanRunRegisteringIndependently() {
         processMessagaAndAssertReply(
             message = "registrer",
             sender = "238845",
-            reply = "Klar for registrering! Skriv din hemmelige kode."
+            reply = { it.contains("Klar for registrering! Skriv din hemmelige kode") }
         )
         processMessagaAndAssertReply(
             message = "registrer",
             sender = "838845",
-            reply = "Klar for registrering! Skriv din hemmelige kode."
+            reply = { it.contains("Klar for registrering! Skriv din hemmelige kode") }
         )
         processMessagaAndAssertReply(
             message = "hei",

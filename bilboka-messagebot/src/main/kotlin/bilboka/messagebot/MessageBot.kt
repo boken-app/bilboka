@@ -70,7 +70,9 @@ class MessageBot {
         var noMatches = true
 
         commandRegistry.forEach {
-            if (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID)) {
+            if (conversation.claimedBy(it) ||
+                (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID))
+            ) {
                 if (it !is UndoLast) {
                     conversation.resetUndoable()
                 }

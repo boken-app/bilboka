@@ -4,6 +4,7 @@ import bilboka.core.user.InvalidRegistrationKeyException
 import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.GeneralChatCommand
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -15,14 +16,12 @@ class RegisterUser(
         IGNORE_CASE
     )
 
-    private var regInProrgess = false
-
     override fun isMatch(message: String): Boolean {
-        return matcher.containsMatchIn(message) || regInProrgess
+        return matcher.containsMatchIn(message)
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        if (regInProrgess) {
+        if (conversation.withdrawClaim<State>(this)?.regInProgress == true) {
             try {
                 userService.register(conversation.getSource(), conversation.senderID, message)
                 conversation.registerUser(
@@ -46,7 +45,7 @@ class RegisterUser(
                 resetState()
             }
         } else if (userService.findUserByRegistration(conversation.getSource(), conversation.senderID) == null) {
-            regInProrgess = true
+            conversation.claim(this, State(regInProgress = true))
             conversation.sendReply(
                 "Klar for registrering! Skriv din hemmelige kode 🗝"
             )
@@ -58,6 +57,8 @@ class RegisterUser(
     }
 
     override fun resetState(conversation: Conversation?) {
-        regInProrgess = false
+
     }
+
+    class State(val regInProgress: Boolean) : ChatState()
 }

@@ -1,6 +1,8 @@
 package bilboka.messagebot
 
 import bilboka.core.user.domain.User
+import bilboka.messagebot.commands.common.ChatCommand
+import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.Undoable
 import java.time.Duration
 import java.time.Instant
@@ -11,8 +13,8 @@ class Conversation(
     val botMessenger: BotMessenger
 ) {
     private val duplicateBuster = DuplicateBuster(senderID)
-
     private var lastUndoable: UndoableEvent<Any>? = null
+    private var claim: ConversationClaim<ChatCommand>? = null
 
     fun getSource(): String {
         return botMessenger.sourceID
@@ -21,13 +23,6 @@ class Conversation(
     fun withWhom(): User {
         return user
             ?: throw DontKnowWithWhomException("Samtalen kjenner ikke til bruker med id $senderID for meldingskilde ${getSource()}")
-    }
-
-    fun registerUser(user: User) {
-        if (this.user != null) {
-            throw IllegalStateException("Kan ikke endre bruker på eksisterende samtale")
-        }
-        this.user = user
     }
 
     fun sendReply(message: String) {
@@ -39,6 +34,32 @@ class Conversation(
 
     fun validate(message: String) {
         duplicateBuster.catchDuplicates(message)
+    }
+
+    fun <T : ChatState> claim(by: ChatCommand, state: T? = null) {
+        this.claim = ConversationClaim(by, state)
+    }
+
+    fun claimedBy(by: ChatCommand): Boolean {
+        return claim?.claimedBy == by
+    }
+
+    fun <T : ChatState> withdrawClaim(by: ChatCommand): T? {
+        if (claim?.claimedBy == by) {
+            return claim?.state.also { unclaim() } as T
+        }
+        return null
+    }
+
+    private fun unclaim() {
+        this.claim = null
+    }
+
+    fun registerUser(user: User) {
+        if (this.user != null) {
+            throw IllegalStateException("Kan ikke endre bruker på eksisterende samtale")
+        }
+        this.user = user
     }
 
     fun undoLast() {
@@ -82,6 +103,7 @@ class Conversation(
 }
 
 data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T)
+data class ConversationClaim<T : ChatCommand>(val claimedBy: T, val state: ChatState?)
 
 class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)

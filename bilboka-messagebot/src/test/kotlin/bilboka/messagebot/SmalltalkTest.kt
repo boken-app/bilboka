@@ -49,6 +49,21 @@ class SmalltalkTest : AbstractMessageBotTest() {
     }
 
     @Test
+    fun sendSkjerByDifferentPersons_returnsIndependentResponses() {
+        messagebot.processMessage("Skjer?", registeredSenderID)
+        messagebot.processMessage("Skjer?", unregisteredSenderID)
+        messagebot.processMessage("Jada så joda", registeredSenderID)
+        messagebot.processMessage("Stuff skjer", unregisteredSenderID)
+
+        verifyOrder {
+            botMessenger.sendMessage("Ikke noe spes. Der?", registeredSenderID)
+            botMessenger.sendMessage("Ikke noe spes. Der?", unregisteredSenderID)
+            botMessenger.sendMessage("Cool", registeredSenderID)
+            botMessenger.sendMessage("Cool", unregisteredSenderID)
+        }
+    }
+
+    @Test
     fun sendSomethingStrange_returnsDefaultMessage() {
         messagebot.processMessage("Her kommer en rar melding", registeredSenderID)
 
