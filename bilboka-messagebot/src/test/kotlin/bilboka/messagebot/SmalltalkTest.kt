@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class MessageBotTest : AbstractMessageBotTest() {
+class SmalltalkTest : AbstractMessageBotTest() {
 
     @Test
     fun sendHei_returnsHei() {

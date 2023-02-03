@@ -11,10 +11,8 @@ import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 
 // TODO: Integrasjonstester på tvers av moduler kan være i config-modul
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class H2Test {
     @BeforeAll
     fun setupDatabase() {

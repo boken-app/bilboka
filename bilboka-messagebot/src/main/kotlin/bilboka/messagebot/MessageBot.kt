@@ -70,6 +70,9 @@ class MessageBot {
 
         commandRegistry.forEach {
             if (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID)) {
+                if (it !is UndoLast) {
+                    conversation.resetUndoable()
+                }
                 it.execute(
                     conversation,
                     message

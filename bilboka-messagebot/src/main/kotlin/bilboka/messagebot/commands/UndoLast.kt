@@ -21,6 +21,5 @@ class UndoLast(
     }
 
     override fun resetState(conversation: Conversation?) {
-        //conversation?.resetUndoable() // TODO
     }
 }

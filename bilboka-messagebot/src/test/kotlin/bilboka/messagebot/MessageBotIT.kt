@@ -1,70 +1,9 @@
 package bilboka.messagebot;
 
-import bilboka.core.book.Book
-import bilboka.core.user.UserService
-import bilboka.core.user.domain.RegistrationKey
-import bilboka.core.vehicle.VehicleService
-import bilboka.core.vehicle.domain.FuelType
-import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.stereotype.Component
-import java.util.function.Predicate
-import java.util.function.Predicate.isEqual
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, UserService::class])
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MessageBotIT : H2Test() {
-
-    @Autowired
-    lateinit var testMessenger: TestMessenger
-
-    @Autowired
-    lateinit var messageBot: MessageBot
-
-    @Autowired
-    lateinit var vehicleService: VehicleService
-
-    @Autowired
-    lateinit var userService: UserService
-
-    val validSender = "2345"
-    val keyForNewUser = "some_new_key-lol"
-
-    @BeforeAll
-    fun setup() {
-        vehicleService.addVehicle(
-            name = "XC 70",
-            nicknames = setOf("xc70", "crosser"),
-            fuelType = FuelType.DIESEL,
-            tegnkombinasjon = "KT65881"
-        )
-        vehicleService.addVehicle(
-            name = "en testbil",
-            fuelType = FuelType.BENSIN
-        )
-        val key = "some_key-lol"
-        val user = userService.addUser("tester_user")
-        val userForReg = userService.addUser("tester_user_for_reg")
-        transaction {
-            RegistrationKey.new {
-                this.user = user
-                this.key = key
-            }
-            RegistrationKey.new {
-                this.user = userForReg
-                this.key = keyForNewUser
-            }
-        }
-        userService.register("regtype", validSender, key)
-    }
-
-    @AfterEach
-    fun resetMock() {
-        testMessenger.reset()
-    }
+class MessageBotIT : AbstractMessageBotIT() {
 
     @Test
     fun sendAddFuelRequest() {
@@ -125,6 +64,10 @@ class MessageBotIT : H2Test() {
 
     @Test
     fun sendGetLastFueling() {
+        processMessagaAndAssertReply(
+            message = "drivstoff XC 70 1234 km 30,44 l 608,80 kr",
+            reply = { it.contains("Registrert tanking") }
+        )
         processMessagaAndAssertReply(
             message = "Siste xc70",
             reply = { it.contains("Siste tanking av xc 70: 30,44 liter for 608,8 kr (20 kr/l)") }
@@ -200,7 +143,7 @@ class MessageBotIT : H2Test() {
     }
 
     @Test
-    fun canUndo() {
+    fun canUndoEvenOnSecondTry() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35589 30l 300kr",
             reply = "Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l"
@@ -208,6 +151,10 @@ class MessageBotIT : H2Test() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35592 20l 200kr",
             reply = { it.contains("Registrert tanking av en testbil ved 35592 km: 20 liter for 200 kr") }
+        )
+        processMessagaAndAssertReply(
+            message = "Anfgre",
+            reply = FALLBACK_MESSAGE
         )
         processMessagaAndAssertReply(
             message = "Angre",
@@ -220,15 +167,38 @@ class MessageBotIT : H2Test() {
     }
 
     @Test
-    @Disabled // TODO lage dette
-    fun canNotUndoAfterAnotherMessage() {
+    fun canUndoOnlyOnce() {
         processMessagaAndAssertReply(
-            message = "Drivstoff en testbil 34589 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 34589 km: 30 liter for 300 kr, 10 kr/l"
+            message = "Drivstoff en testbil 36590 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 36590 km: 30 liter for 300 kr, 10 kr/l"
         )
         processMessagaAndAssertReply(
-            message = "Drivstoff en testbil 34592 20l 200kr",
-            reply = { it.contains("Registrert tanking av en testbil ved 34592 km: 20 liter for 200 kr") }
+            message = "Drivstoff en testbil 36592 20l 200kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 36592 km: 20 liter for 200 kr") }
+        )
+        processMessagaAndAssertReply(
+            message = "Angre",
+            reply = "Angret"
+        )
+        processMessagaAndAssertReply(
+            message = "Siste en testbil",
+            reply = { it.contains("Siste tanking") }
+        )
+        processMessagaAndAssertReply(
+            message = "Angre",
+            reply = { it.contains("Ingen handling å angre") }
+        )
+    }
+
+    @Test
+    fun canNotUndoAfterAnotherMessage() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 37589 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l"
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 37592 20l 200kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 37592 km: 20 liter for 200 kr") }
         )
         processMessagaAndAssertReply(
             message = "Siste en testbil",
@@ -246,46 +216,6 @@ class MessageBotIT : H2Test() {
             message = "Siste en testbil",
             reply = { it.contains("Siste tanking av en testbil: 20 liter for 200 kr (10 kr/l)") }
         )
-    }
-
-    private fun processMessagaAndAssertReply(message: String, reply: String, sender: String = validSender) {
-        processMessagaAndAssertReply(message, isEqual(reply), "replies \"$reply\"", sender)
-    }
-
-    private fun processMessagaAndAssertReply(
-        message: String,
-        reply: Predicate<String>,
-        matcherDescriptor: String = "",
-        sender: String = validSender
-    ) {
-        messageBot.processMessage(message, sender)
-
-        assertThat(testMessenger.messageSent).matches(reply, matcherDescriptor)
-        assertThat(testMessenger.recipient).isEqualTo(sender)
-    }
-
-}
-
-@Component
-class TestMessenger : BotMessenger {
-    override val sourceID: String
-        get() = "test_messenger"
-
-    var messageSent: String? = null
-    var recipient: String? = null
-
-    fun reset() {
-        messageSent = null
-        recipient = null
-    }
-
-    override fun sendMessage(message: String, recipientID: String) {
-        messageSent = message
-        recipient = recipientID
-    }
-
-    override fun sendPostback(options: List<String>, recipientID: String) {
-        TODO("Not yet implemented")
     }
 
 }

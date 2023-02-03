@@ -12,7 +12,7 @@ class Conversation(
 ) {
     private val duplicateBuster = DuplicateBuster(senderID)
 
-    private var lastUndoable: UndoableEvent<Any>? = null // TODO når skal denne nullstilles?
+    private var lastUndoable: UndoableEvent<Any>? = null
 
     fun getSource(): String {
         return botMessenger.sourceID
