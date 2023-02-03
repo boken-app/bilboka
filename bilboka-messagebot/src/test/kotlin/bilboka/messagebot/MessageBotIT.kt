@@ -181,8 +181,8 @@ class MessageBotIT : AbstractMessageBotIT() {
             reply = "Angret"
         )
         processMessagaAndAssertReply(
-            message = "Siste en testbil",
-            reply = { it.contains("Siste tanking") }
+            message = "tull",
+            reply = FALLBACK_MESSAGE
         )
         processMessagaAndAssertReply(
             message = "Angre",

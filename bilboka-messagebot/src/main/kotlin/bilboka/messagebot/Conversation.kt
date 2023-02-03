@@ -41,18 +41,19 @@ class Conversation(
         duplicateBuster.catchDuplicates(message)
     }
 
+    fun undoLast() {
+        lastUndoable?.apply {
+            action.undo(item)
+        } ?: throw NothingToUndoException("Ingen handling å angre")
+        resetUndoable()
+    }
+
     fun <T : Any> setUndoable(action: Undoable<T>, item: T) {
         lastUndoable = UndoableEvent(action, item) as UndoableEvent<Any>
     }
 
     fun resetUndoable() {
         lastUndoable = null
-    }
-
-    fun undoLast() {
-        lastUndoable?.apply {
-            action.undo(item)
-        } ?: throw NothingToUndoException("Ingen handling å angre")
     }
 
     internal class DuplicateBuster(private val sender: String) {
