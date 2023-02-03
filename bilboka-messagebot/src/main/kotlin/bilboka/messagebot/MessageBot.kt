@@ -6,6 +6,7 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.commands.*
+import bilboka.messagebot.commands.common.ChatCommand
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

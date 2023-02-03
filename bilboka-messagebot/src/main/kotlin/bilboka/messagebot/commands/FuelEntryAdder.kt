@@ -4,6 +4,8 @@ import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.commands.common.Undoable
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 

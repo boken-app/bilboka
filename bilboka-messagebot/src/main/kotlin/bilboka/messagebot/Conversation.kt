@@ -1,7 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.user.domain.User
-import bilboka.messagebot.commands.Undoable
+import bilboka.messagebot.commands.common.Undoable
 import java.time.Duration
 import java.time.Instant
 

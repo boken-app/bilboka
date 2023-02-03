@@ -1,6 +1,7 @@
 package bilboka.messagebot.commands
 
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.GeneralChatCommand
 
 internal const val DEFAULT_HELP_MESSAGE = "For å registrere drivstoff, skriv f.eks. \"Drivstoff XC70 256789 30l 300kr\""
 

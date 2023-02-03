@@ -4,6 +4,7 @@ import bilboka.core.user.InvalidRegistrationKeyException
 import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.GeneralChatCommand
 import kotlin.text.RegexOption.IGNORE_CASE
 
 class RegisterUser(

@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.user.domain.User
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.GeneralChatCommand
 
 class UserInfo : GeneralChatCommand() {
     private val matcher = Regex(

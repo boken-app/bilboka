@@ -1,6 +1,7 @@
 package bilboka.messagebot.commands
 
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.GeneralChatCommand
 
 class SmallTalk : GeneralChatCommand() {
 

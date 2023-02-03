@@ -4,6 +4,7 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.CarBookCommand
 
 class VehicleInfo(
     private val vehicleService: VehicleService,

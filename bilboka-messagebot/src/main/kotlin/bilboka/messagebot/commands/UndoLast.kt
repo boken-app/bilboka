@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
+import bilboka.messagebot.commands.common.CarBookCommand
 
 class UndoLast(
     userService: UserService

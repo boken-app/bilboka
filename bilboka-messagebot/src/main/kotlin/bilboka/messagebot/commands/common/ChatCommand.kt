@@ -1,4 +1,4 @@
-package bilboka.messagebot.commands
+package bilboka.messagebot.commands.common
 
 import bilboka.messagebot.Conversation
 
