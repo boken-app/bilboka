@@ -59,6 +59,28 @@ internal class VehicleIT : H2Test() {
         Assertions.assertThat(fuelEntry?.dateTime).isAfterOrEqualTo(before)
     }
 
+    @Test
+    fun getsLastFuelEntryByTime() {
+        vehicle.addFuel(
+            dateTime = LocalDateTime.now().minusDays(2),
+            amount = 12.2,
+            costNOK = 130.0,
+            odometer = 123590,
+            isFull = false,
+            source = "test"
+        )
+        val last = vehicle.addFuel(
+            dateTime = LocalDateTime.now().minusDays(1),
+            amount = 12.0,
+            costNOK = 139.0,
+            odometer = 123,
+            isFull = false,
+            source = "test"
+        )
+
+        Assertions.assertThat(vehicle.lastEntry(EntryType.FUEL)?.id).isEqualTo(last.id)
+    }
+
     private fun getVehicle(): Vehicle {
         return transaction { Vehicle[vehicle.id] }
     }

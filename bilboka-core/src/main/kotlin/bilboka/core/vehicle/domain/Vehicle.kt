@@ -64,11 +64,14 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastEntry(): BookEntry? {
-        return transaction { bookEntries.lastOrNull() }
+        return transaction { bookEntries.maxByOrNull { it.dateTime } }
     }
 
     fun lastEntry(type: EntryType): BookEntry? {
-        return transaction { bookEntries.lastOrNull { entry -> entry.type == type } }
+        return transaction {
+            bookEntries.filter { it.type == type }
+                .maxByOrNull { it.dateTime }
+        }
     }
 
     fun fuelType(): FuelType {

@@ -7,6 +7,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import kotlin.math.sign
 
 @Component
 class Book(
@@ -83,8 +84,8 @@ fun Int.validateAsOdometer() {
 }
 
 private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {
-    if (odoReading != null
-        && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()) != this.odometer?.compareTo(odoReading)
+    if (odoReading != null && this.odometer != null
+        && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()).sign != this.odometer?.compareTo(odoReading)?.sign
     ) {
         throw BookEntryChronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
     }
