@@ -79,8 +79,8 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun isCalled(calledName: String): Boolean {
-        return calledName.lowercase() == name.lowercase()
-                || nicknames.map { it.lowercase() }.contains(calledName.lowercase())
+        return calledName.normalizeName() == name.normalizeName()
+                || nicknames.map { it.normalizeName() }.contains(calledName.normalizeName())
                 || hasTegnkombinasjon(calledName)
     }
 
@@ -92,4 +92,8 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
 
 fun String.normaliserTegnkombinasjon(): String {
     return this.uppercase().replace(" ", "").replace("-", "")
+}
+
+fun String.normalizeName(): String {
+    return this.lowercase().replace(" ", "")
 }
