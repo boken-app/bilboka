@@ -35,7 +35,7 @@ class FuelEntryAdder(
             costNOK = cost.convertToDouble(),
             source = conversation.getSource(),
         )
-        conversation.setUndoable(this as Undoable<Any>, addedFuel) // TODO hva er greia her?
+        conversation.setUndoable(this, addedFuel)
 
         conversation.sendReply(
             "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: ${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, ${

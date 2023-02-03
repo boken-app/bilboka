@@ -1,5 +1,5 @@
 package bilboka.messagebot.commands
 
-interface Undoable<T> {
+interface Undoable<in T : Any> {
     fun undo(item: T)
 }

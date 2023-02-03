@@ -41,8 +41,8 @@ class Conversation(
         duplicateBuster.catchDuplicates(message)
     }
 
-    fun setUndoable(action: Undoable<Any>, item: Any) {
-        lastUndoable = UndoableEvent(action, item)
+    fun <T : Any> setUndoable(action: Undoable<T>, item: T) {
+        lastUndoable = UndoableEvent(action, item) as UndoableEvent<Any>
     }
 
     fun resetUndoable() {
@@ -80,7 +80,7 @@ class Conversation(
     }
 }
 
-data class UndoableEvent<T>(val action: Undoable<T>, val item: T)
+data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T)
 
 class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)
