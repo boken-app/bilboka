@@ -7,3 +7,5 @@ abstract class ChatCommand {
     abstract fun validUser(regTypeID: String, senderID: String): Boolean
     abstract fun execute(conversation: Conversation, message: String)
 }
+
+abstract class ChatState

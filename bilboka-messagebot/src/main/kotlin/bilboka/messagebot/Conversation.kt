@@ -14,7 +14,7 @@ class Conversation(
 ) {
     private val duplicateBuster = DuplicateBuster(senderID)
     private var lastUndoable: UndoableEvent<Any>? = null
-    private var claim: ConversationClaim<ChatCommand>? = null
+    var claim: ConversationClaim<ChatCommand>? = null
 
     fun getSource(): String {
         return botMessenger.sourceID
@@ -40,18 +40,18 @@ class Conversation(
         this.claim = ConversationClaim(by, state)
     }
 
-    fun claimedBy(by: ChatCommand): Boolean {
-        return claim?.claimedBy == by
-    }
-
-    fun <T : ChatState> withdrawClaim(by: ChatCommand): T? {
-        if (claim?.claimedBy == by) {
+    inline fun <reified T : ChatState> withdrawClaim(by: ChatCommand): T? {
+        if (claimedBy(by)) {
             return claim?.state.also { unclaim() } as T
         }
         return null
     }
 
-    private fun unclaim() {
+    fun claimedBy(by: ChatCommand): Boolean {
+        return claim?.claimedBy == by
+    }
+
+    fun unclaim() {
         this.claim = null
     }
 
