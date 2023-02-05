@@ -22,7 +22,4 @@ class Helper : GeneralChatCommand() {
         conversation.sendReply(DEFAULT_HELP_MESSAGE)
     }
 
-    override fun resetState(conversation: Conversation?) {
-
-    }
 }

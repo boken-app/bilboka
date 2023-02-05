@@ -81,8 +81,6 @@ class MessageBot {
                     message
                 )
                 noMatches = false
-            } else {
-                it.resetState(conversation)
             }
         }
 
@@ -112,7 +110,6 @@ class MessageBot {
 
     fun reset() {
         ConversationBank.reset()
-        commandRegistry.forEach { it.resetState() }
     }
 
     object ConversationBank {

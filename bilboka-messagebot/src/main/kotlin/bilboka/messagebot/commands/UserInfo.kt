@@ -32,7 +32,4 @@ class UserInfo : GeneralChatCommand() {
         )
     }
 
-    override fun resetState(conversation: Conversation?) {
-
-    }
 }

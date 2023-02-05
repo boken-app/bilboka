@@ -35,7 +35,6 @@ class SmallTalk : GeneralChatCommand() {
     override fun execute(conversation: Conversation, message: String) {
         if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
             conversation.sendReply("Cool")
-            resetState()
         } else {
             conversation.sendReply(
                 conversations[message.lowercase()] ?: "Usikker på hva du mener med $message"
@@ -44,10 +43,6 @@ class SmallTalk : GeneralChatCommand() {
         if (message.lowercase() == "skjer?") {
             conversation.claim(this, State(hasAskedSomething = true))
         }
-    }
-
-    override fun resetState(conversation: Conversation?) {
-
     }
 
     class State(val hasAskedSomething: Boolean) : ChatState()

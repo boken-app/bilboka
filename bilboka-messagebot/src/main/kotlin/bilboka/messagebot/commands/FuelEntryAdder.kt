@@ -46,10 +46,6 @@ class FuelEntryAdder(
         )
     }
 
-    override fun resetState(conversation: Conversation?) {
-
-    }
-
     override fun undo(item: BookEntry) {
         item.delete()
     }

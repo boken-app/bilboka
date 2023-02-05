@@ -41,8 +41,6 @@ class RegisterUser(
                 conversation.sendReply(
                     "Feil kode! 🤨"
                 )
-            } finally {
-                resetState()
             }
         } else if (userService.findUserByRegistration(conversation.getSource(), conversation.senderID) == null) {
             conversation.claim(this, State(regInProgress = true))
@@ -54,10 +52,6 @@ class RegisterUser(
                 "Du er allerede registrert ¯\\_(ツ)_/¯"
             )
         }
-    }
-
-    override fun resetState(conversation: Conversation?) {
-
     }
 
     class State(val regInProgress: Boolean) : ChatState()

@@ -21,6 +21,4 @@ class UndoLast(
         conversation.sendReply("Angret")
     }
 
-    override fun resetState(conversation: Conversation?) {
-    }
 }
