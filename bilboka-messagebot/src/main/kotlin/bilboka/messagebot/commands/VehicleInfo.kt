@@ -6,7 +6,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 
-class VehicleInfo(
+internal class VehicleInfo(
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService) {

@@ -12,7 +12,7 @@ internal const val DEFAULT_HELP_MESSAGE =
             "Brukerinfo -> Se info om brukeren du er registrert som\n" +
             ""
 
-class Helper : GeneralChatCommand() {
+internal class Helper : GeneralChatCommand() {
 
     override fun isMatch(message: String): Boolean {
         return setOf("hjelp", "help", "hlp", "h", "info", "?").contains(message.lowercase())

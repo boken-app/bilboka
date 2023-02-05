@@ -4,7 +4,7 @@ import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 
-class UndoLast(
+internal class UndoLast(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(

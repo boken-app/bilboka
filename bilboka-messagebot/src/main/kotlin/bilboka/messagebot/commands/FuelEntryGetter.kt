@@ -8,7 +8,7 @@ import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
 
-class FuelEntryGetter(
+internal class FuelEntryGetter(
     private val book: Book,
     userService: UserService
 ) : CarBookCommand(userService) {

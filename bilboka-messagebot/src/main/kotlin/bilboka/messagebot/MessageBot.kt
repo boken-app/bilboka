@@ -22,16 +22,16 @@ class MessageBot {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
-    lateinit var botMessenger: BotMessenger
+    private lateinit var botMessenger: BotMessenger
 
     @Autowired
-    lateinit var vehicleService: VehicleService
+    private lateinit var vehicleService: VehicleService
 
     @Autowired
-    lateinit var userService: UserService
+    private lateinit var userService: UserService
 
     @Autowired
-    lateinit var book: Book
+    private lateinit var book: Book
 
     private val commandRegistry by lazy {
         setOf(
@@ -113,14 +113,14 @@ class MessageBot {
         ConversationBank.reset()
     }
 
-    object ConversationBank {
+    private object ConversationBank {
         private val conversations = mutableMapOf<String, Conversation>()
 
-        internal fun find(sender: String, sourceID: String): Conversation? {
+        fun find(sender: String, sourceID: String): Conversation? {
             return conversations[key(sender, sourceID)]
         }
 
-        internal fun initiate(conversation: Conversation): Conversation {
+        fun initiate(conversation: Conversation): Conversation {
             conversations[key(conversation.senderID, conversation.getSource())] = conversation
             return conversation
         }
@@ -129,7 +129,7 @@ class MessageBot {
             return "$sourceID-$sender"
         }
 
-        internal fun reset() {
+        fun reset() {
             conversations.clear()
         }
     }

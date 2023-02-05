@@ -2,7 +2,7 @@ package bilboka.messagebot.commands.common
 
 import bilboka.core.user.UserService
 
-abstract class CarBookCommand(
+internal abstract class CarBookCommand(
     private val userService: UserService
 ) : ChatCommand() {
     override fun validUser(regTypeID: String, senderID: String): Boolean {

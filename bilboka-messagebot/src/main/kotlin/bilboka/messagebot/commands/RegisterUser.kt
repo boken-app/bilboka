@@ -8,7 +8,7 @@ import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.GeneralChatCommand
 import kotlin.text.RegexOption.IGNORE_CASE
 
-class RegisterUser(
+internal class RegisterUser(
     private val userService: UserService
 ) : GeneralChatCommand() {
     private val matcher = Regex(

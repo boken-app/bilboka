@@ -4,7 +4,7 @@ import bilboka.core.user.domain.User
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.GeneralChatCommand
 
-class UserInfo : GeneralChatCommand() {
+internal class UserInfo : GeneralChatCommand() {
     private val matcher = Regex(
         "(brukerinfo)",
         RegexOption.IGNORE_CASE

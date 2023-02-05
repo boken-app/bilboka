@@ -9,7 +9,7 @@ import bilboka.messagebot.commands.common.Undoable
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
-class FuelEntryAdder(
+internal class FuelEntryAdder(
     private val book: Book,
     userService: UserService
 ) : CarBookCommand(userService), Undoable<BookEntry> {

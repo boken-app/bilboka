@@ -4,7 +4,7 @@ import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.GeneralChatCommand
 
-class SmallTalk : GeneralChatCommand() {
+internal class SmallTalk : GeneralChatCommand() {
 
     val conversations = mapOf(
         Pair("hei", "Hei"),

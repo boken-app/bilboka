@@ -7,14 +7,14 @@ import bilboka.messagebot.commands.common.Undoable
 import java.time.Duration
 import java.time.Instant
 
-class Conversation(
+internal class Conversation(
     var user: User? = null,
     val senderID: String,
     val botMessenger: BotMessenger
 ) {
     private val duplicateBuster = DuplicateBuster(senderID)
     private var lastUndoable: UndoableEvent<Any>? = null
-    var claim: ConversationClaim<ChatCommand>? = null
+    internal var claim: ConversationClaim<ChatCommand>? = null
 
     fun getSource(): String {
         return botMessenger.sourceID
@@ -102,8 +102,8 @@ class Conversation(
     }
 }
 
-data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T)
-data class ConversationClaim<T : ChatCommand>(val claimedBy: T, val state: ChatState?)
+internal data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T)
+internal data class ConversationClaim<T : ChatCommand>(val claimedBy: T, val state: ChatState?)
 
 class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)
