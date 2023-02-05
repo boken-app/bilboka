@@ -50,6 +50,7 @@ class MessengerWebhookResource(
     ): ResponseEntity<String> {
         return if (MessengerWebhookConfig.PAGE_SUBSCRIPTION == request.requestObject) {
             logger.info("Handling incoming page request!")
+            // TODO Bruke coroutines og håndtere async?
             request.entry.stream()
                 .forEach { facebookEntry ->
                     logger.debug("Received entry payload: {}", facebookEntry)
