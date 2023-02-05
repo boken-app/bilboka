@@ -13,7 +13,7 @@ class VehicleInfoTest : AbstractMessageBotTest() {
     @Test
     fun getInfo_getsInfo() {
         val vehicle = vehicle(name = "En Testbil", fuelType = FuelType.DIESEL)
-        every { vehicleService.findVehicle(any()) } returns vehicle
+        every { vehicleService.getVehicle(any()) } returns vehicle
 
         messagebot.processMessage("Info testbil", registeredSenderID)
 
@@ -22,7 +22,7 @@ class VehicleInfoTest : AbstractMessageBotTest() {
                 message = match { msg -> msg.contains("Bil-navn: En Testbil") },
                 registeredSenderID
             )
-            vehicleService.findVehicle("testbil")
+            vehicleService.getVehicle("testbil")
         }
     }
 }

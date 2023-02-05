@@ -29,7 +29,7 @@ class VehicleService() {
         }
     }
 
-    fun findVehicle(vehicleName: String): Vehicle {
+    fun getVehicle(vehicleName: String): Vehicle {
         return transaction {
             Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(vehicleName) }
                 ?: throw VehicleNotFoundException(

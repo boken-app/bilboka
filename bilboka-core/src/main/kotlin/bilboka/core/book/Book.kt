@@ -24,7 +24,7 @@ class Book(
         source: String,
         isFull: Boolean = false
     ): BookEntry {
-        val vehicle = vehicleService.findVehicle(vehicleName)
+        val vehicle = vehicleService.getVehicle(vehicleName)
         validateFuelRequest(vehicle, dateTime, odoReading, amount, costNOK)
         return vehicle.addFuel(
             enteredBy = enteredBy,
@@ -52,7 +52,7 @@ class Book(
     }
 
     fun getLastFuelEntry(vehicle: String): BookEntry? {
-        return vehicleService.findVehicle(vehicle).lastEntry(EntryType.FUEL)
+        return vehicleService.getVehicle(vehicle).lastEntry(EntryType.FUEL)
     }
 }
 

@@ -13,7 +13,7 @@ internal class VehicleServiceIT : H2Test() {
     fun vehicleExistsAfterSave() {
         vehicleService.addVehicle("760", fuelType = FuelType.DIESEL)
 
-        val vehicle = vehicleService.findVehicle("760")
+        val vehicle = vehicleService.getVehicle("760")
         assertThat(vehicle).isNotNull
     }
 
@@ -21,7 +21,7 @@ internal class VehicleServiceIT : H2Test() {
     fun vehicleHasData() {
         vehicleService.addVehicle("760", fuelType = FuelType.BENSIN, tankVol = 80)
 
-        val vehicle = vehicleService.findVehicle("760")
+        val vehicle = vehicleService.getVehicle("760")
         assertThat(vehicle.fuelType).isEqualTo(FuelType.BENSIN)
         assertThat(vehicle.tankVolume).isEqualTo(80)
     }
@@ -30,14 +30,14 @@ internal class VehicleServiceIT : H2Test() {
     fun canMakeNewVehicle() {
         val bil = vehicleService.addVehicle("Testbil", fuelType = FuelType.DIESEL)
 
-        assertThat(vehicleService.findVehicle("Testbil").name).isEqualTo(bil.name)
+        assertThat(vehicleService.getVehicle("Testbil").name).isEqualTo(bil.name)
     }
 
     @Test
     fun canFindVehicleByTegnkombinasjon() {
         val bil = vehicleService.addVehicle(name = "Testbil2", tegnkombinasjon = "AB456", fuelType = FuelType.DIESEL)
 
-        assertThat(vehicleService.findVehicle("ab 456").name).isEqualTo(bil.name)
+        assertThat(vehicleService.getVehicle("ab 456").name).isEqualTo(bil.name)
     }
 
 

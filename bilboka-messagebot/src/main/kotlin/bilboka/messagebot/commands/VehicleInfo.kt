@@ -23,7 +23,7 @@ internal class VehicleInfo(
         val values = matcher.find(message)!!.groupValues
         val vehicleName = values[2]
 
-        vehicleService.findVehicle(vehicleName).apply {
+        vehicleService.getVehicle(vehicleName).apply {
             replyWithInfo(this, conversation)
         }
     }
