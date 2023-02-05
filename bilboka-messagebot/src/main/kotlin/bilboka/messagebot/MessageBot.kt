@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.sql.Connection
 
 internal const val FALLBACK_MESSAGE =
     "Forstod ikke helt hva du mente. Prøv igjen eller skriv 'hjelp' om du trenger informasjon."
@@ -50,7 +51,7 @@ class MessageBot {
         try {
             val conversation = findConversationOrInitiateNew(senderID)
             conversation.validate(message)
-            transaction { runCommands(message, conversation) }
+            transaction(Connection.TRANSACTION_SERIALIZABLE, 2) { runCommands(message, conversation) }
         } catch (e: StopRepeatingYourselfException) {
             botMessenger.sendMessage(
                 "Nå sendte du det samme to ganger. 🧐 Om det var meningen, send på nytt etter 10 sekunder.",
