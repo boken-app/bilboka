@@ -14,7 +14,8 @@ class VehicleService() {
         name: String,
         nicknames: Set<String> = setOf(),
         fuelType: FuelType,
-        tegnkombinasjon: String? = null
+        tegnkombinasjon: String? = null,
+        tankVol: Int? = null
     ): Vehicle {
         return transaction {
             Vehicle.new {
@@ -23,6 +24,7 @@ class VehicleService() {
                 this.fuelType = fuelType
                 this.tegnkombinasjonNormalisert = tegnkombinasjon?.normaliserTegnkombinasjon()
                 this.odometerUnit = OdometerUnit.KILOMETERS
+                this.tankVolume = tankVol
             }
         }
     }

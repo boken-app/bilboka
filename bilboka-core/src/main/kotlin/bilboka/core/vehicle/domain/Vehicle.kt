@@ -19,6 +19,7 @@ object Vehicles : IntIdTable() {
     val tegnkombinasjonNormalisert = varchar("tegnkombinasjon_normalisert", 15).nullable()
     val odometerUnit = enumerationByName("odo_unit", 20, OdometerUnit::class).nullable()
     val fuelType = enumerationByName("fuel_type", 15, FuelType::class).nullable()
+    val tankVolume = integer("tank_volume").nullable()
     val creationTimestamp = timestamp("created_timestamp").clientDefault { Instant.now() }
 }
 
@@ -35,6 +36,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     var tegnkombinasjonNormalisert by Vehicles.tegnkombinasjonNormalisert
     var odometerUnit by Vehicles.odometerUnit
     var fuelType by Vehicles.fuelType
+    var tankVolume by Vehicles.tankVolume
     val bookEntries by BookEntry referrersOn BookEntries.vehicle
     val creationTimestamp by Vehicles.creationTimestamp
 
@@ -87,7 +89,6 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     fun hasTegnkombinasjon(tegnkombinasjon: String): Boolean {
         return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert
     }
-
 }
 
 fun String.normaliserTegnkombinasjon(): String {

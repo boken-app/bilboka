@@ -18,6 +18,15 @@ internal class VehicleServiceIT : H2Test() {
     }
 
     @Test
+    fun vehicleHasData() {
+        vehicleService.addVehicle("760", fuelType = FuelType.BENSIN, tankVol = 80)
+
+        val vehicle = vehicleService.findVehicle("760")
+        assertThat(vehicle.fuelType).isEqualTo(FuelType.BENSIN)
+        assertThat(vehicle.tankVolume).isEqualTo(80)
+    }
+
+    @Test
     fun canMakeNewVehicle() {
         val bil = vehicleService.addVehicle("Testbil", fuelType = FuelType.DIESEL)
 
