@@ -57,9 +57,7 @@ internal class FuelEntryAdder(
         return workInProgress
     }
 
-    private fun lookForVehicleBetweenBeginningOfMessageAndFirstNumber(
-        message: String
-    ): String? {
+    private fun lookForVehicleBetweenBeginningOfMessageAndFirstNumber(message: String): String? {
         val vehicleMatcher = Regex(
             "(?:drivstoff|tank|fylt|fuel|bensin|diesel)\\s+((\\w+)(?:[\\s-]\\w+)?)(?:\\s*$ODOMETER_REGEX)?",
             IGNORE_CASE
