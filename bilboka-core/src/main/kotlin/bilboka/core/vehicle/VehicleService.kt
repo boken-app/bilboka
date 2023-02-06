@@ -40,8 +40,10 @@ class VehicleService() {
     }
 
     fun findVehicle(vehicleName: String): Vehicle? {
-        return transaction {
-            Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(vehicleName) }
+        return vehicleName.takeIf { it.isNotEmpty() }?.let {
+            transaction {
+                Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(it) }
+            }
         }
     }
 
