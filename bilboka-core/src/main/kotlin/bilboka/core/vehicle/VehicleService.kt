@@ -31,11 +31,17 @@ class VehicleService() {
 
     fun getVehicle(vehicleName: String): Vehicle {
         return transaction {
-            Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(vehicleName) }
+            findVehicle(vehicleName)
                 ?: throw VehicleNotFoundException(
                     "Fant ikke bil $vehicleName",
                     vehicleName
                 )
+        }
+    }
+
+    fun findVehicle(vehicleName: String): Vehicle? {
+        return transaction {
+            Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(vehicleName) }
         }
     }
 

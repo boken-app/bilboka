@@ -11,7 +11,7 @@ import kotlin.math.sign
 
 @Component
 class Book(
-    val vehicleService: VehicleService
+    private val vehicleService: VehicleService
 ) {
 
     fun addFuelForVehicle(

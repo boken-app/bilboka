@@ -35,7 +35,7 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            FuelEntryAdder(book, userService),
+            FuelEntryAdder(book, vehicleService, userService),
             FuelEntryGetter(book, userService),
             SmallTalk(),
             Helper(),

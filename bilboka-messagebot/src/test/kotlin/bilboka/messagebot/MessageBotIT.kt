@@ -216,4 +216,32 @@ class MessageBotIT : AbstractMessageBotIT() {
         )
     }
 
+    @Test // TODO tester for corner cases / exceptions
+    fun stepWiseFuelAdding() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 37589 30l 300kr",
+            reply = "Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l"
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff",
+            reply = "Hvilken bil?"
+        )
+        processMessagaAndAssertReply(
+            message = "XC 70",
+            reply = "Kilometerstand?"
+        )
+        processMessagaAndAssertReply(
+            message = "234567",
+            reply = "Antall liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "45,6",
+            reply = "Kroner?"
+        )
+        processMessagaAndAssertReply(
+            message = "600.5",
+            reply = "Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 600,5 kr, 13,17 kr/l"
+        )
+    }
+
 }
