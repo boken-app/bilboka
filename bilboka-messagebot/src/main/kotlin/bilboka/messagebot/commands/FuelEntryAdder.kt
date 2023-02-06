@@ -46,16 +46,8 @@ internal class FuelEntryAdder(
     }
 
     private fun findAsMuchDataAsPossible(message: String): State {
-        val vehicleMatcher = Regex(
-            "(?:drivstoff|tank|fylt|fuel|bensin|diesel)\\s+((\\w+)(?:[\\s-]\\w+)?)(?:\\s*$ODOMETER_REGEX)?",
-            IGNORE_CASE
-        )
-
         val workInProgress = State().apply {
-            this.vehicle.content = vehicleMatcher.find(message)?.let {
-                vehicleService.findVehicle(it.groupValues[1])
-                    ?: vehicleService.getVehicle(it.groupValues[2])
-            }?.name
+            this.vehicle.content = lookForVehicleBetweenBeginningOfMessageAndFirstNumber(message)
         }
         VOLUME_REGEX.find(message)?.let { workInProgress.amount.content = it.groupValues[1].convertToDouble() }
         COST_REGEX.find(message)?.let { workInProgress.cost.content = it.groupValues[1].convertToDouble() }
@@ -63,6 +55,19 @@ internal class FuelEntryAdder(
             ?.let { workInProgress.odometer.content = (it.groups[1] ?: it.groups[2])?.value?.toInt() }
 
         return workInProgress
+    }
+
+    private fun lookForVehicleBetweenBeginningOfMessageAndFirstNumber(
+        message: String
+    ): String? {
+        val vehicleMatcher = Regex(
+            "(?:drivstoff|tank|fylt|fuel|bensin|diesel)\\s+((\\w+)(?:[\\s-]\\w+)?)(?:\\s*$ODOMETER_REGEX)?",
+            IGNORE_CASE
+        )
+        return vehicleMatcher.find(message)?.let {
+            vehicleService.findVehicle(it.groupValues[1])
+                ?: vehicleService.getVehicle(it.groupValues[2])
+        }?.name
     }
 
     private fun finishOrAskForMore(
