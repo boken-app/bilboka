@@ -4,12 +4,8 @@ import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
-import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
-import bilboka.messagebot.commands.common.CarBookCommand
-import bilboka.messagebot.commands.common.ChatState
-import bilboka.messagebot.commands.common.ODOMETER_REGEX
-import bilboka.messagebot.commands.common.Undoable
+import bilboka.messagebot.commands.common.*
 import bilboka.messagebot.format
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -18,11 +14,6 @@ internal class FuelEntryAdder(
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService), Undoable<BookEntry> {
-    private val fullMatcher = Regex(
-        "(drivstoff|tank|fylt|fuel|bensin|diesel)\\s+(\\w+[\\s-+?\\w]+?)\\s([0-9]{1,7})\\s?(km|mi)?\\s+(\\d+[.|,]?\\d{0,2})\\s?l\\s+(\\d+[.|,]?\\d{0,2})\\s?kr",
-        IGNORE_CASE
-    )
-
     override fun isMatch(message: String): Boolean {
         return Regex(
             "(drivstoff|tank|fylt|fuel|bensin|diesel)",
@@ -31,95 +22,75 @@ internal class FuelEntryAdder(
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        val claimed = conversation.withdrawClaim<State>(this)
-        if (claimed != null) {
-// TODO her må det ryddes!
-
-            if (claimed.vehicle.wasJustQueried) {
-                val vehicle = Regex("\\w+[\\s-+?\\w]+").find(message)?.let { vehicleService.getVehicle(it.value) }
-                conversation.claim(this, claimed.apply {
-                    this.vehicle.wasJustQueried = false
-                    this.vehicle.content = vehicle
-                    this.odometer.wasJustQueried = true
-                    conversation.sendReply(this.odometer.query)
-                })
-                return
-            }
-            if (claimed.odometer.wasJustQueried) {
-                val odo = Regex(ODOMETER_REGEX).find(message)?.value?.toInt()!!
-                conversation.claim(this, claimed.apply {
-                    this.odometer.wasJustQueried = false
-                    this.odometer.content = odo
-                    this.amount.wasJustQueried = true
-                    conversation.sendReply(this.amount.query)
-                })
-                return
-            }
-            if (claimed.amount.wasJustQueried) {
-                val amount = message.convertToDouble()
-                conversation.claim(this, claimed.apply {
-                    this.amount.wasJustQueried = false
-                    this.amount.content = amount
-                    this.cost.wasJustQueried = true
-                    conversation.sendReply(this.cost.query)
-                })
-                return
-            }
-            if (claimed.cost.wasJustQueried) {
-                val cost = message.convertToDouble()
-                claimed.apply {
-                    this.cost.wasJustQueried = false
-                    this.cost.content = cost
-                }
-            }
-            if (claimed.gatheredData.all { it.value.content != null }) {
-                finish(
-                    conversation, book.addFuelForVehicle(
-                        vehicleName = (claimed.vehicle.content as Vehicle).name,
-                        enteredBy = conversation.withWhom(),
-                        odoReading = claimed.odometer.content as Int,
-                        amount = claimed.amount.content as Double,
-                        costNOK = claimed.cost.content as Double,
-                        source = conversation.getSource(),
-                    )
-                )
-                return
-            }
+        val previouslyProcessed = conversation.withdrawClaim<State>(this)
+        if (previouslyProcessed != null) {
+            recordProvidedData(previouslyProcessed, message)
+            finishOrAskForMore(conversation, previouslyProcessed)
         } else {
+            val foundSomeStuffMaybe = findAsMuchDataAsPossible(message)
+            finishOrAskForMore(conversation, foundSomeStuffMaybe)
+        }
+    }
 
-
-            if (fullMatcher.containsMatchIn(message)) {
-                val values = fullMatcher.find(message)!!.groupValues
-                val vehicleName = values[2]
-                val odoReading = values[3]
-                val amount = values[5]
-                val cost = values[6]
-
-                finish(
-                    conversation, book.addFuelForVehicle(
-                        vehicleName = vehicleName,
-                        enteredBy = conversation.withWhom(),
-                        odoReading = odoReading.toInt(),
-                        amount = amount.convertToDouble(),
-                        costNOK = cost.convertToDouble(),
-                        source = conversation.getSource(),
-                    )
-                )
-                return
-            }
-
-            val vehicleMatcher = Regex(
-                "(drivstoff|tank|fylt|fuel|bensin|diesel)\\s+(\\w+[[\\s-]+?\\w]+?)\\s(\\d)\\s?(\\D)?",
-                IGNORE_CASE
-            )
-
-            val vehicle = vehicleMatcher.find(message)?.let { vehicleService.findVehicle(it.groupValues[2]) }
-            if (vehicle == null) {
-                conversation.claim(this, State().apply { this.vehicle.wasJustQueried = true })
-                conversation.sendReply("Hvilken bil?")
+    private fun recordProvidedData(state: State, message: String) {
+        state.collectedData.filter { it.value.wasJustQueried }.toList().first().apply {
+            this.second.wasJustQueried = false
+            this.second.content = when (this.first) {
+                State.FuelDataType.VEHICLE ->
+                    Regex("\\w+[\\s-+?\\w]+").find(message)?.let { vehicleService.getVehicle(it.value) }?.name
+                State.FuelDataType.ODOMETER -> message.toInt()
+                State.FuelDataType.AMOUNT -> message.convertToDouble()
+                State.FuelDataType.COST -> message.convertToDouble()
             }
         }
+    }
 
+    private fun findAsMuchDataAsPossible(message: String): State {
+        val vehicleMatcher = Regex(
+            "(?:drivstoff|tank|fylt|fuel|bensin|diesel)\\s+((\\w+)(?:[\\s-]\\w+)?)(?:\\s*$ODOMETER_REGEX)?",
+            IGNORE_CASE
+        )
+
+        val workInProgress = State().apply {
+            this.vehicle.content = vehicleMatcher.find(message)?.let {
+                vehicleService.findVehicle(it.groupValues[1])
+                    ?: vehicleService.getVehicle(it.groupValues[2])
+            }?.name
+        }
+        VOLUME_REGEX.find(message)?.let { workInProgress.amount.content = it.groupValues[1].convertToDouble() }
+        COST_REGEX.find(message)?.let { workInProgress.cost.content = it.groupValues[1].convertToDouble() }
+        ODOMETER_REGEX.find(message)
+            ?.let { workInProgress.odometer.content = (it.groups[1] ?: it.groups[2])?.value?.toInt() }
+
+        return workInProgress
+    }
+
+    private fun finishOrAskForMore(
+        conversation: Conversation,
+        state: State
+    ) {
+        if (state.collectedData.all { it.value.content != null }) {
+            finish(
+                conversation, book.addFuelForVehicle(
+                    vehicleName = (state.vehicle.content as String),
+                    enteredBy = conversation.withWhom(),
+                    odoReading = state.odometer.content as Int,
+                    amount = state.amount.content as Double,
+                    costNOK = state.cost.content as Double,
+                    source = conversation.getSource(),
+                )
+            )
+        } else {
+            askForNext(conversation, state)
+        }
+    }
+
+    private fun askForNext(conversation: Conversation, stateInProgress: State) {
+        stateInProgress.collectedData.values.first { it.content == null }.let {
+            it.wasJustQueried = true
+            conversation.claim(this, stateInProgress)
+            conversation.sendReply(it.query)
+        }
     }
 
     private fun finish(conversation: Conversation, addedFuel: BookEntry) {
@@ -142,20 +113,19 @@ internal class FuelEntryAdder(
         var wasJustQueried: Boolean = false
     )
 
-    class State(
-    ) : ChatState() {
+    class State : ChatState() {
         enum class FuelDataType { VEHICLE, ODOMETER, AMOUNT, COST }
 
-        val gatheredData = mapOf(
+        val collectedData = linkedMapOf(
             Pair(FuelDataType.VEHICLE, FuelingDataItem("Hvilken bil?")),
             Pair(FuelDataType.ODOMETER, FuelingDataItem("Kilometerstand?")),
             Pair(FuelDataType.AMOUNT, FuelingDataItem("Antall liter?")),
             Pair(FuelDataType.COST, FuelingDataItem("Kroner?"))
         )
-        val vehicle = gatheredData[FuelDataType.VEHICLE]!!
-        val odometer = gatheredData[FuelDataType.ODOMETER]!!
-        val amount = gatheredData[FuelDataType.AMOUNT]!!
-        val cost = gatheredData[FuelDataType.COST]!!
+        val vehicle = collectedData[FuelDataType.VEHICLE]!!
+        val odometer = collectedData[FuelDataType.ODOMETER]!!
+        val amount = collectedData[FuelDataType.AMOUNT]!!
+        val cost = collectedData[FuelDataType.COST]!!
     }
 }
 

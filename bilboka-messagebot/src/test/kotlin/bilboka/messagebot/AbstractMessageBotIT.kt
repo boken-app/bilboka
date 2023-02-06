@@ -70,7 +70,8 @@ abstract class AbstractMessageBotIT : H2Test() {
     }
 
     @AfterEach
-    fun wipeEntries() {
+    fun resetState() {
+        messageBot.reset()
         transaction {
             BookEntries.deleteAll()
         }

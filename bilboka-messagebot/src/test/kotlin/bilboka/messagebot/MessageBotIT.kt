@@ -13,9 +13,41 @@ class MessageBotIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun sendAddFuelRequestDifferentOrder() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 30l 300kr 34567",
+            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequestOneMissingValue() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 30l 300kr",
+            reply = "Kilometerstand?"
+        )
+        processMessagaAndAssertReply(
+            message = "34567",
+            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequestAnotherMissingValue() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 30l 34567km",
+            reply = "Kroner?"
+        )
+        processMessagaAndAssertReply(
+            message = "300",
+            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+        )
+    }
+
+    @Test
     fun sendAddFuelRequestDifferentCase() {
         processMessagaAndAssertReply(
-            message = "fylt en testbil 5555 30.2 L 302.0 Kr",
+            message = "fylt en testbil 5555 km 30.2 L 302.0 Kr",
             reply = "Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
         )
     }
@@ -40,7 +72,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestUnknownCar() {
         processMessagaAndAssertReply(
             message = "Drivstoff tullebil 34567 30l 300kr",
-            reply = "Kjenner ikke til bil tullebil"
+            reply = { it.contains("Kjenner ikke til bil tullebil") }
         )
     }
 
@@ -241,6 +273,18 @@ class MessageBotIT : AbstractMessageBotIT() {
         processMessagaAndAssertReply(
             message = "600.5",
             reply = "Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 600,5 kr, 13,17 kr/l"
+        )
+    }
+
+    @Test
+    fun stepWiseFuelAdding_askForNextDataWhenVehicleProvided() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff XC 70",
+            reply = "Kilometerstand?"
+        )
+        processMessagaAndAssertReply(
+            message = "234567",
+            reply = "Antall liter?"
         )
     }
 
