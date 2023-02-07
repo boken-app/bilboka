@@ -101,13 +101,14 @@ class MessageBot {
     }
 
     private fun findConversationOrInitiateNew(senderID: String): Conversation {
+        logger.debug("${ConversationBank.size()} aktive samtaler")
         return ConversationBank.find(senderID, botMessenger.sourceID)
             ?: ConversationBank.initiate(
                 Conversation(
                     user = userService.findUserByRegistration(botMessenger.sourceID, senderID),
                     senderID = senderID,
                     botMessenger = botMessenger
-                )
+                ).also { logger.debug("Startet ny samtale med ${it.senderID} (${if (it.user != null) "kjent" else "ukjent"} bruker)") }
             )
     }
 
@@ -133,6 +134,10 @@ class MessageBot {
 
         fun reset() {
             conversations.clear()
+        }
+
+        fun size(): Int {
+            return conversations.size
         }
     }
 

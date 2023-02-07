@@ -4,6 +4,7 @@ import bilboka.core.user.domain.User
 import bilboka.messagebot.commands.common.ChatCommand
 import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.Undoable
+import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.Instant
 
@@ -12,6 +13,8 @@ internal class Conversation(
     val senderID: String,
     val botMessenger: BotMessenger
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     private val duplicateBuster = DuplicateBuster(senderID)
     private var lastUndoable: UndoableEvent<Any>? = null
     internal var claim: ConversationClaim<ChatCommand>? = null
@@ -37,11 +40,13 @@ internal class Conversation(
     }
 
     fun <T : ChatState> claim(by: ChatCommand, state: T? = null) {
+        logger.debug("Claimed by: ${by.javaClass.name}")
         this.claim = ConversationClaim(by, state)
     }
 
     inline fun <reified T : ChatState> withdrawClaim(by: ChatCommand): T? {
         if (claimedBy(by)) {
+            logger.debug("Claime withdrawn: ${by.javaClass.name}")
             return claim?.state.also { unclaim() } as T
         }
         return null
