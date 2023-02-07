@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     /* Depend on the kotlin plugin, since we want to access it in our plugin */
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
 
     /* Depend on the default Gradle API's since we want to build a custom plugin */
     implementation(gradleApi())
@@ -19,6 +19,12 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
