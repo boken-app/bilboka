@@ -53,7 +53,7 @@ class MessengerWebhookResource(
             // TODO Bruke coroutines og håndtere async?
             request.entry.stream()
                 .forEach { facebookEntry ->
-                    logger.debug("Received entry payload: {}", facebookEntry)
+                    logger.trace("Received entry payload: {}", facebookEntry)
                     DuplicateBuster.filterDuplicates(facebookEntry)?.let { facebookMessageHandler.handleMessage(it) }
                 }
             ResponseEntity.ok(MessengerWebhookConfig.EVENT_RECEIVED_RESPONSE)

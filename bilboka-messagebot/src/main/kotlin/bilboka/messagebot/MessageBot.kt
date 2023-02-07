@@ -47,7 +47,7 @@ class MessageBot {
     }
 
     fun processMessage(message: String, senderID: String) {
-        logger.info("Mottok melding $message")
+        logger.debug("Mottok melding $message")
         try {
             val conversation = findConversationOrInitiateNew(senderID)
             conversation.validate(message)
@@ -74,6 +74,7 @@ class MessageBot {
             if (conversation.claimedBy(it) ||
                 (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID))
             ) {
+                logger.debug("Matchet chatregel: ${it.javaClass.name}")
                 if (it !is UndoLast) {
                     conversation.resetUndoable()
                 }
@@ -86,6 +87,7 @@ class MessageBot {
         }
 
         if (noMatches) {
+            logger.debug("Matchet ingen chatregel")
             botMessenger.sendMessage(
                 FALLBACK_MESSAGE,
                 conversation.senderID

@@ -30,7 +30,7 @@ class FacebookMessageHandler {
                 logger.info(format("Mottok melding=%s fra PSID=%s", text, senderPSID))
                 messageBot.processMessage(text, senderPSID)
             } else {
-                logger.warn("Request inneholder ingen melding.")
+                logger.info("Request inneholder ingen melding.")
                 facebookMessenger.sendMessage("Du sendte noe rart jeg ikke skjønte", senderPSID)
             }
 
