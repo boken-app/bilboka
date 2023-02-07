@@ -16,7 +16,7 @@ internal class FuelEntryAdder(
 ) : CarBookCommand(userService), Undoable<BookEntry> {
     override fun isMatch(message: String): Boolean {
         return Regex(
-            "(drivstoff|tank|fylt|fuel|bensin|diesel)",
+            "(drivstoff|tank|fylt|fuel|bensin|diesel|tnk|⛽)",
             IGNORE_CASE
         ).containsMatchIn(message)
     }
@@ -37,7 +37,7 @@ internal class FuelEntryAdder(
             this.second.wasJustQueried = false
             this.second.content = when (this.first) {
                 State.FuelDataType.VEHICLE ->
-                    Regex("\\w+[\\s-+?\\w]+").find(message)?.let { vehicleService.getVehicle(it.value) }?.name
+                    Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)?.let { vehicleService.getVehicle(it.value) }?.name
                 State.FuelDataType.ODOMETER -> message.toInt()
                 State.FuelDataType.AMOUNT -> message.convertToDouble()
                 State.FuelDataType.COST -> message.convertToDouble()
@@ -59,7 +59,7 @@ internal class FuelEntryAdder(
 
     private fun lookForVehicleBetweenBeginningOfMessageAndFirstNumber(message: String): String? {
         val vehicleMatcher = Regex(
-            "(?:drivstoff|tank|fylt|fuel|bensin|diesel)\\s+((\\w+)(?:[\\s-]\\w+)?)(?:\\s*$ODOMETER_REGEX)?",
+            "(?:drivstoff|tank|fylt|fuel|bensin|diesel|tnk)\\s+(([\\wæøå]+)(?:[\\s-][\\wæøå]+)?)(?:\\s*$ODOMETER_REGEX)?",
             IGNORE_CASE
         )
         return vehicleMatcher.find(message)?.let {
@@ -100,7 +100,7 @@ internal class FuelEntryAdder(
         conversation.setUndoable(this, addedFuel)
 
         conversation.sendReply(
-            "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: " +
+            "⛽ Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: " +
                     "${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, " +
                     "${addedFuel.pricePerLiter().format()} kr/l"
         )
@@ -120,10 +120,10 @@ internal class FuelEntryAdder(
         enum class FuelDataType { VEHICLE, ODOMETER, AMOUNT, COST }
 
         val collectedData = linkedMapOf(
-            Pair(FuelDataType.VEHICLE, FuelingDataItem("Hvilken bil?")),
-            Pair(FuelDataType.ODOMETER, FuelingDataItem("Kilometerstand?")),
+            Pair(FuelDataType.VEHICLE, FuelingDataItem("Hvilken bil? \uD83D\uDE97")),
+            Pair(FuelDataType.ODOMETER, FuelingDataItem("Kilometerstand? 🔢")),
             Pair(FuelDataType.AMOUNT, FuelingDataItem("Antall liter?")),
-            Pair(FuelDataType.COST, FuelingDataItem("Kroner?"))
+            Pair(FuelDataType.COST, FuelingDataItem("Kroner? 💸"))
         )
         val vehicle = collectedData[FuelDataType.VEHICLE]!!
         val odometer = collectedData[FuelDataType.ODOMETER]!!

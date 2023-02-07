@@ -8,7 +8,23 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequest() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 34567 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+        )
+    }
+
+    @Test
+    fun canFuelWithNorwegianLetters() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff blå testbil 34567 30l 300kr",
+            reply = "⛽ Registrert tanking av blå testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+        )
+    }
+
+    @Test
+    fun canInfoWithNorwegianLetters() {
+        processMessagaAndAssertReply(
+            message = "Info blå testbil",
+            reply = { it.contains("Bil-navn: blå testbil") },
         )
     }
 
@@ -16,7 +32,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentOrder() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 30l 300kr 34567",
-            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
         )
     }
 
@@ -24,11 +40,11 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestOneMissingValue() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 30l 300kr",
-            reply = "Kilometerstand?"
+            reply = "Kilometerstand? 🔢"
         )
         processMessagaAndAssertReply(
             message = "34567",
-            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
         )
     }
 
@@ -36,11 +52,11 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestAnotherMissingValue() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 30l 34567km",
-            reply = "Kroner?"
+            reply = "Kroner? \uD83D\uDCB8"
         )
         processMessagaAndAssertReply(
             message = "300",
-            reply = "Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
         )
     }
 
@@ -48,7 +64,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentCase() {
         processMessagaAndAssertReply(
             message = "fylt en testbil 5555 km 30.2 L 302.0 Kr",
-            reply = "Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
+            reply = "⛽ Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
         )
     }
 
@@ -56,7 +72,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentCaseWithComma() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
-            reply = "Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "⛽ Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }
 
@@ -64,7 +80,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestNickname() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff crosser 1235 km 30.44 l 608.80 kr",
-            reply = "Registrert tanking av xc 70 ved 1235 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "⛽ Registrert tanking av xc 70 ved 1235 km: 30,44 liter for 608,8 kr, 20 kr/l"
         )
     }
 
@@ -176,7 +192,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun canUndoEvenOnSecondTry() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35589 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l"
+            reply = { it.contains("Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l") }
         )
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35592 20l 200kr",
@@ -200,7 +216,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun canUndoOnlyOnce() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 36590 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 36590 km: 30 liter for 300 kr, 10 kr/l"
+            reply = { it.contains("Registrert tanking av en testbil ved 36590 km: 30 liter for 300 kr, 10 kr/l") }
         )
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 36592 20l 200kr",
@@ -224,7 +240,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun canNotUndoAfterAnotherMessage() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37589 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l"
+            reply = { it.contains("Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l") }
         )
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37592 20l 200kr",
@@ -252,15 +268,15 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun stepWiseFuelAdding() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37589 30l 300kr",
-            reply = "Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l"
+            reply = { it.contains("Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l") }
         )
         processMessagaAndAssertReply(
             message = "Drivstoff",
-            reply = "Hvilken bil?"
+            reply = "Hvilken bil? \uD83D\uDE97"
         )
         processMessagaAndAssertReply(
             message = "XC 70",
-            reply = "Kilometerstand?"
+            reply = "Kilometerstand? 🔢"
         )
         processMessagaAndAssertReply(
             message = "234567",
@@ -268,11 +284,11 @@ class MessageBotIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "45,6",
-            reply = "Kroner?"
+            reply = "Kroner? \uD83D\uDCB8"
         )
         processMessagaAndAssertReply(
             message = "600.5",
-            reply = "Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 600,5 kr, 13,17 kr/l"
+            reply = { it.contains("Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 600,5 kr, 13,17 kr/l") }
         )
     }
 
@@ -280,7 +296,7 @@ class MessageBotIT : AbstractMessageBotIT() {
     fun stepWiseFuelAdding_askForNextDataWhenVehicleProvided() {
         processMessagaAndAssertReply(
             message = "Drivstoff XC 70",
-            reply = "Kilometerstand?"
+            reply = "Kilometerstand? 🔢"
         )
         processMessagaAndAssertReply(
             message = "234567",

@@ -13,7 +13,7 @@ internal class FuelEntryGetter(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "siste\\s+(\\w+([\\s-]+?\\w+)?)",
+        "siste\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
         RegexOption.IGNORE_CASE
     )
 

@@ -48,6 +48,10 @@ abstract class AbstractMessageBotIT : H2Test() {
             name = "en testbil",
             fuelType = FuelType.BENSIN
         )
+        vehicleService.addVehicle(
+            name = "blå testbil",
+            fuelType = FuelType.BENSIN
+        )
         val key = "some_key-lol"
         val user = userService.addUser("tester_user")
         val userForReg = userService.addUser("tester_user_for_reg")
