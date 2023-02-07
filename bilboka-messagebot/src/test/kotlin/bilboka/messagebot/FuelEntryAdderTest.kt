@@ -120,7 +120,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
 
         messagebot.processMessage("Drivstoff test-bil 444 30l 300kr", registeredSenderID)
 
-        verifySentMessage("Kjenner ikke til bil test-bil")
+        verifySentMessage("Kjenner ikke til bil test-bil \uD83D\uDC40")
     }
 
     private fun testAddFuelRequest(message: String) {

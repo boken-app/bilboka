@@ -204,7 +204,7 @@ class MessageBotIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Angre",
-            reply = "Angret"
+            reply = "Angret \uD83D\uDEAE"
         )
         processMessagaAndAssertReply(
             message = "Siste en testbil",
@@ -224,7 +224,7 @@ class MessageBotIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Angre",
-            reply = "Angret"
+            reply = "Angret \uD83D\uDEAE"
         )
         processMessagaAndAssertReply(
             message = "tull",

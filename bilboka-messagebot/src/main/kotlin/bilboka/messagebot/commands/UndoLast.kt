@@ -18,7 +18,7 @@ internal class UndoLast(
 
     override fun execute(conversation: Conversation, message: String) {
         conversation.undoLast()
-        conversation.sendReply("Angret")
+        conversation.sendReply("Angret 🚮")
     }
 
 }

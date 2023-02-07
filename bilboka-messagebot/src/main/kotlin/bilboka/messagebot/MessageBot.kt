@@ -58,12 +58,12 @@ class MessageBot {
                 senderID
             )
         } catch (e: VehicleNotFoundException) {
-            botMessenger.sendMessage("Kjenner ikke til bil ${e.vehicleName}", senderID)
+            botMessenger.sendMessage("Kjenner ikke til bil ${e.vehicleName} 👀", senderID)
         } catch (e: BookEntryException) {
-            botMessenger.sendMessage("Det skjedde noe feil: ${e.message}", senderID)
+            botMessenger.sendMessage("🤖 Det skjedde noe feil: ${e.message}", senderID)
         } catch (e: Exception) {
             logger.error("Feil ved prosessering av melding '$message'", e)
-            botMessenger.sendMessage("Det skjedde noe feil. (${e.message})", senderID)
+            botMessenger.sendMessage("Det skjedde noe feil. 😵 (${e.message})", senderID)
         }
     }
 
