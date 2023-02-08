@@ -74,7 +74,7 @@ internal class MessengerSendAPIConsumerIT {
         webhookConsumer.sendMessage(testFBMessage)
 
         // Assert
-        verify {
+        verify { // TODO! Ditche Khttp for å kunne oppgradere javaversjon (bruke Feign eller https://github.com/kittinunf/fuel ? )
             khttp.post(
                 url = any(),
                 headers = any(),
