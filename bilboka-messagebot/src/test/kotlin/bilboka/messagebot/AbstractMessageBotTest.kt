@@ -51,7 +51,7 @@ abstract class AbstractMessageBotTest {
         messagebot.reset()
     }
 
-    fun setupUser() {
+    private fun setupUser() {
         every { userService.findUserByRegistration(any(), any()) } returns null
         every { userService.findUserByRegistration(messengerSourceID, registeredSenderID) } returns registeredUser
         every {

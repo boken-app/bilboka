@@ -1,3 +1,3 @@
 # Bilboka!
 
-Samler data om bilen via messenger-chat!
+Samler data om bilen via messenger-chat

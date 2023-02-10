@@ -8,7 +8,7 @@ internal class UndoLast(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "angre",
+        "angre|neida|feil|tulla",
         RegexOption.IGNORE_CASE
     )
 

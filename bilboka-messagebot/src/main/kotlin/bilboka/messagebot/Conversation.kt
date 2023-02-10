@@ -112,4 +112,4 @@ internal data class ConversationClaim<T : ChatCommand>(val claimedBy: T, val sta
 
 class StopRepeatingYourselfException : RuntimeException()
 class DontKnowWithWhomException(message: String) : RuntimeException(message)
-class NothingToUndoException(message: String) : RuntimeException(message)
+class NothingToUndoException(message: String) : ImpossibleChatActionException(message)
