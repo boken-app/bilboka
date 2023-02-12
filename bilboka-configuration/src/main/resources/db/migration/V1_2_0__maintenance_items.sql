@@ -11,7 +11,7 @@ create table maintenanceitems
 alter table bookentries
     add comment varchar(255) null;
 alter table bookentries
-    add maintenance_item varchar(100) null
+    add maintenance_item integer null
         constraint fk_bookentries_maintenance_item__id
             references maintenanceitems
             on update restrict on delete restrict
