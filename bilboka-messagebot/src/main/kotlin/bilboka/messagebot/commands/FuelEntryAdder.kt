@@ -57,6 +57,8 @@ internal class FuelEntryAdder(
         }
         VOLUME_REGEX.find(message)?.let { workInProgress.amount.content = it.groupValues[1].convertToDouble() }
         COST_REGEX.find(message)?.let { workInProgress.cost.content = it.groupValues[1].convertToDouble() }
+        COST_PER_AMOUNT_REGEX.find(message)
+            ?.let { workInProgress.costPerAmount.content = it.groupValues[1].convertToDouble() }
         ODOMETER_REGEX.find(message)
             ?.let { workInProgress.odometer.content = (it.groups[1] ?: it.groups[2])?.value?.toInt() }
 
