@@ -4,7 +4,7 @@ import bilboka.core.H2Test
 import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.Vehicle
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,7 +36,7 @@ internal class VehicleIT : H2Test() {
         )
 
         transaction {
-            Assertions.assertThat(Vehicle[vehicle.id].bookEntries).hasSize(1)
+            assertThat(Vehicle[vehicle.id].bookEntries).hasSize(1)
         }
     }
 
@@ -51,12 +51,12 @@ internal class VehicleIT : H2Test() {
         )
 
         val fuelEntry = getVehicle().lastEntry(EntryType.FUEL)
-        Assertions.assertThat(fuelEntry).isNotNull
-        Assertions.assertThat(fuelEntry?.odometer).isEqualTo(12356)
-        Assertions.assertThat(fuelEntry?.amount).isEqualTo(12.2)
-        Assertions.assertThat(fuelEntry?.costNOK).isNull()
-        Assertions.assertThat(fuelEntry?.pricePerLiter()).isNull()
-        Assertions.assertThat(fuelEntry?.dateTime).isAfterOrEqualTo(before)
+        assertThat(fuelEntry).isNotNull
+        assertThat(fuelEntry?.odometer).isEqualTo(12356)
+        assertThat(fuelEntry?.amount).isEqualTo(12.2)
+        assertThat(fuelEntry?.costNOK).isNull()
+        assertThat(fuelEntry?.pricePerLiter()).isNull()
+        assertThat(fuelEntry?.dateTime).isAfterOrEqualTo(before)
     }
 
     @Test
@@ -78,7 +78,22 @@ internal class VehicleIT : H2Test() {
             source = "test"
         )
 
-        Assertions.assertThat(vehicle.lastEntry(EntryType.FUEL)?.id).isEqualTo(last.id)
+        assertThat(vehicle.lastEntry(EntryType.FUEL)?.id).isEqualTo(last.id)
+    }
+
+    @Test
+    fun enterAndGetMaintenance() {
+        vehicle.enterMaintenance(
+            dateTime = LocalDateTime.now().minusDays(2),
+            maintenanceItem = "BREMSEKLOSSER",
+            amount = 12.2,
+            costNOK = 130.0,
+            odometer = 234565,
+            source = "test",
+            createIfMissing = true
+        )
+
+        assertThat(vehicle.lastMaintenance("BREMSEKLOSSER")?.odometer).isEqualTo(234565)
     }
 
     private fun getVehicle(): Vehicle {

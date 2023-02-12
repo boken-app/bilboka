@@ -20,6 +20,8 @@ object BookEntries : IntIdTable() {
     val amount = double("amount").nullable()
     val costNOK = double("cost_nok").nullable()
     val isFullTank = bool("is_full").nullable()
+    val maintenanceItem = reference("maintenance_item", MaintenanceItems).nullable()
+    val comment = varchar("comment", 255).nullable()
     val enteredBy = reference("entered_by", Users).nullable()
     val dataSource = varchar("source", 50)
     val creationTimestamp = timestamp("created_timestamp").clientDefault { now() }
@@ -35,6 +37,8 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id) {
     var amount by BookEntries.amount
     var costNOK by BookEntries.costNOK
     var isFullTank by BookEntries.isFullTank
+    var maintenanceItem by MaintenanceItem optionalReferencedOn BookEntries.maintenanceItem
+    var comment by BookEntries.comment
     var enteredBy by User optionalReferencedOn BookEntries.enteredBy
     var source by BookEntries.dataSource
     var creationTimestamp by BookEntries.creationTimestamp

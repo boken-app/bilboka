@@ -3,12 +3,13 @@ package bilboka.core.book
 import bilboka.core.H2Test
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.book.domain.MaintenanceItem
+import bilboka.core.book.domain.MaintenanceItems
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.transaction
-
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -58,4 +59,22 @@ internal class BookEntriesIT : H2Test() {
         assertThat(fetchedEntry.creationTimestamp).isAfter(before)
     }
 
+    @Test
+    fun maintenanceEntry() {
+        val entry = transaction {
+            MaintenanceItem.new {
+                item = "BREMSEKLOSSER"
+            }
+            BookEntry.new {
+                dateTime = LocalDateTime.now()
+                type = EntryType.MAINTENANCE
+                odometer = 12354
+                maintenanceItem = MaintenanceItems.getItem("BREMSEKLOSSER")
+                source = "test"
+                amount = 12.2
+                vehicle = testVehicle
+            }
+        }
+        assertThat(entry.creationTimestamp).isNotNull
+    }
 }

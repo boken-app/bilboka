@@ -1,8 +1,7 @@
 package bilboka.core.vehicle.domain
 
-import bilboka.core.book.domain.BookEntries
-import bilboka.core.book.domain.BookEntry
-import bilboka.core.book.domain.EntryType
+import bilboka.core.book.MaintenanceItemMissingException
+import bilboka.core.book.domain.*
 import bilboka.core.user.domain.User
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -65,6 +64,37 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
+    fun enterMaintenance(
+        maintenanceItem: String,
+        odometer: Int?,
+        amount: Double? = null,
+        costNOK: Double? = null,
+        comment: String? = null,
+        enteredBy: User? = null,
+        source: String,
+        dateTime: LocalDateTime? = null,
+        createIfMissing: Boolean = false
+    ) {
+        val thisVehicle = this
+        transaction {
+            val maintenanceEntity = MaintenanceItems.getItem(maintenanceItem).let {
+                if (it == null && createIfMissing) MaintenanceItem.new { item = maintenanceItem } else it
+            } ?: throw MaintenanceItemMissingException(maintenanceItem)
+            BookEntry.new {
+                this.dateTime = dateTime ?: LocalDateTime.now()
+                this.maintenanceItem = maintenanceEntity
+                this.comment = comment
+                this.type = EntryType.MAINTENANCE
+                this.enteredBy = enteredBy
+                this.odometer = odometer
+                this.vehicle = thisVehicle
+                this.amount = amount
+                this.costNOK = costNOK
+                this.source = source
+            }
+        }
+    }
+
     fun lastEntry(): BookEntry? {
         return transaction { bookEntries.maxByOrNull { it.dateTime } }
     }
@@ -79,6 +109,14 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     fun lastEntry(type: EntryType): BookEntry? {
         return transaction {
             bookEntries.filter { it.type == type }
+                .maxByOrNull { it.dateTime }
+        }
+    }
+
+    fun lastMaintenance(maintenanceItem: String): BookEntry? {
+        return transaction {
+            bookEntries.filter { it.type == EntryType.MAINTENANCE }
+                .filter { it.maintenanceItem == MaintenanceItems.getItem(maintenanceItem) }
                 .maxByOrNull { it.dateTime }
         }
     }

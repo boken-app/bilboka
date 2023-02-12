@@ -20,6 +20,7 @@ internal class FuelPriceStatistics(
     }
 
     override fun execute(conversation: Conversation, message: String) {
+        // TODO: vise pr. diesel og bensin
         val lastFuelPrices = book.getLastFuelPrices(6)
         val lastFuelPricesStr = lastFuelPrices
             .map {

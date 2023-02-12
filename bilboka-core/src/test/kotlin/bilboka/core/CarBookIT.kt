@@ -5,7 +5,9 @@ import bilboka.core.book.BookEntryChronologyException
 import bilboka.core.book.domain.EntryType
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
+import bilboka.core.vehicle.domain.Vehicle
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -23,10 +25,15 @@ class CarBookIT : H2Test() {
     @Autowired
     lateinit var book: Book
 
+    lateinit var vehicle: Vehicle
+
+    @BeforeEach
+    fun createVehicle() {
+        vehicle = vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
+    }
+
     @Test
     fun addFuelForXC70_succeeds() {
-        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-
         book.addFuelForVehicle(
             vehicleName = "XC70",
             odoReading = 1234,
@@ -50,8 +57,6 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70_canAddBackInTime() {
-        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-
         book.addFuelForVehicle(
             vehicleName = "XC70",
             odoReading = 1234,
@@ -76,15 +81,14 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70_succeedsAndValidatesOnlyAgainsLatest() {
-        val car = vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-        car.addFuel(
+        vehicle.addFuel(
             123456,
             23.6,
             300.0,
             dateTime = LocalDateTime.now().minusDays(3),
             source = "test"
         )
-        car.addFuel(
+        vehicle.addFuel(
             1234,
             23.6,
             300.0,
@@ -105,15 +109,14 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70_failsAndValidatesOnlyAgainsLatest() {
-        val car = vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-        car.addFuel(
+        vehicle.addFuel(
             123456,
             23.6,
             300.0,
             dateTime = LocalDateTime.now().minusDays(3),
             source = "test"
         )
-        car.addFuel(
+        vehicle.addFuel(
             1234,
             23.6,
             300.0,
@@ -134,8 +137,6 @@ class CarBookIT : H2Test() {
 
     @Test
     fun addFuelForXC70drivingBackwards_fails() {
-        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-
         book.addFuelForVehicle(
             vehicleName = "XC70",
             odoReading = 1234,
@@ -161,8 +162,6 @@ class CarBookIT : H2Test() {
 
     @Test
     fun canGetLastPrices() {
-        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
-
         val aPrice = book.addFuelForVehicle(
             vehicleName = "XC70",
             odoReading = 1234,
@@ -179,5 +178,21 @@ class CarBookIT : H2Test() {
         ).pricePerLiter()
 
         assertThat(book.getLastFuelPrices().map { it.second }).contains(aPrice, anotherPrice)
+    }
+
+    @Test
+    fun canEnterAndGetMaintenance() {
+        vehicle.enterMaintenance(
+            odometer = 12347,
+            maintenanceItem = "BREMSEKLOSSER",
+            comment = "Venstre foran",
+            amount = 12.4,
+            costNOK = 22.43,
+            source = "test",
+            createIfMissing = true
+        )
+
+        assertThat(book.maintenanceItems()).contains("BREMSEKLOSSER")
+        assertThat(vehicle.lastMaintenance("BREMSEKLOSSER")?.odometer).isEqualTo(12347)
     }
 }

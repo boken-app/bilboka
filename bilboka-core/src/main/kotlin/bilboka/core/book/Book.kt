@@ -3,6 +3,7 @@ package bilboka.core.book
 import bilboka.core.book.domain.BookEntries
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.book.domain.MaintenanceItem
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
@@ -67,6 +68,12 @@ class Book(
                 .take(n)
                 .map { Pair(it.dateTime.toLocalDate(), it.pricePerLiter() as Double) }
         }
+    }
+
+    fun maintenanceItems(): Set<String> {
+        return transaction {
+            MaintenanceItem.all().map { it.item }
+        }.toSet()
     }
 }
 

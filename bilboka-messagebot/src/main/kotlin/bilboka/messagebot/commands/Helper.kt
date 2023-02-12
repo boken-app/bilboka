@@ -9,6 +9,7 @@ internal const val DEFAULT_HELP_MESSAGE =
             "Angre -> Angre siste handling\n" +
             "Siste [bil] -> Siste drivstoff-fylling\n" +
             "Info [bil] -> Info om valgt bil\n" +
+            "Statistikk -> Se statistikk over siste drivstoffpriser" +
             "Brukerinfo -> Se info om brukeren du er registrert som\n" +
             ""
 
