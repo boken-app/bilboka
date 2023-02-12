@@ -10,6 +10,7 @@ internal const val DEFAULT_HELP_MESSAGE =
             "Siste [bil] -> Siste drivstoff-fylling\n" +
             "Info [bil] -> Info om valgt bil\n" +
             "Statistikk -> Se statistikk over siste drivstoffpriser" +
+            "Vedlikehold -> Se oversikt over hvilke vedlikeholdspunkt som kan registreres" +
             "Brukerinfo -> Se info om brukeren du er registrert som\n" +
             ""
 
