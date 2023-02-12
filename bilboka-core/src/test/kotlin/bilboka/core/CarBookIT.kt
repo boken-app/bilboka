@@ -158,4 +158,26 @@ class CarBookIT : H2Test() {
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.dateTime?.toLocalDate()).isEqualTo(LocalDate.now())
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(1234)
     }
+
+    @Test
+    fun canGetLastPrices() {
+        vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
+
+        val aPrice = book.addFuelForVehicle(
+            vehicleName = "XC70",
+            odoReading = 1234,
+            amount = 12.4,
+            costNOK = 22.43,
+            source = "test"
+        ).pricePerLiter()
+        val anotherPrice = book.addFuelForVehicle(
+            vehicleName = "XC70",
+            odoReading = 1267,
+            amount = 17.4,
+            costNOK = 27.43,
+            source = "test"
+        ).pricePerLiter()
+
+        assertThat(book.getLastFuelPrices().map { it.second }).contains(aPrice, anotherPrice)
+    }
 }

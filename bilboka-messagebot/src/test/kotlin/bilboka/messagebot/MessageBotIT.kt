@@ -374,6 +374,21 @@ class MessageBotIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 37589 30l 10 kr/l",
             reply = { it.contains("Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l") }
         )
+    }
 
+    @Test
+    fun stats() {
+        processMessagaAndAssertReply(
+            message = "stats",
+            reply = { it.contains("Siste registrerte drivstoff-priser") }
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 37589 30l 10 kr/l",
+            reply = { it.contains("Registrert tanking") }
+        )
+        processMessagaAndAssertReply(
+            message = "prisstatistikk",
+            reply = { it.contains("10 kr/l") }
+        )
     }
 }

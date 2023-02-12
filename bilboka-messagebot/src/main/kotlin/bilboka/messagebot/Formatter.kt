@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import java.text.NumberFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -20,6 +21,14 @@ fun LocalDateTime?.format(): String {
     return this?.let {
         this.format(
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        )
+    } ?: UKJENT
+}
+
+fun LocalDate?.format(): String {
+    return this?.let {
+        this.format(
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
         )
     } ?: UKJENT
 }

@@ -39,7 +39,7 @@ internal class FuelEntryGetter(
         conversation.sendReply(
             "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
                     "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
-                        lastBookEntry.dateTime?.format()
+                        lastBookEntry.dateTime.format()
                     } ved ${lastBookEntry.odometer} ${vehicle.odometerUnit}",
         )
     }

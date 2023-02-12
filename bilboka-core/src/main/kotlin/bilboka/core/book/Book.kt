@@ -1,11 +1,14 @@
 package bilboka.core.book
 
+import bilboka.core.book.domain.BookEntries
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.sign
 
@@ -53,6 +56,17 @@ class Book(
 
     fun getLastFuelEntry(vehicle: String): BookEntry? {
         return vehicleService.getVehicle(vehicle).lastEntry(EntryType.FUEL)
+    }
+
+    fun getLastFuelPrices(n: Int = 5): List<Pair<LocalDate, Double>> {
+        return transaction {
+            BookEntry
+                .find { BookEntries.type eq EntryType.FUEL }
+                .sortedByDescending { it.dateTime }
+                .filter { it.pricePerLiter() != null }
+                .take(n)
+                .map { Pair(it.dateTime.toLocalDate(), it.pricePerLiter() as Double) }
+        }
     }
 }
 

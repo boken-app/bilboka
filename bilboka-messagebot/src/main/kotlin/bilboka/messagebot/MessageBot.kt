@@ -37,6 +37,7 @@ class MessageBot {
         setOf(
             FuelEntryAdder(book, vehicleService, userService),
             FuelEntryGetter(book, userService),
+            FuelPriceStatistics(book, userService),
             SmallTalk(),
             Helper(),
             VehicleInfo(vehicleService, userService),
