@@ -35,12 +35,18 @@ internal class FuelEntryAdder(
     private fun recordProvidedData(state: State, message: String) {
         state.collectedData.filter { it.value.wasJustQueried }.toList().first().apply {
             this.second.wasJustQueried = false
-            this.second.content = when (this.first) {
-                State.FuelDataType.VEHICLE ->
-                    Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)?.let { vehicleService.getVehicle(it.value) }?.name
-                State.FuelDataType.ODOMETER -> message.toInt()
-                State.FuelDataType.AMOUNT -> message.convertToDouble()
-                State.FuelDataType.COST -> message.convertToDouble()
+            if (message.isUnknown()) {
+                this.second.isUnknown = true
+            } else {
+                this.second.content = when (this.first) {
+                    State.FuelDataType.VEHICLE ->
+                        Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)
+                            ?.let { vehicleService.getVehicle(it.value) }?.name
+                    State.FuelDataType.ODOMETER -> message.toInt()
+                    State.FuelDataType.AMOUNT -> message.convertToDouble()
+                    State.FuelDataType.COST -> message.convertToDouble()
+                    State.FuelDataType.COST_PER_AMOUNT -> message.convertToDouble()
+                }
             }
         }
     }
@@ -72,24 +78,22 @@ internal class FuelEntryAdder(
         conversation: Conversation,
         state: State
     ) {
-        if (state.collectedData.all { it.value.content != null }) {
+        state.complete()?.run {
             finish(
                 conversation, book.addFuelForVehicle(
-                    vehicleName = (state.vehicle.content as String),
+                    vehicleName = (this.vehicle.content as String),
                     enteredBy = conversation.withWhom(),
-                    odoReading = state.odometer.content as Int,
-                    amount = state.amount.content as Double,
-                    costNOK = state.cost.content as Double,
+                    odoReading = this.odometer.content as Int?,
+                    amount = this.amount.content as Double?,
+                    costNOK = this.cost.content as Double?,
                     source = conversation.getSource(),
                 )
             )
-        } else {
-            askForNext(conversation, state)
-        }
+        } ?: askForNext(conversation, state)
     }
 
     private fun askForNext(conversation: Conversation, stateInProgress: State) {
-        stateInProgress.collectedData.values.first { it.content == null }.let {
+        stateInProgress.collectedData.values.first { it.content == null && !it.isUnknown }.let {
             it.wasJustQueried = true
             conversation.claim(this, stateInProgress)
             conversation.sendReply(it.query)
@@ -100,7 +104,7 @@ internal class FuelEntryAdder(
         conversation.setUndoable(this, addedFuel)
 
         conversation.sendReply(
-            "⛽ Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer} ${addedFuel.vehicle.odometerUnit}: " +
+            "⛽ Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer ?: "<ukjent>"} ${addedFuel.vehicle.odometerUnit}: " +
                     "${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, " +
                     "${addedFuel.pricePerLiter().format()} kr/l"
         )
@@ -113,23 +117,57 @@ internal class FuelEntryAdder(
     data class FuelingDataItem(
         val query: String,
         var content: Any? = null,
+        var isUnknown: Boolean = false,
         var wasJustQueried: Boolean = false
     )
 
     class State : ChatState() {
-        enum class FuelDataType { VEHICLE, ODOMETER, AMOUNT, COST }
+        enum class FuelDataType { VEHICLE, ODOMETER, AMOUNT, COST, COST_PER_AMOUNT }
 
         val collectedData = linkedMapOf(
             Pair(FuelDataType.VEHICLE, FuelingDataItem("Hvilken bil? \uD83D\uDE97")),
             Pair(FuelDataType.ODOMETER, FuelingDataItem("Kilometerstand? 🔢")),
             Pair(FuelDataType.AMOUNT, FuelingDataItem("Antall liter?")),
-            Pair(FuelDataType.COST, FuelingDataItem("Kroner? 💸"))
+            Pair(FuelDataType.COST, FuelingDataItem("Kroner? 💸")),
+            Pair(FuelDataType.COST_PER_AMOUNT, FuelingDataItem("Pris per liter?")),
         )
         val vehicle = collectedData[FuelDataType.VEHICLE]!!
         val odometer = collectedData[FuelDataType.ODOMETER]!!
         val amount = collectedData[FuelDataType.AMOUNT]!!
         val cost = collectedData[FuelDataType.COST]!!
+        val costPerAmount = collectedData[FuelDataType.COST_PER_AMOUNT]!!
+
+        fun complete(): State? {
+            if (!isDoneAskingForStuff()) {
+                return null
+            }
+            fillOutMissingIfPossible()
+            if (vehicle.content == null || (odometer.content == null && !odometer.isUnknown)) {
+                return null
+            }
+            return this
+        }
+
+        private fun isDoneAskingForStuff() =
+            setOf(amount, cost, costPerAmount).filter { it.content != null }.size >= 2
+                    || setOf(amount, cost, costPerAmount).all { it.isUnknown || it.content != null }
+
+        private fun fillOutMissingIfPossible() {
+            if (amount.content == null && cost.content != null && costPerAmount.content != null) {
+                amount.content = cost.content as Double / costPerAmount.content as Double
+            }
+            if (cost.content == null && amount.content != null && costPerAmount.content != null) {
+                cost.content = amount.content as Double * costPerAmount.content as Double
+            }
+        }
     }
+}
+
+private fun String.isUnknown(): Boolean {
+    return Regex(
+        "(ukjent|\\?|dunno|vet ikke)",
+        IGNORE_CASE
+    ).containsMatchIn(this)
 }
 
 private fun String.convertToDouble(): Double {

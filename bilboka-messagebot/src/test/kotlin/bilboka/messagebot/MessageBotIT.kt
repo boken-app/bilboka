@@ -264,7 +264,7 @@ class MessageBotIT : AbstractMessageBotIT() {
         )
     }
 
-    @Test // TODO tester for corner cases / exceptions
+    @Test
     fun stepWiseFuelAdding() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37589 30l 300kr",
@@ -301,6 +301,70 @@ class MessageBotIT : AbstractMessageBotIT() {
         processMessagaAndAssertReply(
             message = "234567",
             reply = "Antall liter?"
+        )
+    }
+
+    @Test
+    fun stepWiseFuelAdding_canHaveUnknowns() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff XC 70",
+            reply = "Kilometerstand? 🔢"
+        )
+        processMessagaAndAssertReply(
+            message = "ukjent",
+            reply = "Antall liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "45,6",
+            reply = "Kroner? \uD83D\uDCB8"
+        )
+        processMessagaAndAssertReply(
+            message = "?",
+            reply = "Pris per liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "dunno",
+            reply = { it.contains("Registrert tanking av xc 70 ved <ukjent> km: 45,6 liter for <ukjent> kr, <ukjent> kr/l") }
+        )
+    }
+
+    @Test
+    fun stepWiseFuelAdding_canUsePricePerLiterToFindPrice() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff XC 70 234567",
+            reply = "Antall liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "45,6",
+            reply = "Kroner? \uD83D\uDCB8"
+        )
+        processMessagaAndAssertReply(
+            message = "vet ikke",
+            reply = "Pris per liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "16.7",
+            reply = { it.contains("Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 761,52 kr, 16,7 kr/l") }
+        )
+    }
+
+    @Test
+    fun stepWiseFuelAdding_canUsePricePerLiterToFindAmountWhileAskingForMissingOdometer() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff XC 70 761,52 kr",
+            reply = "Kilometerstand? \uD83D\uDD22"
+        )
+        processMessagaAndAssertReply(
+            message = "234567",
+            reply = "Antall liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "vet ikke",
+            reply = "Pris per liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "16.7",
+            reply = { it.contains("Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 761,52 kr, 16,7 kr/l") }
         )
     }
 
