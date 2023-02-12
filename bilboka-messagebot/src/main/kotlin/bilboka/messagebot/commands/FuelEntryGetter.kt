@@ -40,7 +40,7 @@ internal class FuelEntryGetter(
             "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
                     "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
                         lastBookEntry.dateTime.format()
-                    } ved ${lastBookEntry.odometer} ${vehicle.odometerUnit}",
+                    } ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}",
         )
     }
 

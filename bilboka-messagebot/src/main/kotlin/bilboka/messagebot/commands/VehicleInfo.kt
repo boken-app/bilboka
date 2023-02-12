@@ -39,7 +39,7 @@ internal class VehicleInfo(
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Drivstofftype: ${vehicle.fuelType} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    "Sist registrert km-stand: ${vehicle.lastEntry()?.odometer ?: "?"}"
+                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "?"}"
         )
     }
 

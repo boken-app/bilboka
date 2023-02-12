@@ -69,6 +69,13 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         return transaction { bookEntries.maxByOrNull { it.dateTime } }
     }
 
+    fun lastOdometer(): Int? {
+        return transaction {
+            bookEntries.filter { it.odometer != null }
+                .maxByOrNull { it.dateTime }?.odometer
+        }
+    }
+
     fun lastEntry(type: EntryType): BookEntry? {
         return transaction {
             bookEntries.filter { it.type == type }
