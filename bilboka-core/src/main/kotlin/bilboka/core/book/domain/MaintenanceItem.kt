@@ -9,7 +9,7 @@ object MaintenanceItems : IntIdTable() {
     val item = varchar("item", 100).uniqueIndex()
 
     fun getItem(item: String): MaintenanceItem? {
-        return MaintenanceItem.find { MaintenanceItems.item eq item }.singleOrNull()
+        return MaintenanceItem.find { MaintenanceItems.item eq item.uppercase() }.singleOrNull()
     }
 }
 

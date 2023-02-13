@@ -75,6 +75,12 @@ class Book(
             MaintenanceItem.all().map { it.item }
         }.toSet()
     }
+    
+    fun addMaintenanceItem(newItem: String) {
+        transaction {
+            MaintenanceItem.new { item = newItem }
+        }
+    }
 }
 
 private fun BookEntry.checkIfDuplicate(odoReading: Int?, amount: Double?, costNOK: Double?) {

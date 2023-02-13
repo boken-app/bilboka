@@ -74,9 +74,9 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         source: String,
         dateTime: LocalDateTime? = null,
         createIfMissing: Boolean = false
-    ) {
+    ): BookEntry {
         val thisVehicle = this
-        transaction {
+        return transaction {
             val maintenanceEntity = MaintenanceItems.getItem(maintenanceItem).let {
                 if (it == null && createIfMissing) MaintenanceItem.new { item = maintenanceItem } else it
             } ?: throw MaintenanceItemMissingException(maintenanceItem)

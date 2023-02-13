@@ -7,8 +7,12 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     @Test
     fun canGetMaintenanceOptions() {
         processMessagaAndAssertReply(
-            message = "vedlikehold",
-            reply = { it.contains("Eksisterende vedlikeholdspunkt:") },
+            message = "bytte bremseklosser xc70 45677",
+            reply = { it.contains("Legge til bremseklosser som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("Registrert") },
         )
     }
 
