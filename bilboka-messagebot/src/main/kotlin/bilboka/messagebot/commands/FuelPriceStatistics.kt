@@ -29,7 +29,7 @@ internal class FuelPriceStatistics(
 
         conversation.sendReply(
             "Siste registrerte drivstoff-priser \n" +
-                    "Gjennomsnitt: ${lastFuelPrices.map { it.second }.toTypedArray().average().format()} \n" +
+                    "Gjennomsnitt: ${lastFuelPrices.map { it.second }.toTypedArray().average().format()} kr/l \n" +
                     "Siste 6 priser: \n${lastFuelPricesStr.joinToString(" \n")}"
         )
     }
