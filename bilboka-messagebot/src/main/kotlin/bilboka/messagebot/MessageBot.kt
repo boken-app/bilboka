@@ -50,7 +50,7 @@ class MessageBot {
     }
 
     fun processMessage(message: String, senderID: String) {
-        logger.debug("Mottok melding $message")
+        logger.debug("[meldingslogg] Mottok melding '$message'")
         try {
             val conversation = findConversationOrInitiateNew(senderID)
             conversation.validate(message)

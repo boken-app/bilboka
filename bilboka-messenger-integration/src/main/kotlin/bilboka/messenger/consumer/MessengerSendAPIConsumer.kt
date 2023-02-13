@@ -20,7 +20,10 @@ class MessengerSendAPIConsumer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendMessage(message: FacebookMessaging) {
-        logger.info("Sender melding ${message.message?.text} til ${message.recipient?.get("id")}")
+        logger.info(
+            "Sender melding '${if (logger.isTraceEnabled) message.message?.text else ""}' " +
+                    "til ${message.recipient?.get("id")}"
+        )
 
         val url =
             "${messengerProperties.sendUrl}?${MessengerWebhookConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"

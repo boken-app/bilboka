@@ -27,10 +27,11 @@ class FacebookMessageHandler {
 
             if (messageEvent.message?.text != null) {
                 val text = messageEvent.message.text
-                logger.info(format("Mottok melding=%s fra PSID=%s", text, senderPSID))
+                logger.info(format("Mottok melding fra PSID=%s", senderPSID))
+                logger.trace(format("Meldingsinnhold: '%s'", text))
                 messageBot.processMessage(text, senderPSID)
             } else {
-                logger.info("Request inneholder ingen melding.")
+                logger.debug("Request inneholder ingen melding.")
                 facebookMessenger.sendMessage("Du sendte noe rart jeg ikke skjønte", senderPSID)
             }
 

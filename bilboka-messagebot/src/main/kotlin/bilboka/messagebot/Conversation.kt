@@ -29,6 +29,7 @@ internal class Conversation(
     }
 
     fun sendReply(message: String) {
+        logger.debug("[meldingslogg] Sender melding '$message'")
         botMessenger.sendMessage(
             message,
             senderID
@@ -46,7 +47,7 @@ internal class Conversation(
 
     inline fun <reified T : ChatState> withdrawClaim(by: ChatCommand): T? {
         if (claimedBy(by)) {
-            logger.debug("Claime withdrawn: ${by.javaClass.name}")
+            logger.debug("Claim withdrawn: ${by.javaClass.name}")
             return claim?.state.also { unclaim() } as T
         }
         return null
