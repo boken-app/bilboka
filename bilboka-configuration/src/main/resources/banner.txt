@@ -1,0 +1,7 @@
+${AnsiColor.BLUE}    __________ .__ .__  ___.             __
+${AnsiColor.BLUE}    \______   \|__||  | \_ |__    ____  |  | _______
+${AnsiColor.BLUE}     |    |  _/|  ||  |  | __ \  /  _ \ |  |/ /\__  \
+${AnsiColor.BLUE}     |    |   \|  ||  |__| \_\ \(  <_> )|    <  / __ \_
+${AnsiColor.BLUE}     |______  /|__||____/|___  / \____/ |__|_ \(____  /
+${AnsiColor.BLUE}            \/               \/              \/     \/
+${AnsiColor.BLUE}
