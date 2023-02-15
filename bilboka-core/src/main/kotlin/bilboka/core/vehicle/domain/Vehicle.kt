@@ -96,29 +96,37 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastEntry(): BookEntry? {
-        return transaction { bookEntries.maxByOrNull { it.dateTime } }
+        return transaction {
+            datedEntries()
+                .maxByOrNull { it.dateTime!! }
+        }
     }
 
     fun lastOdometer(): Int? {
         return transaction {
-            bookEntries.filter { it.odometer != null }
-                .maxByOrNull { it.dateTime }?.odometer
+            datedEntries()
+                .filter { it.odometer != null }
+                .maxByOrNull { it.dateTime!! }?.odometer
         }
     }
 
     fun lastEntry(type: EntryType): BookEntry? {
         return transaction {
-            bookEntries.filter { it.type == type }
-                .maxByOrNull { it.dateTime }
+            datedEntries().filter { it.type == type }
+                .maxByOrNull { it.dateTime!! }
         }
     }
 
     fun lastMaintenance(maintenanceItem: String): BookEntry? {
         return transaction {
-            bookEntries.filter { it.type == EntryType.MAINTENANCE }
+            datedEntries().filter { it.type == EntryType.MAINTENANCE }
                 .filter { it.maintenanceItem == MaintenanceItems.getItem(maintenanceItem) }
-                .maxByOrNull { it.dateTime }
+                .maxByOrNull { it.dateTime!! }
         }
+    }
+
+    private fun datedEntries(): List<BookEntry> {
+        return bookEntries.filter { it.dateTime != null }
     }
 
     fun fuelType(): FuelType {

@@ -63,10 +63,13 @@ class Book(
         return transaction {
             BookEntry
                 .find { BookEntries.type eq EntryType.FUEL }
+                .asSequence()
                 .sortedByDescending { it.dateTime }
+                .filter { it.dateTime != null }
                 .filter { it.pricePerLiter() != null }
                 .take(n)
-                .map { Pair(it.dateTime.toLocalDate(), it.pricePerLiter() as Double) }
+                .map { Pair(it.dateTime!!.toLocalDate(), it.pricePerLiter() as Double) }
+                .toList()
         }
     }
 
@@ -112,7 +115,7 @@ fun Int.validateAsOdometer() {
 
 private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {
     if (odoReading != null && this.odometer != null
-        && this.dateTime.compareTo(dateTime ?: LocalDateTime.now()).sign != this.odometer?.compareTo(odoReading)?.sign
+        && this.dateTime?.compareTo(dateTime ?: LocalDateTime.now())?.sign != this.odometer?.compareTo(odoReading)?.sign
     ) {
         throw BookEntryChronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
     }

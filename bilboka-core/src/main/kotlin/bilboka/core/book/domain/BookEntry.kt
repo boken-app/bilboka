@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import java.time.Instant.now
 
 object BookEntries : IntIdTable() {
-    val dateTime = datetime("datetime")
+    val dateTime = datetime("datetime").nullable()
     val vehicle = reference("vehicle", Vehicles)
     val odometer = integer("odometer").nullable()
     val type = enumerationByName("type", 50, EntryType::class)
