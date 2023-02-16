@@ -46,12 +46,12 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         isFull: Boolean = false,
         enteredBy: User? = null,
         source: String,
-        dateTime: LocalDateTime? = null
+        dateTime: LocalDateTime? = LocalDateTime.now()
     ): BookEntry {
         val thisVehicle = this
         return transaction {
             BookEntry.new {
-                this.dateTime = dateTime ?: LocalDateTime.now()
+                this.dateTime = dateTime
                 this.type = EntryType.FUEL
                 this.enteredBy = enteredBy
                 this.odometer = odometer
@@ -72,7 +72,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         comment: String? = null,
         enteredBy: User? = null,
         source: String,
-        dateTime: LocalDateTime? = null,
+        dateTime: LocalDateTime? = LocalDateTime.now(),
         createIfMissing: Boolean = false
     ): BookEntry {
         val thisVehicle = this
@@ -81,7 +81,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
                 if (it == null && createIfMissing) MaintenanceItem.new { item = maintenanceItem } else it
             } ?: throw MaintenanceItemMissingException(maintenanceItem)
             BookEntry.new {
-                this.dateTime = dateTime ?: LocalDateTime.now()
+                this.dateTime = dateTime
                 this.maintenanceItem = maintenanceEntity
                 this.comment = comment
                 this.type = EntryType.MAINTENANCE
@@ -119,9 +119,15 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
 
     fun lastMaintenance(maintenanceItem: String): BookEntry? {
         return transaction {
-            datedEntries().filter { it.type == EntryType.MAINTENANCE }
+            val maintenanceOfRightType = bookEntries
+                .filter { it.type == EntryType.MAINTENANCE }
                 .filter { it.maintenanceItem == MaintenanceItems.getItem(maintenanceItem) }
-                .maxByOrNull { it.dateTime!! }
+
+            val lastWithDate = maintenanceOfRightType.filter { it.dateTime != null }.maxByOrNull { it.dateTime!! }
+            val lastWithOdo = maintenanceOfRightType.filter { it.odometer != null }.maxByOrNull { it.odometer!! }
+            lastWithDate?.let {
+                if (it.odometer != null && it.odometer!! < lastWithOdo?.odometer ?: 0) lastWithOdo else it
+            } ?: lastWithOdo
         }
     }
 
