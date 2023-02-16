@@ -36,9 +36,9 @@ internal class LastEntryGetter(
     override fun execute(conversation: Conversation, message: String) {
         allMatcher.find(message)?.apply {
 
-            val category = groupValues[1]
+            val category = groupValues[1].normalizeAsMaintenanceItem()
 
-            if (book.maintenanceItems().contains(category.normalizeAsMaintenanceItem())) {
+            if (book.maintenanceItems().contains(category)) {
                 val vehicle = vehicleService.getVehicle(groupValues[2])
                 replyWithLastEntry(vehicle, vehicle.lastMaintenance(category), conversation)
             } else {
