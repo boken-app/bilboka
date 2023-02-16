@@ -73,6 +73,10 @@ internal class LastEntryGetter(
                         "${lastBookEntry.dateTime.format()} " +
                         "ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}",
             )
+            EntryType.EVENT -> conversation.sendReply(
+                "${lastBookEntry.event}: ${lastBookEntry.dateTime.format()} " +
+                        "ved ${lastBookEntry.odometer ?: "?"} - ${lastBookEntry.comment ?: ""}"
+            )
             EntryType.BASIC -> conversation.sendReply(
                 "${lastBookEntry.dateTime.format()} " +
                         "ved ${lastBookEntry.odometer ?: "?"} - ${lastBookEntry.comment ?: ""}"

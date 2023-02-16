@@ -21,6 +21,7 @@ object BookEntries : IntIdTable() {
     val costNOK = double("cost_nok").nullable()
     val isFullTank = bool("is_full").nullable()
     val maintenanceItem = reference("maintenance_item", MaintenanceItems).nullable()
+    val event = enumerationByName("event", 50, EventType::class).nullable()
     val comment = varchar("comment", 255).nullable()
     val enteredBy = reference("entered_by", Users).nullable()
     val dataSource = varchar("source", 50)
@@ -38,6 +39,7 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id) {
     var costNOK by BookEntries.costNOK
     var isFullTank by BookEntries.isFullTank
     var maintenanceItem by MaintenanceItem optionalReferencedOn BookEntries.maintenanceItem
+    var event by BookEntries.event
     var comment by BookEntries.comment
     var enteredBy by User optionalReferencedOn BookEntries.enteredBy
     var source by BookEntries.dataSource

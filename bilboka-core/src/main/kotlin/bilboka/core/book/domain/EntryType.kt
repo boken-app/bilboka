@@ -4,4 +4,5 @@ enum class EntryType {
     BASIC,
     FUEL,
     MAINTENANCE,
+    EVENT,
 }
