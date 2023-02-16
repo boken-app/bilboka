@@ -51,7 +51,7 @@ internal class MaintenanceAdder(
                 source = conversation.getSource()
             )
             conversation.setUndoable(this, enteredMaintenance!!)
-            conversation.sendReply("Registrert ${enteredMaintenance.maintenanceItem} ved ${enteredMaintenance.odometer}")
+            conversation.sendReply("Registrert ${enteredMaintenance.maintenanceItem?.item} ved ${enteredMaintenance.odometer}")
         } else if (maintItem != null) {
             conversation.claim(
                 this,
