@@ -52,7 +52,7 @@ internal class LastEntryGetter(
                 )
             }
         } ?: conversation.sendReply(
-            "Skjønte ikke noe av det dere"
+            "Skjønte ikke noe av det der"
         )
     }
 
