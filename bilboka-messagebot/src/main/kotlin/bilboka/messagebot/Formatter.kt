@@ -25,6 +25,14 @@ fun LocalDateTime?.format(): String {
     } ?: UKJENT
 }
 
+fun LocalDateTime?.formatAsDate(): String {
+    return this?.let {
+        this.format(
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+        )
+    } ?: UKJENT
+}
+
 fun LocalDate?.format(): String {
     return this?.let {
         this.format(

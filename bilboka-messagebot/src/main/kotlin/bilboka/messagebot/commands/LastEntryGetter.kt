@@ -9,6 +9,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
+import bilboka.messagebot.formatAsDate
 
 internal class LastEntryGetter(
     private val book: Book,
@@ -65,21 +66,21 @@ internal class LastEntryGetter(
             EntryType.FUEL -> conversation.sendReply(
                 "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
                         "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
-                            lastBookEntry.dateTime.format()
+                            lastBookEntry.dateTime.formatAsDate()
                         } ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}",
             )
             EntryType.MAINTENANCE -> conversation.sendReply(
                 "Siste registrert ${lastBookEntry.maintenanceItem?.item} for ${vehicle.name}: " +
-                        "${lastBookEntry.dateTime.format()} " +
-                        "ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}",
+                        "${lastBookEntry.dateTime.formatAsDate()} " +
+                        "ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}${lastBookEntry.formattedComment()}",
             )
             EntryType.EVENT -> conversation.sendReply(
-                "${lastBookEntry.event}: ${lastBookEntry.dateTime.format()} " +
-                        "ved ${lastBookEntry.odometer ?: "?"} - ${lastBookEntry.comment ?: ""}"
+                "${lastBookEntry.event}: ${lastBookEntry.dateTime.formatAsDate()} " +
+                        "ved ${lastBookEntry.odometer ?: "?"}${lastBookEntry.formattedComment()}"
             )
             EntryType.BASIC -> conversation.sendReply(
-                "${lastBookEntry.dateTime.format()} " +
-                        "ved ${lastBookEntry.odometer ?: "?"} - ${lastBookEntry.comment ?: ""}"
+                "${lastBookEntry.dateTime.formatAsDate()} " +
+                        "ved ${lastBookEntry.odometer ?: "?"}${lastBookEntry.formattedComment()}"
             )
             null -> conversation.sendReply(
                 "Ingen registrert"
@@ -89,5 +90,11 @@ internal class LastEntryGetter(
 }
 
 private fun String.normalizeAsMaintenanceItem(): String {
-    return this.replace(' ', '_').uppercase()
+    return this.replace(' ', '_')
+        .replace('æ', 'e', true)
+        .replace('ø', 'o', true)
+        .replace('å', 'å', true)
+        .uppercase()
 }
+
+private fun BookEntry.formattedComment() = this.comment?.let { " ($it)" } ?: ""
