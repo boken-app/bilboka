@@ -16,7 +16,7 @@ internal class MaintenanceAdder(
     userService: UserService
 ) : CarBookCommand(userService), Undoable<BookEntry> {
     private val matcher = Regex(
-        "(?:bytte|vedlikehold|skifte|bytt|ny|nytt)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
+        "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
         RegexOption.IGNORE_CASE
     )
 

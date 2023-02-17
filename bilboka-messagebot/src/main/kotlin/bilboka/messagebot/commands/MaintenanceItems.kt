@@ -10,7 +10,7 @@ internal class MaintenanceItems(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "(vedlikehold|vedl)",
+        "(vedlikehold|vedl)$",
         RegexOption.IGNORE_CASE
     )
 
@@ -21,10 +21,9 @@ internal class MaintenanceItems(
     override fun execute(conversation: Conversation, message: String) {
         conversation.sendReply(
             book.maintenanceItems().joinToString(
-                prefix = "Eksisterende vedlikeholdspunkt: \n",
-                separator = "\n",
-                // TODO når den funksjonen er implementert.
-                //   postfix = " \n Skriv '[vedlikeholdspunkt] [bil-navn]' for å se siste oppføring på gitt bil"
+                prefix = "Eksisterende vedlikeholdspunkt: \n  ",
+                separator = "\n  ",
+                postfix = " \n(Skriv 'Siste [vedlikeholdspunkt] [bil-navn]' for å se siste oppføring på gitt bil)"
             )
         )
     }
