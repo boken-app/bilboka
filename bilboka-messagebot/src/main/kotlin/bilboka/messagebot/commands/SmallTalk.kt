@@ -26,6 +26,8 @@ internal class SmallTalk : GeneralChatCommand() {
         Pair("😊", ":D"),
         Pair("bil", "🏎"),
         Pair("lol", "😂"),
+        Pair("ok", "👍"),
+        Pair("hm", "😐"),
     )
 
     override fun isMatch(message: String): Boolean {

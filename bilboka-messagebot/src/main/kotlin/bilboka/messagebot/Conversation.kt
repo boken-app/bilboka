@@ -40,7 +40,7 @@ internal class Conversation(
         duplicateBuster.catchDuplicates(message)
     }
 
-    fun <T : ChatState> claim(by: ChatCommand, state: T? = null) {
+    fun <T : ChatState> claim(by: ChatCommand, state: T) {
         logger.debug("Claimed by: ${by.javaClass.name}")
         this.claim = ConversationClaim(by, state)
     }
