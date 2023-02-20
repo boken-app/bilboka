@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.toMaintenanceItem
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.Conversation
@@ -16,7 +17,7 @@ internal class MaintenanceAdder(
     userService: UserService
 ) : CarBookCommand(userService), Undoable<BookEntry> {
     private val matcher = Regex(
-        "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
+        "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
         RegexOption.IGNORE_CASE
     )
 
@@ -32,7 +33,7 @@ internal class MaintenanceAdder(
                 book.addMaintenanceItem(it.thingToAdd)
                 messageToProcess = it.prevMsg
             } else {
-                return
+                conversation.sendReply("Neivel")
             }
         }
 
@@ -40,13 +41,12 @@ internal class MaintenanceAdder(
         val maintItem = matchResult?.groupValues?.get(1)
         val vehicle = matchResult?.groupValues?.get(2)
 
-        if (book.maintenanceItems().contains(maintItem?.uppercase())) {
+        if (book.maintenanceItems().contains(maintItem?.toMaintenanceItem())) {
             val enteredMaintenance = vehicle?.let {
                 vehicleService.getVehicle(it)
             }?.enterMaintenance(
                 maintenanceItem = maintItem!!,
-                odometer = ODOMETER_REGEX.find(messageToProcess)
-                    ?.let { (it.groups[1] ?: it.groups[2])?.value?.toInt() },
+                odometer = ODOMETER_REGEX.find(messageToProcess)?.findOdometerFromMatch(),
                 enteredBy = conversation.withWhom(),
                 source = conversation.getSource()
             )
@@ -65,6 +65,8 @@ internal class MaintenanceAdder(
             conversation.sendReply("Nå ble det krøll her")
         }
     }
+
+    private fun MatchResult.findOdometerFromMatch() = (groups[1] ?: groups[2])?.value?.toInt()
 
     override fun undo(item: BookEntry) {
         item.delete()

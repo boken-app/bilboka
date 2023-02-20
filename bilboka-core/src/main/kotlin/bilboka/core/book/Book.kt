@@ -1,9 +1,6 @@
 package bilboka.core.book
 
-import bilboka.core.book.domain.BookEntries
-import bilboka.core.book.domain.BookEntry
-import bilboka.core.book.domain.EntryType
-import bilboka.core.book.domain.MaintenanceItem
+import bilboka.core.book.domain.*
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
@@ -119,4 +116,8 @@ private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReadin
     ) {
         throw BookEntryChronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
     }
+}
+
+fun String.toMaintenanceItem(): String {
+    return this.normalizeAsMaintenanceItem()
 }

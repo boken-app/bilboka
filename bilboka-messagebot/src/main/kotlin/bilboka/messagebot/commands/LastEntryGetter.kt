@@ -3,6 +3,7 @@ package bilboka.messagebot.commands
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
+import bilboka.core.book.toMaintenanceItem
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
@@ -37,7 +38,7 @@ internal class LastEntryGetter(
     override fun execute(conversation: Conversation, message: String) {
         allMatcher.find(message)?.apply {
 
-            val category = groupValues[1].normalizeAsMaintenanceItem()
+            val category = groupValues[1].toMaintenanceItem()
 
             if (book.maintenanceItems().contains(category)) {
                 val vehicle = vehicleService.getVehicle(groupValues[2])
@@ -87,14 +88,6 @@ internal class LastEntryGetter(
             )
         }
     }
-}
-
-private fun String.normalizeAsMaintenanceItem(): String {
-    return this.replace(' ', '_')
-        .replace('æ', 'e', true)
-        .replace('ø', 'o', true)
-        .replace('å', 'å', true)
-        .uppercase()
 }
 
 private fun BookEntry.formattedComment() = this.comment?.let { " ($it)" } ?: ""

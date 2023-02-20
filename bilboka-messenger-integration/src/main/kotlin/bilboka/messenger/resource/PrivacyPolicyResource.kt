@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 class PrivacyPolicyResource {
 
     companion object {
-        val privacyPolicy = "<!DOCTYPE html>\n" +
+        const val privacyPolicy = "<!DOCTYPE html>\n" +
                 "<html>\n" +
                 "<head>\n" +
                 "\t<title>Data Privacy Policy</title>\n" +

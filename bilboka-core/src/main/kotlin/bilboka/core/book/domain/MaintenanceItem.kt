@@ -17,8 +17,16 @@ class MaintenanceItem(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<MaintenanceItem>(MaintenanceItems)
 
     var item by MaintenanceItems.item.transform(
-        toColumn = { a -> a.uppercase() },
+        toColumn = { a -> a.normalizeAsMaintenanceItem() },
         toReal = { a -> a }
     )
 
+}
+
+fun String.normalizeAsMaintenanceItem(): String {
+    return this.replace(' ', '_')
+        .replace('æ', 'e', true)
+        .replace('ø', 'o', true)
+        .replace('å', 'a', true)
+        .uppercase()
 }

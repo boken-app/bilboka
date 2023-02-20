@@ -14,6 +14,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
             message = "ja",
             reply = { it.contains("Registrert") },
         )
+        processMessagaAndAssertReply(
+            message = "vedlikehold",
+            reply = { it.contains("BREMSEKLOSSER") },
+        )
     }
 
     @Test
@@ -29,6 +33,22 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         processMessagaAndAssertReply(
             message = "Siste bremseskiver xc70",
             reply = { it.contains("45677") },
+        )
+    }
+
+    @Test
+    fun canRegisterExistingMaintenance() {
+        processMessagaAndAssertReply(
+            message = "bytte vindusviskere xc70 45677",
+            reply = { it.contains("Legge til vindusviskere som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("Registrert") },
+        )
+        processMessagaAndAssertReply(
+            message = "bytte vindusviskere xc70 45800",
+            reply = { it.contains("Registrert VINDUSVISKERE ved 45800") },
         )
     }
 
