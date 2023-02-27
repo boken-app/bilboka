@@ -10,6 +10,7 @@ import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.ODOMETER_REGEX
 import bilboka.messagebot.commands.common.Undoable
+import kotlin.text.RegexOption.IGNORE_CASE
 
 internal class MaintenanceAdder(
     private val book: Book,
@@ -18,7 +19,7 @@ internal class MaintenanceAdder(
 ) : CarBookCommand(userService), Undoable<BookEntry> {
     private val matcher = Regex(
         "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
-        RegexOption.IGNORE_CASE
+        IGNORE_CASE
     )
 
     override fun isMatch(message: String): Boolean {
@@ -34,39 +35,71 @@ internal class MaintenanceAdder(
                 messageToProcess = it.prevMsg
             } else {
                 conversation.sendReply("Neivel")
+                return
             }
         }
 
-        val matchResult = matcher.find(messageToProcess)
-        val maintItem = matchResult?.groupValues?.get(1)
-        val vehicle = matchResult?.groupValues?.get(2)
+        val base = Extractor(messageToProcess, {
+            Regex("(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)", IGNORE_CASE).findAll(it)
+        }, {})
+        base.getExtracted()
 
-        if (book.maintenanceItems().contains(maintItem?.toMaintenanceItem())) {
-            val enteredMaintenance = vehicle?.let {
-                vehicleService.getVehicle(it)
-            }?.enterMaintenance(
-                maintenanceItem = maintItem!!,
-                odometer = ODOMETER_REGEX.find(messageToProcess)?.findOdometerFromMatch(),
+        val odoExtractor = Extractor(base.getRemaining(), {
+            ODOMETER_REGEX.findAll(it)
+        }) {
+            it.toInt()
+        }
+        val odometer = odoExtractor.getExtracted()
+
+        val vehicleExtractor = Extractor(odoExtractor.getRemaining(),
+            {
+                Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
+                    .findAll(it)
+            }) {
+            vehicleService.findVehicle(it)
+        }
+        val vehicle = vehicleExtractor.getExtracted()
+
+        val maintItemExtractor = Extractor(vehicleExtractor.getRemaining(), {
+            Regex("[\\s\\wæøå-]+", IGNORE_CASE)
+                .findAll(it)
+        }) {
+            book.maintenanceItems().firstOrNull { item ->
+                item == it.toMaintenanceItem()
+            }
+        }
+
+        val maintItem = maintItemExtractor.getExtracted()
+
+        if (odometer != null && maintItem != null && vehicle != null) {
+            vehicle.enterMaintenance(
+                maintenanceItem = maintItem,
+                odometer = odometer,
                 enteredBy = conversation.withWhom(),
                 source = conversation.getSource()
-            )
-            conversation.setUndoable(this, enteredMaintenance!!)
-            conversation.sendReply("Registrert ${enteredMaintenance.maintenanceItem?.item} ved ${enteredMaintenance.odometer}")
-        } else if (maintItem != null) {
+            ).also {
+                conversation.setUndoable(this, it)
+                conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer}")
+            }
+        } else if (vehicle == null) {
+            conversation.sendReply("Mangler bil")
+        } else if (odometer == null) {
+            conversation.sendReply("Mangler kilometerstand")
+        } else {
             conversation.claim(
                 this,
-                State(hasAskedForAdding = true, thingToAdd = maintItem, prevMsg = messageToProcess)
+                State(
+                    hasAskedForAdding = true,
+                    thingToAdd = maintItemExtractor.getRemaining(),
+                    prevMsg = messageToProcess
+                )
             )
             conversation.sendReply(
-                "Legge til $maintItem som et vedlikeholdspunkt? " +
+                "Legge til ${maintItemExtractor.getRemaining()} som et vedlikeholdspunkt? " +
                         "(for å se liste over alle eksisterende, skriv 'vedlikehold')"
             )
-        } else {
-            conversation.sendReply("Nå ble det krøll her")
         }
     }
-
-    private fun MatchResult.findOdometerFromMatch() = (groups[1] ?: groups[2])?.value?.toInt()
 
     override fun undo(item: BookEntry) {
         item.delete()
@@ -77,4 +110,33 @@ internal class MaintenanceAdder(
         val prevMsg: String,
         val thingToAdd: String
     ) : ChatState()
+}
+
+class Extractor<T>(
+    private val stringSource: String,
+    val matchResults: (String) -> Sequence<MatchResult>,
+    private val extractor: (String) -> T?
+) {
+    private var matched: String? = null
+
+    fun getExtracted(): T? {
+        return matchResults(stringSource).firstNotNullOfOrNull {
+            tryToFindMatch(extractor, it)
+        }
+    }
+
+    private fun tryToFindMatch(extractor: (String) -> T?, it: MatchResult): T? {
+        it.groupValues.forEach {
+            val extracted = extractor(it)
+            if (extracted != null) {
+                matched = it
+                return extracted
+            }
+        }
+        return null
+    }
+
+    fun getRemaining(): String {
+        return matched?.let { stringSource.lowercase().split(it).joinToString("").trim() } ?: stringSource
+    }
 }

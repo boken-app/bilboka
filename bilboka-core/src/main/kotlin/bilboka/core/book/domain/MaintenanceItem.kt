@@ -24,7 +24,7 @@ class MaintenanceItem(id: EntityID<Int>) : IntEntity(id) {
 }
 
 fun String.normalizeAsMaintenanceItem(): String {
-    return this.replace(' ', '_')
+    return this.trim().replace(' ', '_')
         .replace('æ', 'e', true)
         .replace('ø', 'o', true)
         .replace('å', 'a', true)
