@@ -5,6 +5,7 @@ import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.toMaintenanceItem
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.commands.common.ChatState
@@ -12,22 +13,25 @@ import bilboka.messagebot.commands.common.ODOMETER_REGEX
 import bilboka.messagebot.commands.common.Undoable
 import kotlin.text.RegexOption.IGNORE_CASE
 
+private val keywordRegex = Regex(
+    "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)",
+    IGNORE_CASE
+)
+private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
+private val maintenanceItemRegex = Regex("[\\s\\wæøå-]+", IGNORE_CASE)
+
 internal class MaintenanceAdder(
     private val book: Book,
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService), Undoable<BookEntry> {
-    private val matcher = Regex(
-        "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)\\s+(\\w+)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s+($ODOMETER_REGEX)",
-        IGNORE_CASE
-    )
+    private val matcher = keywordRegex
 
     override fun isMatch(message: String): Boolean {
         return matcher.containsMatchIn(message)
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        // TODO her er det mye som må ryddes!
         var messageToProcess = message
         conversation.withdrawClaim<State>(this)?.let {
             if (it.hasAskedForAdding && message.lowercase() == "ja") {
@@ -39,37 +43,29 @@ internal class MaintenanceAdder(
             }
         }
 
-        val base = Extractor(messageToProcess, {
-            Regex("(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)", IGNORE_CASE).findAll(it)
-        }, {})
-        base.getExtracted()
+        val odometer: Int?
+        val vehicle: Vehicle?
+        val maintItem: String?
 
-        val odoExtractor = Extractor(base.getRemaining(), {
-            ODOMETER_REGEX.findAll(it)
-        }) {
-            it.toInt()
-        }
-        val odometer = odoExtractor.getExtracted()
+        val extractor = Extractor(messageToProcess)
 
-        val vehicleExtractor = Extractor(odoExtractor.getRemaining(),
-            {
-                Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
-                    .findAll(it)
-            }) {
-            vehicleService.findVehicle(it)
-        }
-        val vehicle = vehicleExtractor.getExtracted()
+            .apply { extract(keywordRegex) {} }
 
-        val maintItemExtractor = Extractor(vehicleExtractor.getRemaining(), {
-            Regex("[\\s\\wæøå-]+", IGNORE_CASE)
-                .findAll(it)
-        }) {
-            book.maintenanceItems().firstOrNull { item ->
-                item == it.toMaintenanceItem()
+            .apply { extract(ODOMETER_REGEX) { it.toInt() }.also { odometer = it } }
+
+            .apply {
+                extract(vehicleRegex) {
+                    vehicleService.findVehicle(it)
+                }.also { vehicle = it }
             }
-        }
 
-        val maintItem = maintItemExtractor.getExtracted()
+            .apply {
+                extract(maintenanceItemRegex) {
+                    book.maintenanceItems().firstOrNull { item ->
+                        item == it.toMaintenanceItem()
+                    }
+                }.also { maintItem = it }
+            }
 
         if (odometer != null && maintItem != null && vehicle != null) {
             vehicle.enterMaintenance(
@@ -90,12 +86,12 @@ internal class MaintenanceAdder(
                 this,
                 State(
                     hasAskedForAdding = true,
-                    thingToAdd = maintItemExtractor.getRemaining(),
+                    thingToAdd = extractor.matchRemainder,
                     prevMsg = messageToProcess
                 )
             )
             conversation.sendReply(
-                "Legge til ${maintItemExtractor.getRemaining()} som et vedlikeholdspunkt? " +
+                "Legge til ${extractor.matchRemainder} som et vedlikeholdspunkt? " +
                         "(for å se liste over alle eksisterende, skriv 'vedlikehold')"
             )
         }
@@ -112,31 +108,20 @@ internal class MaintenanceAdder(
     ) : ChatState()
 }
 
-class Extractor<T>(
-    private val stringSource: String,
-    val matchResults: (String) -> Sequence<MatchResult>,
-    private val extractor: (String) -> T?
+class Extractor(
+    matchSource: String,
 ) {
-    private var matched: String? = null
+    var matchRemainder: String = matchSource
 
-    fun getExtracted(): T? {
-        return matchResults(stringSource).firstNotNullOfOrNull {
-            tryToFindMatch(extractor, it)
-        }
-    }
-
-    private fun tryToFindMatch(extractor: (String) -> T?, it: MatchResult): T? {
-        it.groupValues.forEach {
-            val extracted = extractor(it)
-            if (extracted != null) {
-                matched = it
-                return extracted
+    fun <T> extract(matchRegex: Regex, extractor: (String) -> T?): T? {
+        return matchRegex.findAll(matchRemainder)
+            .flatMap { it.groupValues }
+            .firstNotNullOfOrNull { value ->
+                extractor(value).also { if (it != null) matchRemainder = getRemainingFrom(value) }
             }
-        }
-        return null
     }
 
-    fun getRemaining(): String {
-        return matched?.let { stringSource.lowercase().split(it).joinToString("").trim() } ?: stringSource
+    private fun getRemainingFrom(match: String): String {
+        return match.let { matchRemainder.lowercase().split(it).joinToString("").trim() }
     }
 }

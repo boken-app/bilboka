@@ -52,4 +52,20 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
     }
 
+    @Test
+    fun repliesMissingCar() {
+        processMessagaAndAssertReply(
+            message = "bytte vindusviskere 45677",
+            reply = { it.contains("Mangler bil") },
+        )
+    }
+
+    @Test
+    fun repliesMissingOdo() {
+        processMessagaAndAssertReply(
+            message = "bytte vindusviskere xc70",
+            reply = { it.contains("Mangler kilometerstand") },
+        )
+    }
+
 }
