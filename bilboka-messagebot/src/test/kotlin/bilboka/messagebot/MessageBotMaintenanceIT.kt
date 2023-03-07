@@ -68,4 +68,12 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
     }
 
+    @Test
+    fun missingMaintItem() {
+        processMessagaAndAssertReply(
+            message = "bytte xc70 45677",
+            reply = { it.contains("Skjønte ingenting") },
+        )
+    }
+
 }

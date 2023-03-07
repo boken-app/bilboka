@@ -31,32 +31,31 @@ internal class MaintenanceAdder(
         return matcher.containsMatchIn(message)
     }
 
+    // TODO mulighet for kostnad og kommentar
     override fun execute(conversation: Conversation, message: String) {
         var messageToProcess = message
         conversation.withdrawClaim<State>(this)?.let {
-            if (it.hasAskedForAdding && message.lowercase() == "ja") {
-                book.addMaintenanceItem(it.thingToAdd)
-                messageToProcess = it.prevMsg
+            if (it.hasAskedForAdding && message.lowercase() == "ja" && it.thingToAdd != null) {
+                book.addMaintenanceItem(it.thingToAdd!!)
+                messageToProcess = it.prevMsg!!
             } else {
                 conversation.sendReply("Neivel")
                 return
             }
         }
 
-        val odometer: Int?
-        val vehicle: Vehicle?
-        val maintItem: String?
+        val state = State()
 
         val extractor = Extractor(messageToProcess)
 
             .apply { extract(keywordRegex) {} }
 
-            .apply { extract(ODOMETER_REGEX) { it.toInt() }.also { odometer = it } }
+            .apply { extract(ODOMETER_REGEX) { it.toInt() }.also { state.odometer.content = it } }
 
             .apply {
                 extract(vehicleRegex) {
                     vehicleService.findVehicle(it)
-                }.also { vehicle = it }
+                }.also { state.vehicle.content = it }
             }
 
             .apply {
@@ -64,36 +63,40 @@ internal class MaintenanceAdder(
                     book.maintenanceItems().firstOrNull { item ->
                         item == it.toMaintenanceItem()
                     }
-                }.also { maintItem = it }
+                }.also { state.maintenanceItem.content = it }
             }
 
-        if (odometer != null && maintItem != null && vehicle != null) {
-            vehicle.enterMaintenance(
-                maintenanceItem = maintItem,
-                odometer = odometer,
+        state.complete()?.run {
+            (vehicle.content as Vehicle).enterMaintenance(
+                maintenanceItem = maintenanceItem.content as String,
+                odometer = odometer.content as Int,
                 enteredBy = conversation.withWhom(),
                 source = conversation.getSource()
             ).also {
-                conversation.setUndoable(this, it)
+                conversation.setUndoable(this@MaintenanceAdder, it)
                 conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer}")
             }
-        } else if (vehicle == null) {
-            conversation.sendReply("Mangler bil")
-        } else if (odometer == null) {
-            conversation.sendReply("Mangler kilometerstand")
-        } else {
-            conversation.claim(
-                this,
-                State(
-                    hasAskedForAdding = true,
-                    thingToAdd = extractor.matchRemainder,
-                    prevMsg = messageToProcess
+        } ?: run {
+            if (state.vehicle.content == null) {
+                conversation.sendReply("Mangler bil")
+            } else if (state.odometer.content == null) {
+                conversation.sendReply("Mangler kilometerstand")
+            } else if (extractor.matchRemainder.isReasonableMaintenanceItem()) {
+                conversation.claim(
+                    this,
+                    state.apply {
+                        hasAskedForAdding = true
+                        thingToAdd = extractor.matchRemainder
+                        prevMsg = messageToProcess
+                    }
                 )
-            )
-            conversation.sendReply(
-                "Legge til ${extractor.matchRemainder} som et vedlikeholdspunkt? " +
-                        "(for å se liste over alle eksisterende, skriv 'vedlikehold')"
-            )
+                conversation.sendReply(
+                    "Legge til ${extractor.matchRemainder} som et vedlikeholdspunkt? " +
+                            "(for å se liste over alle eksisterende, skriv 'vedlikehold')"
+                )
+            } else {
+                conversation.sendReply("Skjønte ingenting")
+            }
         }
     }
 
@@ -101,11 +104,42 @@ internal class MaintenanceAdder(
         item.delete()
     }
 
-    class State(
-        val hasAskedForAdding: Boolean,
-        val prevMsg: String,
-        val thingToAdd: String
-    ) : ChatState()
+    data class MaintenanceDataItem(
+        val query: String,
+        var content: Any? = null,
+        var isUnknown: Boolean = false,
+        var wasJustQueried: Boolean = false
+    )
+
+    class State : ChatState() {
+        enum class MaintenanceDataType { VEHICLE, ODOMETER, MAINTENANCEITEM }
+
+        var hasAskedForAdding: Boolean = false
+        var prevMsg: String? = null
+        var thingToAdd: String? = null
+
+        val collectedData = linkedMapOf(
+            Pair(MaintenanceDataType.VEHICLE, MaintenanceDataItem("Hvilken bil? \uD83D\uDE97")),
+            Pair(MaintenanceDataType.ODOMETER, MaintenanceDataItem("Kilometerstand? 🔢")),
+            Pair(MaintenanceDataType.MAINTENANCEITEM, MaintenanceDataItem("Hva slags vedlikehold?")),
+        )
+        val vehicle = collectedData[MaintenanceDataType.VEHICLE]!!
+        val odometer = collectedData[MaintenanceDataType.ODOMETER]!!
+        val maintenanceItem = collectedData[MaintenanceDataType.MAINTENANCEITEM]!!
+
+        fun complete(): State? {
+            if (!isDoneAskingForStuff()) {
+                return null
+            }
+            if (vehicle.content == null || maintenanceItem.content == null || (odometer.content == null && !odometer.isUnknown)) {
+                return null
+            }
+            return this
+        }
+
+        private fun isDoneAskingForStuff() =
+            setOf(odometer).all { it.isUnknown || it.content != null }
+    }
 }
 
 class Extractor(
@@ -124,4 +158,8 @@ class Extractor(
     private fun getRemainingFrom(match: String): String {
         return match.let { matchRemainder.lowercase().split(it).joinToString("").trim() }
     }
+}
+
+private fun String.isReasonableMaintenanceItem(): Boolean {
+    return this.length >= 3 && maintenanceItemRegex.matches(this)
 }
