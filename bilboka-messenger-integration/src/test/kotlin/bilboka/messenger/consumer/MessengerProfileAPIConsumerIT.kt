@@ -1,8 +1,7 @@
 package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
-import bilboka.messenger.dto.FacebookMessage
-import bilboka.messenger.dto.FacebookMessaging
+import bilboka.messenger.dto.*
 import io.mockk.InternalPlatformDsl.toStr
 import io.mockk.mockkStatic
 import io.mockk.verify
@@ -17,9 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @TestInstance(PER_CLASS)
 // TODO prop inject?
-internal class MessengerSendAPIConsumerIT {
+internal class MessengerProfileAPIConsumerIT {
 
-    lateinit var sendConsumer: MessengerSendAPIConsumer
+    lateinit var profileConsumer: MessengerProfileAPIConsumer
     lateinit var testUrl: String
     lateinit var mockBackEnd: MockWebServer
 
@@ -43,9 +42,9 @@ internal class MessengerSendAPIConsumerIT {
             mockBackEnd.port
         )
         val messengerProperties = MessengerProperties()
-        messengerProperties.sendUrl = testUrl
+        messengerProperties.profileUrl = testUrl
         messengerProperties.pageAccessToken = pageAccessToken
-        sendConsumer = MessengerSendAPIConsumer(messengerProperties)
+        profileConsumer = MessengerProfileAPIConsumer(messengerProperties)
     }
 
     @Test
@@ -59,19 +58,23 @@ internal class MessengerSendAPIConsumerIT {
 
         mockkStatic("khttp.KHttp")
 
-        val recipient = mapOf(Pair("id", "123"))
-        val testMessage = "detteerentest"
+        val testPayload = "detteerentest"
 
-        val testFBMessage = FacebookMessaging(
-            recipient = recipient,
-            message = FacebookMessage(
-                text = testMessage,
-                mid = null
+        val profilConfig = MessengerProfileRequest(
+            persistentMenu = listOf(
+                PersistentMenu(
+                    callToActions = listOf(
+                        PersistentMenuItem(
+                            title = "En greie",
+                            payload = testPayload
+                        )
+                    )
+                )
             )
         )
 
         // Act
-        sendConsumer.sendMessage(testFBMessage)
+        profileConsumer.doProfileUpdate(profilConfig)
 
         // Assert
         verify { // TODO! Ditche Khttp for å kunne oppgradere javaversjon (bruke Feign eller https://github.com/kittinunf/fuel ? )
@@ -89,8 +92,7 @@ internal class MessengerSendAPIConsumerIT {
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
         assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
         assertThat(takeRequest.body.readUtf8())
-            .contains("\"text\":\"$testMessage\"")
-            .contains("{\"recipient\":{\"id\":\"123\"}")
+            .contains("\"payload\":\"$testPayload\"")
             .doesNotContain("mid").doesNotContain("seq")
     }
 

@@ -10,6 +10,7 @@ class MessengerProperties {
     lateinit var verifyToken: String
     lateinit var pageAccessToken: String
     lateinit var sendUrl: String
+    lateinit var profileUrl: String
     lateinit var appSecret: String
 
 }

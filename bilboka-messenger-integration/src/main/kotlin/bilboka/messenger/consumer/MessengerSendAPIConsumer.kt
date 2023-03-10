@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.lang.String.format
 
-object MessengerWebhookConfig {
+object MessengerSendApiConfig {
     const val ACCESS_TOKEN = "access_token"
 }
 
@@ -26,7 +26,7 @@ class MessengerSendAPIConsumer(
         )
 
         val url =
-            "${messengerProperties.sendUrl}?${MessengerWebhookConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
+            "${messengerProperties.sendUrl}?${MessengerSendApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
 
         val response: Response = khttp.post(
             url = url,
