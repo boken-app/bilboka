@@ -3,7 +3,7 @@ package bilboka.messenger
 import bilboka.messenger.consumer.MessengerProfileAPIConsumer
 import bilboka.messenger.dto.MessengerProfileRequest
 import org.slf4j.LoggerFactory
-import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.ContextStartedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
@@ -13,8 +13,8 @@ class ProfileConfig(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @EventListener(ApplicationReadyEvent::class)
-    fun setProfileConfig(event: ApplicationReadyEvent) {
+    @EventListener(ContextStartedEvent::class)
+    fun setProfileConfig(event: ContextStartedEvent) {
         logger.info("Setting profile config")
         profileAPIConsumer.doProfileUpdate(
             MessengerProfileRequest(
