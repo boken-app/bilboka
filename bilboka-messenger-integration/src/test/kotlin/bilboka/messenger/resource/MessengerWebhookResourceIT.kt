@@ -242,9 +242,8 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("3565"),
                                     null,
                                     FacebookPostback(
-                                        1234L,
-                                        personWithId("457"),
-                                        personWithId("3565"),
+                                        "1234L2",
+                                        "TITLE",
                                         "yes"
                                     )
                                 )
@@ -315,10 +314,9 @@ internal class MessengerWebhookResourceIT {
                                     personWithId("354"),
                                     null,
                                     FacebookPostback(
-                                        1234L,
-                                        personWithId("456"),
-                                        personWithId("354"),
-                                        "no"
+                                        "1234L2",
+                                        "TITLE",
+                                        "yes"
                                     )
                                 )
                             )

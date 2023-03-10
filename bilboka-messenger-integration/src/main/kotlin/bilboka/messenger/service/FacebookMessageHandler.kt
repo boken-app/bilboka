@@ -30,8 +30,12 @@ class FacebookMessageHandler {
                 logger.info(format("Mottok melding fra PSID=%s", senderPSID))
                 logger.trace(format("Meldingsinnhold: '%s'", text))
                 messageBot.processMessage(text, senderPSID)
+            } else if (messageEvent.postback?.payload != null) {
+                logger.info(format("Mottok postback (title=%s) fra PSID=%s", messageEvent.postback.title, senderPSID))
+                logger.trace(format("Payload: '%s'", messageEvent.postback.payload))
+                messageBot.processMessage(messageEvent.postback.payload, senderPSID)
             } else {
-                logger.debug("Request inneholder ingen melding.")
+                logger.debug("Request inneholder ingen melding eller postback.")
                 facebookMessenger.sendMessage("Du sendte noe rart jeg ikke skjønte", senderPSID)
             }
 
