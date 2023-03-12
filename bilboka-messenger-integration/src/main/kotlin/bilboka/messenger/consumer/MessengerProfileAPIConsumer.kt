@@ -42,7 +42,7 @@ class MessengerProfileAPIConsumer(
         }
     }
 
-    fun getCurrentProfileSettings(fields: List<String>): Any? {
+    fun getCurrentProfileSettings(fields: List<String>): JSONObject? {
         logger.info("Henter profilinfo for felt {}", fields.joinToString())
 
         val url = "${messengerProperties.profileUrl}?" +
@@ -54,7 +54,7 @@ class MessengerProfileAPIConsumer(
         )
         return if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Hentet profilinfo")
-            response
+            response.jsonObject
         } else {
             logger.error(format("Profil-info feilet. Status: %s - %s", response.statusCode, response.text))
             null
