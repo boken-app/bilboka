@@ -38,6 +38,16 @@ class ProfileConfig(
                 )
             )
             hasDone = true
+            profileAPIConsumer.getCurrentProfileSettings(
+                listOf(
+                    "greeting",
+                    "get_started",
+                    "ice_breakers",
+                    "persistent_menu"
+                )
+            )?.run {
+                logger.info("Current profile config: {}", this.toString())
+            }
         } else {
             logger.info("Profile config already set")
         }

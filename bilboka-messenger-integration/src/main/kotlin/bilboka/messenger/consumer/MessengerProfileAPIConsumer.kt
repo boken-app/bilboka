@@ -12,6 +12,7 @@ import java.lang.String.format
 
 object MessengerProfileApiConfig {
     const val ACCESS_TOKEN = "access_token"
+    const val FIELDS = "fields"
 }
 
 @Component
@@ -38,6 +39,25 @@ class MessengerProfileAPIConsumer(
             logger.info("Profil-oppdatering fullført!")
         } else {
             logger.error(format("Profil-oppdatering feilet. Status: %s - %s", response.statusCode, response.text))
+        }
+    }
+
+    fun getCurrentProfileSettings(fields: List<String>): Any? {
+        logger.info("Henter profilinfo for felt {}", fields.joinToString())
+
+        val url = "${messengerProperties.profileUrl}?" +
+                "${MessengerProfileApiConfig.FIELDS}=${fields.joinToString(",")}&" +
+                "${MessengerProfileApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
+
+        val response: Response = khttp.get(
+            url = url,
+        )
+        return if (response.statusCode == HttpStatus.OK.value()) {
+            logger.info("Hentet profilinfo")
+            response
+        } else {
+            logger.error(format("Profil-info feilet. Status: %s - %s", response.statusCode, response.text))
+            null
         }
     }
 }
