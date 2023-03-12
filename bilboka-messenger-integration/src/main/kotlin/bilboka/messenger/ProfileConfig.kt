@@ -28,9 +28,17 @@ class ProfileConfig(
                         PersistentMenu(
                             callToActions = listOf(
                                 PersistentMenuItem(
+                                    title = "Fyll drivstoff",
+                                    payload = "drivstoff"
+                                ),
+                                PersistentMenuItem(
+                                    title = "Drivstoff-statistikk",
+                                    payload = "statistikk"
+                                ),
+                                PersistentMenuItem(
                                     title = "Hjelp",
                                     payload = "hlp"
-                                )
+                                ),
                             )
                         )
                     ),
