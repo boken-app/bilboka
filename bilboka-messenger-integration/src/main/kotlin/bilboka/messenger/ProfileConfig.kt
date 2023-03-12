@@ -5,7 +5,6 @@ import bilboka.messenger.dto.MessengerProfileRequest
 import bilboka.messenger.dto.PersistentMenu
 import bilboka.messenger.dto.PersistentMenuItem
 import org.slf4j.LoggerFactory
-import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -18,8 +17,8 @@ class ProfileConfig(
 
     private var hasDone = false
 
-    @Scheduled(initialDelay = 10, timeUnit = TimeUnit.SECONDS)
-    fun setProfileConfig(event: ContextRefreshedEvent) {
+    @Scheduled(fixedDelay = 1000, initialDelay = 10, timeUnit = TimeUnit.SECONDS)
+    fun setProfileConfig() {
         if (!hasDone) {
             logger.info("Setting profile config")
             profileAPIConsumer.doProfileUpdate(

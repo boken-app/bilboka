@@ -4,9 +4,11 @@ import org.jetbrains.exposed.sql.Database
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.scheduling.annotation.EnableScheduling
 import java.net.URI
 
 @SpringBootApplication
+@EnableScheduling
 class BilbokaApplication
 
 private val logger = LoggerFactory.getLogger(BilbokaApplication::class.java)
