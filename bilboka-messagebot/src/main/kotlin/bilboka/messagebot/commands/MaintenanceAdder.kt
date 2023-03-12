@@ -11,7 +11,7 @@ import bilboka.messagebot.commands.common.*
 import kotlin.text.RegexOption.IGNORE_CASE
 
 private val keywordRegex = Regex(
-    "(?:bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)",
+    "(?:regvedl|bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)",
     IGNORE_CASE
 )
 private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)

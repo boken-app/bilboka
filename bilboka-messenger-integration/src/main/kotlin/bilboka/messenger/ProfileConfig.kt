@@ -36,6 +36,14 @@ class ProfileConfig(
                                     payload = "statistikk"
                                 ),
                                 PersistentMenuItem(
+                                    title = "Registrer vedlikehold",
+                                    payload = "regvedl"
+                                ),
+                                PersistentMenuItem(
+                                    title = "Se eksisterende vedlikeholdspunkt",
+                                    payload = "vedlikeholdspunkt"
+                                ),
+                                PersistentMenuItem(
                                     title = "Hjelp",
                                     payload = "hlp"
                                 ),

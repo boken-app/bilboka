@@ -129,6 +129,30 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun canRegisterMaintenanceFromStartKeyword() {
+        processMessagaAndAssertReply(
+            message = "regvedl",
+            reply = { it.contains("Hvilken bil") },
+        )
+        processMessagaAndAssertReply(
+            message = "xc 70",
+            reply = { it.contains("Kilometerstand? \uD83D\uDD22") },
+        )
+        processMessagaAndAssertReply(
+            message = "45697",
+            reply = { it.contains("Hva slags vedlikehold?") },
+        )
+        processMessagaAndAssertReply(
+            message = "overledning",
+            reply = { it.contains("Legge til overledning som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("Registrert OVERLEDNING ved 45697") },
+        )
+    }
+
+    @Test
     fun canHaveUnknownOdometer() {
         processMessagaAndAssertReply(
             message = "bytte ratt xc70",
