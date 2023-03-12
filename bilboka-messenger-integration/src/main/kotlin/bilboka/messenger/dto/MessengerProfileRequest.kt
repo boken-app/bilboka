@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 
 data class MessengerProfileRequest(
+    @param:JsonProperty("get_started")
+    val getStarted: GetStarted,
     @param:JsonProperty("persistent_menu")
     val persistentMenu: List<PersistentMenu>
 ) : Serializable
@@ -17,5 +19,9 @@ data class PersistentMenu(
 data class PersistentMenuItem(
     val type: String = "postback",
     val title: String,
+    val payload: String
+) : Serializable
+
+data class GetStarted(
     val payload: String
 ) : Serializable

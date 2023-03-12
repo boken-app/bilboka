@@ -70,7 +70,8 @@ internal class MessengerProfileAPIConsumerIT {
                         )
                     )
                 )
-            )
+            ),
+            getStarted = GetStarted("Test")
         )
 
         // Act

@@ -1,6 +1,7 @@
 package bilboka.messenger
 
 import bilboka.messenger.consumer.MessengerProfileAPIConsumer
+import bilboka.messenger.dto.GetStarted
 import bilboka.messenger.dto.MessengerProfileRequest
 import bilboka.messenger.dto.PersistentMenu
 import bilboka.messenger.dto.PersistentMenuItem
@@ -23,7 +24,7 @@ class ProfileConfig(
             logger.info("Setting profile config")
             profileAPIConsumer.doProfileUpdate(
                 MessengerProfileRequest(
-                    listOf(
+                    persistentMenu = listOf(
                         PersistentMenu(
                             callToActions = listOf(
                                 PersistentMenuItem(
@@ -32,7 +33,8 @@ class ProfileConfig(
                                 )
                             )
                         )
-                    )
+                    ),
+                    getStarted = GetStarted("hlp")
                 )
             )
             hasDone = true
