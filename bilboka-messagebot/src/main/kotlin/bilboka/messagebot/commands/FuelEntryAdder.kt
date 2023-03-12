@@ -33,20 +33,15 @@ internal class FuelEntryAdder(
     }
 
     private fun recordProvidedData(state: State, message: String) {
-        state.collectedData.filter { it.value.wasJustQueried }.toList().first().apply {
-            this.second.wasJustQueried = false
-            if (message.isUnknown()) {
-                this.second.isUnknown = true
-            } else {
-                this.second.content = when (this.first) {
-                    State.FuelDataType.VEHICLE ->
-                        Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)
-                            ?.let { vehicleService.getVehicle(it.value) }?.name
-                    State.FuelDataType.ODOMETER -> message.toInt()
-                    State.FuelDataType.AMOUNT -> message.convertToDouble()
-                    State.FuelDataType.COST -> message.convertToDouble()
-                    State.FuelDataType.COST_PER_AMOUNT -> message.convertToDouble()
-                }
+        state.recordProvidedData(message) {
+            when (this) {
+                State.FuelDataType.VEHICLE ->
+                    Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)
+                        ?.let { vehicleService.getVehicle(it.value) }?.name
+                State.FuelDataType.ODOMETER -> message.toInt()
+                State.FuelDataType.AMOUNT -> message.convertToDouble()
+                State.FuelDataType.COST -> message.convertToDouble()
+                State.FuelDataType.COST_PER_AMOUNT -> message.convertToDouble()
             }
         }
     }
@@ -94,14 +89,6 @@ internal class FuelEntryAdder(
         } ?: askForNext(conversation, state)
     }
 
-    private fun askForNext(conversation: Conversation, stateInProgress: State) {
-        stateInProgress.collectedData.values.first { it.content == null && !it.isUnknown }.let {
-            it.wasJustQueried = true
-            conversation.claim(this, stateInProgress)
-            conversation.sendReply(it.query)
-        }
-    }
-
     private fun finish(conversation: Conversation, addedFuel: BookEntry) {
         conversation.setUndoable(this, addedFuel)
 
@@ -116,22 +103,15 @@ internal class FuelEntryAdder(
         item.delete()
     }
 
-    data class FuelingDataItem(
-        val query: String,
-        var content: Any? = null,
-        var isUnknown: Boolean = false,
-        var wasJustQueried: Boolean = false
-    )
-
-    class State : ChatState() {
+    class State : DataCollectingChatState<State.FuelDataType>() {
         enum class FuelDataType { VEHICLE, ODOMETER, AMOUNT, COST, COST_PER_AMOUNT }
 
-        val collectedData = linkedMapOf(
-            Pair(FuelDataType.VEHICLE, FuelingDataItem("Hvilken bil? \uD83D\uDE97")),
-            Pair(FuelDataType.ODOMETER, FuelingDataItem("Kilometerstand? 🔢")),
-            Pair(FuelDataType.AMOUNT, FuelingDataItem("Antall liter?")),
-            Pair(FuelDataType.COST, FuelingDataItem("Kroner? 💸")),
-            Pair(FuelDataType.COST_PER_AMOUNT, FuelingDataItem("Pris per liter?")),
+        override val collectedData = linkedMapOf(
+            Pair(FuelDataType.VEHICLE, QueryableDataItem("Hvilken bil? \uD83D\uDE97")),
+            Pair(FuelDataType.ODOMETER, QueryableDataItem("Kilometerstand? 🔢", mayBeUnknown = true)),
+            Pair(FuelDataType.AMOUNT, QueryableDataItem("Antall liter?", mayBeUnknown = true)),
+            Pair(FuelDataType.COST, QueryableDataItem("Kroner? 💸", mayBeUnknown = true)),
+            Pair(FuelDataType.COST_PER_AMOUNT, QueryableDataItem("Pris per liter?", mayBeUnknown = true)),
         )
         val vehicle = collectedData[FuelDataType.VEHICLE]!!
         val odometer = collectedData[FuelDataType.ODOMETER]!!
@@ -139,7 +119,7 @@ internal class FuelEntryAdder(
         val cost = collectedData[FuelDataType.COST]!!
         val costPerAmount = collectedData[FuelDataType.COST_PER_AMOUNT]!!
 
-        fun complete(): State? {
+        override fun complete(): State? {
             if (!isDoneAskingForStuff()) {
                 return null
             }
@@ -163,13 +143,6 @@ internal class FuelEntryAdder(
             }
         }
     }
-}
-
-private fun String.isUnknown(): Boolean {
-    return Regex(
-        "(ukjent|\\?|dunno|vet ikke)",
-        IGNORE_CASE
-    ).containsMatchIn(this)
 }
 
 private fun String.convertToDouble(): Double {

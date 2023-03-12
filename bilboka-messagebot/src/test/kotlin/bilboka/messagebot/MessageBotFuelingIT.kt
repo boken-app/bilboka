@@ -295,6 +295,18 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun canNotHaveUnknownCar() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff",
+            reply = "Hvilken bil? \uD83D\uDE97"
+        )
+        processMessagaAndAssertReply(
+            message = "ukjent",
+            reply = { it.contains("Kjenner ikke til bil") }
+        )
+    }
+
+    @Test
     fun canUsePricePerAmountInOneGo() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37589 30l 10 kr/l",
