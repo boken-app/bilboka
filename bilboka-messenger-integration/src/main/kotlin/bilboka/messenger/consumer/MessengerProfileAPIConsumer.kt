@@ -2,6 +2,7 @@ package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerProfileRequest
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import khttp.responses.Response
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
@@ -18,6 +19,7 @@ class MessengerProfileAPIConsumer(
     private val messengerProperties: MessengerProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val mapper = jacksonObjectMapper()
 
     fun doProfileUpdate(profileRequest: MessengerProfileRequest) {
         profileRequest.persistentMenu.firstOrNull()?.let {
@@ -30,7 +32,7 @@ class MessengerProfileAPIConsumer(
 
         val response: Response = khttp.post(
             url = url,
-            json = JSONObject(profileRequest)
+            json = JSONObject(mapper.writeValueAsString(profileRequest)),
         )
         if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Profil-oppdatering fullført!")

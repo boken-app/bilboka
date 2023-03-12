@@ -5,14 +5,12 @@ import java.io.Serializable
 
 data class MessengerProfileRequest(
     @param:JsonProperty("persistent_menu")
-    @get:JsonProperty("persistent_menu")
     val persistentMenu: List<PersistentMenu>
 ) : Serializable
 
 data class PersistentMenu(
     val locale: String = "default",
     @param:JsonProperty("call_to_actions")
-    @get:JsonProperty("call_to_actions")
     val callToActions: List<PersistentMenuItem>
 ) : Serializable
 

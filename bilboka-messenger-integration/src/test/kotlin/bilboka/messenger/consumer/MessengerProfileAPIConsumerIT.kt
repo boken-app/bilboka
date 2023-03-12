@@ -93,6 +93,8 @@ internal class MessengerProfileAPIConsumerIT {
         assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
         assertThat(takeRequest.body.readUtf8())
             .contains("\"payload\":\"$testPayload\"")
+            .contains("persistent_menu")
+            .contains("call_to_actions")
             .doesNotContain("mid").doesNotContain("seq")
     }
 
