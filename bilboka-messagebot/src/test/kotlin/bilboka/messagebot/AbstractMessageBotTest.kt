@@ -6,6 +6,7 @@ import bilboka.core.book.domain.EntryType
 import bilboka.core.user.UserAlreadyRegisteredException
 import bilboka.core.user.UserService
 import bilboka.core.user.domain.User
+import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
@@ -13,13 +14,16 @@ import bilboka.core.vehicle.domain.Vehicle
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import org.jetbrains.exposed.sql.Database
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDateTime
 
+@ExtendWith(MockKExtension::class)
 abstract class AbstractMessageBotTest {
 
     @MockK
@@ -61,6 +65,15 @@ abstract class AbstractMessageBotTest {
                 any()
             )
         } throws UserAlreadyRegisteredException("Allerede Registrert!")
+    }
+
+    protected fun mockVehicle(name: String): Vehicle {
+        val vehicle = vehicle(name = name, fuelType = FuelType.DIESEL)
+        every { vehicleService.getVehicle(any()) } throws VehicleNotFoundException("Fy!", name)
+        every { vehicleService.findVehicle(any()) } returns null
+        every { vehicleService.getVehicle(name) } returns vehicle
+        every { vehicleService.findVehicle(name) } returns vehicle
+        return vehicle
     }
 
     protected fun verifySentMessage(message: String, senderID: String = registeredSenderID) {

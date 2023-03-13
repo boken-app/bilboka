@@ -32,7 +32,19 @@ data class QueryableDataItem(
     var isUnknown: Boolean = false,
     val mayBeUnknown: Boolean = false,
     var wasJustQueried: Boolean = false
-)
+) {
+    fun isNotChecked(): Boolean {
+        return content == null && !isUnknown
+    }
+
+    fun isMissing(): Boolean {
+        return content == null
+    }
+
+    fun isPresent(): Boolean {
+        return content != null
+    }
+}
 
 internal fun <T> ChatCommand.askForNext(conversation: Conversation, stateInProgress: DataCollectingChatState<T>) {
     stateInProgress.collectedData.values.first { it.content == null && !it.isUnknown }.let {
@@ -44,7 +56,7 @@ internal fun <T> ChatCommand.askForNext(conversation: Conversation, stateInProgr
 
 internal fun String.saysUnknown(): Boolean {
     return Regex(
-        "(ukjent|\\?|dunno|vet ikke)",
+        "(ukjent|nei|\\?|dunno|vet ikke)",
         RegexOption.IGNORE_CASE
     ).containsMatchIn(this)
 }

@@ -2,12 +2,9 @@ package bilboka.messagebot
 
 import bilboka.core.vehicle.domain.FuelType
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class)
 class VehicleInfoTest : AbstractMessageBotTest() {
 
     @Test

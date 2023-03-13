@@ -124,21 +124,21 @@ internal class FuelEntryAdder(
                 return null
             }
             fillOutMissingIfPossible()
-            if (vehicle.content == null || (odometer.content == null && !odometer.isUnknown)) {
+            if (vehicle.isMissing() || odometer.isNotChecked()) {
                 return null
             }
             return this
         }
 
         private fun isDoneAskingForStuff() =
-            setOf(amount, cost, costPerAmount).filter { it.content != null }.size >= 2
-                    || setOf(amount, cost, costPerAmount).all { it.isUnknown || it.content != null }
+            setOf(amount, cost, costPerAmount).filter { it.isPresent() }.size >= 2
+                    || setOf(amount, cost, costPerAmount).all { it.isUnknown || it.isPresent() }
 
         private fun fillOutMissingIfPossible() {
-            if (amount.content == null && cost.content != null && costPerAmount.content != null) {
+            if (amount.isMissing() && cost.isPresent() && costPerAmount.isPresent()) {
                 amount.content = cost.content as Double / costPerAmount.content as Double
             }
-            if (cost.content == null && amount.content != null && costPerAmount.content != null) {
+            if (cost.isMissing() && amount.isPresent() && costPerAmount.isPresent()) {
                 cost.content = amount.content as Double * costPerAmount.content as Double
             }
         }

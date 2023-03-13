@@ -16,7 +16,8 @@ private val keywordRegex = Regex(
     IGNORE_CASE
 )
 private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
-private val maintenanceItemRegex = Regex("[\\s\\wæøå-]+", IGNORE_CASE)
+private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-]\\wæøå]+)*)", IGNORE_CASE)
+private val commentRegex = Regex("[\\w\\d\\sæøå]{3,}")
 
 internal class MaintenanceAdder(
     private val book: Book,
@@ -29,7 +30,7 @@ internal class MaintenanceAdder(
         return matcher.containsMatchIn(message)
     }
 
-    // TODO mulighet for kostnad og kommentar
+    // TODO mulighet for kostnad
     override fun execute(conversation: Conversation, message: String) {
         conversation.withdrawClaim<State>(this)?.let {
             if (it.hasAskedForAdding) {
@@ -54,6 +55,7 @@ internal class MaintenanceAdder(
                                 if (item == null)
                                     conversation.askToAddMaintenanceItem(it, message)
                             }
+                        State.MaintenanceDataType.COMMENT -> commentRegex.find(message)?.value
                     }
                 }
                 it.completeOrAskForMore(conversation)
@@ -94,7 +96,9 @@ internal class MaintenanceAdder(
         state.complete()?.run {
             completeMaintenance(conversation)
         } ?: run {
-            if (state.vehicle.content == null || state.odometer.content == null) {
+            if (state.vehicle.content == null || state.odometer.content == null
+                || (state.maintenanceItem.content != null && state.comment.content == null)
+            ) {
                 askForNext(conversation, state)
             } else if (matchRemainder.isReasonableMaintenanceItem()) {
                 conversation.askToAddMaintenanceItem(state, matchRemainder)
@@ -117,13 +121,20 @@ internal class MaintenanceAdder(
                 extract(maintenanceItemRegex) {
                     findMaintenanceItem(it)
                 }.also { maintenanceItem.content = it }
-            }.matchRemainder
+            }
+            .apply {
+                extract(commentRegex) {
+                    if (maintenanceItem.content != null) it.trim() else null
+                }.also { comment.content = it }
+            }
+            .matchRemainder
     }
 
     private fun State.completeMaintenance(conversation: Conversation) {
         (vehicle.content as Vehicle).enterMaintenance(
             maintenanceItem = maintenanceItem.content as String,
             odometer = odometer.content as Int?,
+            comment = comment.content as String?,
             enteredBy = conversation.withWhom(),
             source = conversation.getSource()
         ).also {
@@ -145,7 +156,7 @@ internal class MaintenanceAdder(
     }
 
     class State : DataCollectingChatState<State.MaintenanceDataType>() {
-        enum class MaintenanceDataType { VEHICLE, ODOMETER, MAINTENANCEITEM }
+        enum class MaintenanceDataType { VEHICLE, ODOMETER, MAINTENANCEITEM, COMMENT }
 
         var hasAskedForAdding: Boolean = false
         var thingToAdd: String? = null
@@ -154,13 +165,18 @@ internal class MaintenanceAdder(
             Pair(MaintenanceDataType.VEHICLE, QueryableDataItem("Hvilken bil? \uD83D\uDE97")),
             Pair(MaintenanceDataType.ODOMETER, QueryableDataItem("Kilometerstand? 🔢", mayBeUnknown = true)),
             Pair(MaintenanceDataType.MAINTENANCEITEM, QueryableDataItem("Hva slags vedlikehold?")),
+            Pair(MaintenanceDataType.COMMENT, QueryableDataItem("Ekstra kommentar?", mayBeUnknown = true)),
         )
         val vehicle = collectedData[MaintenanceDataType.VEHICLE]!!
         val odometer = collectedData[MaintenanceDataType.ODOMETER]!!
         val maintenanceItem = collectedData[MaintenanceDataType.MAINTENANCEITEM]!!
+        val comment = collectedData[MaintenanceDataType.COMMENT]!!
 
         override fun complete(): State? {
-            if (vehicle.content == null || maintenanceItem.content == null || (odometer.content == null && !odometer.isUnknown)) {
+            if (vehicle.isMissing() || maintenanceItem.isMissing()
+                || odometer.isNotChecked()
+                || comment.isNotChecked()
+            ) {
                 return null
             }
             return this

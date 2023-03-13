@@ -4,12 +4,9 @@ import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.domain.FuelType
 import io.mockk.Called
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class)
 class FuelEntryAdderTest : AbstractMessageBotTest() {
 
     @Test
@@ -134,14 +131,6 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         messagebot.processMessage(message, registeredSenderID)
 
         verifySentMessage("⛽ Registrert tanking av Testbil ved 34567 km: 123,32 liter for 123,3 kr, 1 kr/l")
-    }
-
-    private fun mockVehicle(name: String) {
-        val vehicle = vehicle(name = name, fuelType = FuelType.DIESEL)
-        every { vehicleService.getVehicle(any()) } throws VehicleNotFoundException("Fy!", name)
-        every { vehicleService.findVehicle(any()) } returns null
-        every { vehicleService.getVehicle(name) } returns vehicle
-        every { vehicleService.findVehicle(name) } returns vehicle
     }
 
 }

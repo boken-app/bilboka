@@ -1,13 +1,10 @@
 package bilboka.messagebot
 
 import bilboka.messagebot.commands.DEFAULT_HELP_MESSAGE
-import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class)
 class SmalltalkTest : AbstractMessageBotTest() {
 
     @Test

@@ -12,6 +12,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
@@ -28,6 +32,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
@@ -44,10 +52,18 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
             message = "bytte blinklysvæske xc70 45800",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert BLINKLYSVESKE ved 45800") },
         )
     }
@@ -60,10 +76,18 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
             message = "bytte vindusviskere 45800 xc70",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert VINDUSVISKERE ved 45800") },
         )
     }
@@ -92,6 +116,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert BATTERI ved 23456") },
         )
     }
@@ -112,6 +140,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert GIRKASSE ved 23457") },
         )
     }
@@ -124,6 +156,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
@@ -132,6 +168,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "45697",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert VINDU ved 45697") },
         )
         processMessagaAndAssertReply(
@@ -140,6 +180,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "xc 70",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert VINDU ved 45777") },
         )
     }
@@ -164,6 +208,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert OVERLEDNING ved 45697") },
         )
     }
@@ -184,6 +232,10 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
+            reply = { it.contains("Ekstra kommentar?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert RATT") },
         )
     }

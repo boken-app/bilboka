@@ -2,7 +2,6 @@ package bilboka.messagebot
 
 import bilboka.core.user.InvalidRegistrationKeyException
 import io.mockk.every
-import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
@@ -10,9 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(MockKExtension::class)
 internal class RegisterUserTest : AbstractMessageBotTest() {
 
     @Test
