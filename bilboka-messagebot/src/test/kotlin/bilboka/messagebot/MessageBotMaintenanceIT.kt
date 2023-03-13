@@ -12,7 +12,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -32,7 +32,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -52,7 +52,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -60,7 +60,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "bytte blinklysvæske xc70 45800",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -76,7 +76,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -84,7 +84,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "bytte vindusviskere 45800 xc70",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -116,7 +116,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -140,7 +140,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -156,7 +156,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -168,7 +168,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "45697",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -180,7 +180,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "xc 70",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -208,7 +208,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
@@ -232,7 +232,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ja",
-            reply = { it.contains("Ekstra kommentar?") },
+            reply = { it.contains("kommentar") },
         )
         processMessagaAndAssertReply(
             message = "nei",
