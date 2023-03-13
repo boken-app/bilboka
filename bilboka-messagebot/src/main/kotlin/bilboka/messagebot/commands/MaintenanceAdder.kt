@@ -96,8 +96,8 @@ internal class MaintenanceAdder(
         state.complete()?.run {
             completeMaintenance(conversation)
         } ?: run {
-            if (state.vehicle.content == null || state.odometer.content == null
-                || (state.maintenanceItem.content != null && state.comment.content == null)
+            if (state.vehicle.isMissing() || state.odometer.isMissing()
+                || (state.maintenanceItem.isPresent() && state.comment.isMissing())
             ) {
                 askForNext(conversation, state)
             } else if (matchRemainder.isReasonableMaintenanceItem()) {
@@ -124,7 +124,7 @@ internal class MaintenanceAdder(
             }
             .apply {
                 extract(commentRegex) {
-                    if (maintenanceItem.content != null) it.trim() else null
+                    if (maintenanceItem.isPresent()) it.trim() else null
                 }.also { comment.content = it }
             }
             .matchRemainder
@@ -140,7 +140,7 @@ internal class MaintenanceAdder(
         ).also {
             conversation.setUndoable(this@MaintenanceAdder, it)
             conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer ?: "<ukjent>"}" +
-                    "${it.comment?.run { " (Kommentar: '$this')" }}"
+                    (it.comment?.run { " (Kommentar: '$this')" } ?: "")
             )
         }
     }
