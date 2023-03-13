@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.normalizeAsMaintenanceItem
 import bilboka.core.book.toMaintenanceItem
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
@@ -11,7 +12,7 @@ import bilboka.messagebot.commands.common.*
 import kotlin.text.RegexOption.IGNORE_CASE
 
 private val keywordRegex = Regex(
-    "(?:regvedl|bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)",
+    "(?:regmaint|bytte|vedlikehold|skifte|skift|bytt|ny|nytt|nye)",
     IGNORE_CASE
 )
 private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
@@ -35,7 +36,7 @@ internal class MaintenanceAdder(
                 if (message.saysYes()) {
                     it.thingToAdd?.apply {
                         book.addMaintenanceItem(this)
-                        it.maintenanceItem.content = this
+                        it.maintenanceItem.content = this.normalizeAsMaintenanceItem()
                         it.hasAskedForAdding = false
                     }
                     it.completeOrAskForMore(conversation)
@@ -127,7 +128,7 @@ internal class MaintenanceAdder(
             source = conversation.getSource()
         ).also {
             conversation.setUndoable(this@MaintenanceAdder, it)
-            conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer}")
+            conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer ?: "<ukjent>"}")
         }
     }
 

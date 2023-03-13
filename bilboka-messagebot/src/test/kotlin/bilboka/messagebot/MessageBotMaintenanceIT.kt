@@ -39,6 +39,22 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     @Test
     fun canRegisterExistingMaintenance() {
         processMessagaAndAssertReply(
+            message = "bytte blinklysvæske xc70 45677",
+            reply = { it.contains("Legge til blinklysvæske som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("Registrert") },
+        )
+        processMessagaAndAssertReply(
+            message = "bytte blinklysvæske xc70 45800",
+            reply = { it.contains("Registrert BLINKLYSVESKE ved 45800") },
+        )
+    }
+
+    @Test
+    fun canRegisterExistingMaintenanceInDifferentOrder() {
+        processMessagaAndAssertReply(
             message = "bytte vindusviskere xc70 45677",
             reply = { it.contains("Legge til vindusviskere som et vedlikeholdspunkt?") },
         )
@@ -47,7 +63,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
             reply = { it.contains("Registrert") },
         )
         processMessagaAndAssertReply(
-            message = "bytte vindusviskere xc70 45800",
+            message = "bytte vindusviskere 45800 xc70",
             reply = { it.contains("Registrert VINDUSVISKERE ved 45800") },
         )
     }
@@ -131,7 +147,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     @Test
     fun canRegisterMaintenanceFromStartKeyword() {
         processMessagaAndAssertReply(
-            message = "regvedl",
+            message = "regmaint",
             reply = { it.contains("Hvilken bil") },
         )
         processMessagaAndAssertReply(

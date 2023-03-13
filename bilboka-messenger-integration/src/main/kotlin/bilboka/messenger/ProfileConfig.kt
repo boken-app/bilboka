@@ -37,7 +37,7 @@ class ProfileConfig(
                                 ),
                                 PersistentMenuItem(
                                     title = "Registrer vedlikehold",
-                                    payload = "regvedl"
+                                    payload = "regmaint"
                                 ),
                                 PersistentMenuItem(
                                     title = "Se eksisterende vedlikeholdspunkt",
