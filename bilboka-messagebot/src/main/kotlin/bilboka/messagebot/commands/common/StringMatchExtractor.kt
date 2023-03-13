@@ -14,6 +14,6 @@ class StringMatchExtractor(
     }
 
     private fun getRemainingFrom(match: String): String {
-        return match.let { matchRemainder.lowercase().split(it).joinToString("").trim() }
+        return match.let { matchRemainder.lowercase().split(it.lowercase()).joinToString("").trim() }
     }
 }
