@@ -17,7 +17,7 @@ private val keywordRegex = Regex(
 )
 private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
 private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-]\\wæøå]+)*)", IGNORE_CASE)
-private val commentRegex = Regex("[\\w\\d\\sæøå]{3,}")
+private val commentRegex = Regex("[\\w\\d\\sæøå?!,.-]{3,}")
 
 internal class MaintenanceAdder(
     private val book: Book,
