@@ -24,6 +24,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:${bilboka.dependencies.Versions.exposed}")
     implementation("org.jetbrains.exposed:exposed-java-time:${bilboka.dependencies.Versions.exposed}")
 
+    implementation("org.thymeleaf:thymeleaf:3.1.1.RELEASE")
+    implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.22")
+
     runtimeOnly("com.h2database:h2")
 
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
