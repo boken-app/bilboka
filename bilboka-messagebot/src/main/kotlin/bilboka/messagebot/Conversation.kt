@@ -5,6 +5,7 @@ import bilboka.messagebot.commands.common.ChatCommand
 import bilboka.messagebot.commands.common.ChatState
 import bilboka.messagebot.commands.common.Undoable
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.time.Duration
 import java.time.Instant
 
@@ -32,6 +33,14 @@ internal class Conversation(
         logger.debug("[meldingslogg] Sender melding '$message'")
         botMessenger.sendMessage(
             message,
+            senderID
+        )
+    }
+
+    fun sendReply(file: File) {
+        logger.debug("[meldingslogg] Sender fil")
+        botMessenger.sendFile(
+            file,
             senderID
         )
     }

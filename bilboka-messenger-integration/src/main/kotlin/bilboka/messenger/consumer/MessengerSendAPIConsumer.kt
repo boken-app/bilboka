@@ -1,12 +1,17 @@
 package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
+import bilboka.messenger.dto.Attachment
+import bilboka.messenger.dto.AttachmentType
+import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
 import khttp.responses.Response
+import khttp.structures.files.FileLike
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import java.io.File
 import java.lang.String.format
 
 object MessengerSendApiConfig {
@@ -25,11 +30,8 @@ class MessengerSendAPIConsumer(
                     "til ${message.recipient?.get("id")}"
         )
 
-        val url =
-            "${messengerProperties.sendUrl}?${MessengerSendApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
-
         val response: Response = khttp.post(
-            url = url,
+            url = getUrl(),
             json = JSONObject(message)
         )
         if (response.statusCode == HttpStatus.OK.value()) {
@@ -38,4 +40,31 @@ class MessengerSendAPIConsumer(
             logger.error(format("Sending gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
         }
     }
+
+    fun sendAttachment(recipientPSID: String, attachment: File, type: AttachmentType) {
+        logger.info(
+            "Sender vedlegg til ${recipientPSID}"
+        )
+
+        val response: Response = khttp.post(
+            url = getUrl(),
+            json = JSONObject(
+                FacebookMessaging(
+                    recipient = mapOf(Pair("id", recipientPSID)),
+                    message = FacebookMessage(
+                        attachment = Attachment(type = type, payload = null)
+                    )
+                )
+            ),
+            files = listOf(FileLike(attachment))
+        )
+        if (response.statusCode == HttpStatus.OK.value()) {
+            logger.info("Vedlegg sendt!")
+        } else {
+            logger.error(format("Sending av vedlegg gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
+        }
+    }
+
+    private fun getUrl() =
+        "${messengerProperties.sendUrl}?${MessengerSendApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
 }

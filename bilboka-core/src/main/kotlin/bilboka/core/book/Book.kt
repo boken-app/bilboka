@@ -1,6 +1,7 @@
 package bilboka.core.book
 
 import bilboka.core.book.domain.*
+import bilboka.core.report.ReportGenerator
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
@@ -12,7 +13,8 @@ import kotlin.math.sign
 
 @Component
 class Book(
-    private val vehicleService: VehicleService
+    private val vehicleService: VehicleService,
+    private val reportGenerator: ReportGenerator
 ) {
 
     fun addFuelForVehicle(
@@ -75,11 +77,15 @@ class Book(
             MaintenanceItem.all().map { it.item }
         }.toSet()
     }
-    
+
     fun addMaintenanceItem(newItem: String) {
         transaction {
             MaintenanceItem.new { item = newItem }
         }
+    }
+
+    fun getReport(input: String): ByteArray {
+        return reportGenerator.generateReport(input)
     }
 }
 

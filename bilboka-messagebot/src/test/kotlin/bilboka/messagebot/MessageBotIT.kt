@@ -1,5 +1,6 @@
 package bilboka.messagebot;
 
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -19,6 +20,14 @@ class MessageBotIT : AbstractMessageBotIT() {
             message = "Info blå testbil",
             reply = { it.contains("Bil-navn: blå testbil") },
         )
+    }
+
+    @Test
+    fun reportGeneration() {
+        messageBot.processMessage("rapport", validSender)
+
+        Assertions.assertThat(testMessenger.fileSent).isNotNull
+        Assertions.assertThat(testMessenger.recipient).isEqualTo(validSender)
     }
 
     @Nested

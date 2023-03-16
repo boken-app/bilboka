@@ -2,11 +2,12 @@ package bilboka.messagebot
 
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntries
+import bilboka.core.report.ReportGenerator
 import bilboka.core.user.UserService
 import bilboka.core.user.domain.RegistrationKey
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
@@ -15,10 +16,11 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
+import java.io.File
 import java.util.function.Predicate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, UserService::class])
+@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, UserService::class, ReportGenerator::class])
 abstract class AbstractMessageBotIT : H2Test() {
 
     @Autowired
@@ -93,8 +95,8 @@ abstract class AbstractMessageBotIT : H2Test() {
     ) {
         messageBot.processMessage(message, sender)
 
-        Assertions.assertThat(testMessenger.messageSent).matches(reply, matcherDescriptor)
-        Assertions.assertThat(testMessenger.recipient).isEqualTo(sender)
+        assertThat(testMessenger.messageSent).matches(reply, matcherDescriptor)
+        assertThat(testMessenger.recipient).isEqualTo(sender)
     }
 }
 
@@ -105,6 +107,7 @@ class TestMessenger : BotMessenger {
 
     var messageSent: String? = null
     var recipient: String? = null
+    var fileSent: File? = null
 
     fun reset() {
         messageSent = null
@@ -118,6 +121,11 @@ class TestMessenger : BotMessenger {
 
     override fun sendPostback(options: List<String>, recipientID: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun sendFile(file: File, recipientID: String) {
+        fileSent = file
+        recipient = recipientID
     }
 
 }

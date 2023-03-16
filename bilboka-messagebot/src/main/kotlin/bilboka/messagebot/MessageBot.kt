@@ -43,6 +43,7 @@ class MessageBot {
             SmallTalk(),
             Helper(),
             VehicleInfo(vehicleService, userService),
+            ReportGetter(book, userService),
             UserInfo(),
             RegisterUser(userService),
             UndoLast(userService),

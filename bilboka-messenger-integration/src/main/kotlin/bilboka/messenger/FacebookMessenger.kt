@@ -2,9 +2,11 @@ package bilboka.messenger
 
 import bilboka.messagebot.BotMessenger
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
+import bilboka.messenger.dto.AttachmentType
 import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
 import org.springframework.stereotype.Component
+import java.io.File
 
 @Component
 class FacebookMessenger(
@@ -19,6 +21,10 @@ class FacebookMessenger(
 
     override fun sendPostback(options: List<String>, recipientID: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun sendFile(file: File, recipientID: String) {
+        messengerConsumer.sendAttachment(recipientPSID = recipientID, attachment = file, type = AttachmentType.FILE)
     }
 
     private fun sendReply(text: String, recipientPSID: String) {
