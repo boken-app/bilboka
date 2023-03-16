@@ -3,6 +3,7 @@ package bilboka.core
 import bilboka.core.book.Book
 import bilboka.core.book.BookEntryChronologyException
 import bilboka.core.book.domain.EntryType
+import bilboka.core.report.ReportGenerator
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.Vehicle
@@ -16,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@SpringBootTest(classes = [VehicleService::class, Book::class])
+@SpringBootTest(classes = [VehicleService::class, Book::class, ReportGenerator::class])
 class CarBookIT : H2Test() {
 
     @Autowired
