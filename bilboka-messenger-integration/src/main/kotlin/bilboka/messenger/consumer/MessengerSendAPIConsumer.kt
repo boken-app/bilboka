@@ -1,9 +1,7 @@
 package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
-import bilboka.messenger.dto.Attachment
 import bilboka.messenger.dto.AttachmentType
-import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
 import khttp.responses.Response
 import khttp.structures.files.FileLike
@@ -43,18 +41,15 @@ class MessengerSendAPIConsumer(
 
     fun sendAttachment(recipientPSID: String, attachment: File, type: AttachmentType) {
         logger.info(
-            "Sender vedlegg til ${recipientPSID}"
+            "Sender vedlegg til $recipientPSID"
         )
 
         val response: Response = khttp.post(
             url = getUrl(),
-            json = JSONObject(
-                FacebookMessaging(
-                    recipient = mapOf(Pair("id", recipientPSID)),
-                    message = FacebookMessage(
-                        attachment = Attachment(type = type, payload = null)
-                    )
-                )
+            data = mapOf(
+                Pair("filedata", attachment),
+                Pair("recipient", "{\"id\":$recipientPSID}"),
+                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{}}}"),
             ),
             files = listOf(FileLike(attachment))
         )
