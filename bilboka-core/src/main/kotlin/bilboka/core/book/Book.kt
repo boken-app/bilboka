@@ -5,6 +5,7 @@ import bilboka.core.report.ReportGenerator
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
+import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -85,7 +86,10 @@ class Book(
     }
 
     fun getReport(vehicle: Vehicle): ByteArray {
-        return reportGenerator.generateReport("Testrapport for ${vehicle.name}", entries = vehicle.bookEntries.toList())
+        return reportGenerator.generateReport(
+            header = "Rapport for siste år, ${vehicle.name}",
+            entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
+        )
     }
 }
 
@@ -126,4 +130,8 @@ private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReadin
 
 fun String.toMaintenanceItem(): String {
     return this.normalizeAsMaintenanceItem()
+}
+
+private fun SizedIterable<BookEntry>.since(date: LocalDate): List<BookEntry> {
+    return filter { (it.dateTime ?: LocalDateTime.MIN) >= date.atStartOfDay() }.toList()
 }

@@ -18,7 +18,7 @@ class ReportGenerator {
     fun generateReport(header: String, entries: List<BookEntry>): ByteArray {
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
             setVariable("header", header)
-            setVariable("text", "Her var det ${entries.size} rader!")
+            setVariable("entries", entries)
         }))
     }
 

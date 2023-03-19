@@ -3,8 +3,26 @@
 <h3 style="text-align: center; color: blue">
     <span th:text="${header}"></span>
 </h3>
-<p>
-    <span th:text="${text}"></span>
-</p>
+<table>
+    <tr>
+        <th>Dato</th>
+        <th>Kilometerstand</th>
+        <th>Type</th>
+        <th>Liter</th>
+        <th>Kroner</th>
+        <th>Full tank?</th>
+        <th>Kommentar</th>
+    </tr>
+    <tr th:each="entry : ${entries}">
+        <td th:text="*{#temporals.format(entry.datetime, 'dd.MM.yyyy')}?: '(ukjent)'">01.01.2011</td>
+        <td th:text="*{entry.odometer}?: '(ukjent)'">2346</td>
+        <td th:text="${entry.type}" th:if="${entry.type.toString() != 'MAINTENANCE'}">TYPE</td>
+        <td th:text="${entry.maintenanceItem.item}" th:if="${entry.type.toString() == 'MAINTENANCE'}">TYPE</td>
+        <td th:text="*{entry.amount}?: '-'">2.41</td>
+        <td th:text="*{entry.costNOK}?: '-'">2.41</td>
+        <td th:text="${entry.isFullTank}? 'Ja' : ''">yes</td>
+        <td th:text="${entry.comment}">Kommentar</td>
+    </tr>
+</table>
 </body>
 </html>
