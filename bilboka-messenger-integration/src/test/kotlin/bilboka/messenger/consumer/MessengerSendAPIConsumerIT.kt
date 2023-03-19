@@ -14,7 +14,6 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.io.File
 
 @ExtendWith(SpringExtension::class)
 @TestInstance(PER_CLASS)
@@ -107,8 +106,7 @@ internal class MessengerSendAPIConsumerIT {
         mockkStatic("khttp.KHttp")
 
         sendConsumer.sendAttachment(
-            "124", File("report.pdf")
-                .apply { writeBytes("report".toByteArray()) }, AttachmentType.FILE
+            "124", "report".toByteArray(), AttachmentType.FILE
         )
 
         val takeRequest = mockBackEnd.takeRequest()

@@ -9,7 +9,6 @@ import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import java.io.File
 import java.lang.String.format
 
 object MessengerSendApiConfig {
@@ -39,7 +38,7 @@ class MessengerSendAPIConsumer(
         }
     }
 
-    fun sendAttachment(recipientPSID: String, attachment: File, type: AttachmentType) {
+    fun sendAttachment(recipientPSID: String, attachment: ByteArray, type: AttachmentType) {
         logger.info(
             "Sender vedlegg til $recipientPSID"
         )
@@ -49,9 +48,9 @@ class MessengerSendAPIConsumer(
             data = mapOf(
                 Pair("filedata", attachment),
                 Pair("recipient", "{\"id\":$recipientPSID}"),
-                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{}}}"),
+                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{\"is_reusable\":true}}}"),
             ),
-            files = listOf(FileLike(attachment))
+            files = listOf(FileLike("vedlegg", attachment))
         )
         if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Vedlegg sendt!")

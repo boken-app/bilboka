@@ -4,7 +4,6 @@ import bilboka.core.book.Book
 import bilboka.core.user.UserService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
-import java.io.File
 
 internal class ReportGetter(val book: Book, userService: UserService) : CarBookCommand(userService) {
     override fun isMatch(message: String): Boolean {
@@ -14,9 +13,6 @@ internal class ReportGetter(val book: Book, userService: UserService) : CarBookC
     override fun execute(conversation: Conversation, message: String) {
         val report = book.getReport("Teste litt rapport da")
 
-        File("report.pdf")
-            .apply { writeBytes(report) }
-            .also { conversation.sendReply(it) }
-            .also { it.delete() }
+        conversation.sendFile(report)
     }
 }
