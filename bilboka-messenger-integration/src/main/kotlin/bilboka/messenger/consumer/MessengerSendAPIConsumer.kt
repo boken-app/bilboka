@@ -37,7 +37,7 @@ class MessengerSendAPIConsumer(
             if (it.isSuccessful) {
                 logger.info("Melding sendt!")
             } else {
-                logger.error(format("Sending gikk ikke ok. Status: %s - %s", it.code(), it.message()))
+                logger.error(format("Sending gikk ikke ok. Status: %s - %s", it.code(), it.body()?.string()))
             }
         }
     }
@@ -73,7 +73,7 @@ class MessengerSendAPIConsumer(
                     format(
                         "Sending av vedlegg gikk ikke ok. Status: %s - %s",
                         it.code(),
-                        it.message()
+                        it.body()?.string()
                     )
                 )
             }

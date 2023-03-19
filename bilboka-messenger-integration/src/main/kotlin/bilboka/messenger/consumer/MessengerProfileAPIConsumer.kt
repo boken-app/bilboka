@@ -43,7 +43,7 @@ class MessengerProfileAPIConsumer(
             if (it.isSuccessful) {
                 logger.info("Profil-oppdatering fullført!")
             } else {
-                logger.error(format("Profil-oppdatering feilet. Status: %s - %s", it.code(), it.message()))
+                logger.error(format("Profil-oppdatering feilet. Status: %s - %s", it.code(), it.body()?.string()))
             }
         }
     }
@@ -60,9 +60,9 @@ class MessengerProfileAPIConsumer(
                 client.newCall(this).execute().use {
                     return if (it.isSuccessful) {
                         logger.info("Hentet profilinfo")
-                        it.body().toString()
+                        it.body()?.string()
                     } else {
-                        logger.error(format("Profil-info feilet. Status: %s - %s", it.code(), it.message()))
+                        logger.error(format("Profil-info feilet. Status: %s - %s", it.code(), it.body()?.string()))
                         null
                     }
                 }
