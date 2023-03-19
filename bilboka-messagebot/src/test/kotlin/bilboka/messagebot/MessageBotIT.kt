@@ -24,7 +24,7 @@ class MessageBotIT : AbstractMessageBotIT() {
 
     @Test
     fun reportGeneration() {
-        messageBot.processMessage("rapport", validSender)
+        messageBot.processMessage("rapport xc70", validSender)
 
         Assertions.assertThat(testMessenger.fileSent).isNotNull
         Assertions.assertThat(testMessenger.recipient).isEqualTo(validSender)

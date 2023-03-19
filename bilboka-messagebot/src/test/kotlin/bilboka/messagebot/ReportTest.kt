@@ -11,8 +11,9 @@ internal class ReportTest : AbstractMessageBotTest() {
     @Test
     fun getReport() {
         every { book.getReport(any()) } returns "rapport-test".toByteArray()
+        mockVehicle("databil")
 
-        messagebot.processMessage("rapport", registeredSenderID)
+        messagebot.processMessage("rapport databil", registeredSenderID)
 
         verify { book.getReport(any()) }
         verify { botMessenger.sendPdf(any(), any(), registeredSenderID) }

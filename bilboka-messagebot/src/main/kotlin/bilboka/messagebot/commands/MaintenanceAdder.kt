@@ -15,7 +15,7 @@ private val keywordRegex = Regex(
     "(?:regmaint|bytte|vedlikehold|skifte|skift|bytt|nye|nytt|ny)",
     IGNORE_CASE
 )
-private val vehicleRegex = Regex("([\\wæøå]+([\\s-]+?[\\wæøå]+)?)", IGNORE_CASE)
+private val vehicleRegex = VEHICLE_REGEX
 private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-]\\wæøå]+)*)", IGNORE_CASE)
 private val commentRegex = Regex("[\\w\\d\\sæøå?!,.-]{3,}")
 
