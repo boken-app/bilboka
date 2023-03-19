@@ -13,6 +13,6 @@ internal class ReportGetter(val book: Book, userService: UserService) : CarBookC
     override fun execute(conversation: Conversation, message: String) {
         val report = book.getReport("Teste litt rapport da")
 
-        conversation.sendFile(report)
+        conversation.sendPdf(report, "testrapport")
     }
 }

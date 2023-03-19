@@ -5,5 +5,5 @@ interface BotMessenger {
 
     fun sendMessage(message: String, recipientID: String)
     fun sendPostback(options: List<String>, recipientID: String)
-    fun sendFile(file: ByteArray, recipientID: String)
+    fun sendPdf(file: ByteArray, fileName: String, recipientID: String)
 }

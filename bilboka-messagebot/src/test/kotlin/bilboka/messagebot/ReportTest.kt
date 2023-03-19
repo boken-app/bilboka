@@ -15,7 +15,7 @@ internal class ReportTest : AbstractMessageBotTest() {
         messagebot.processMessage("rapport", registeredSenderID)
 
         verify { book.getReport(any()) }
-        verify { botMessenger.sendFile(any(), registeredSenderID) }
+        verify { botMessenger.sendPdf(any(), any(), registeredSenderID) }
     }
 
     @Test

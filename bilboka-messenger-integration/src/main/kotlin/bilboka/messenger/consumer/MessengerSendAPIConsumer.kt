@@ -39,54 +39,54 @@ class MessengerSendAPIConsumer(
         }
     }
 
-    fun sendAttachment(recipientPSID: String, attachment: ByteArray, type: AttachmentType) {
+    fun sendAttachment(recipientPSID: String, attachment: ByteArray, fileName: String, mediaType: String) {
         logger.info(
-            "Sender vedlegg til $recipientPSID"
+            "Sender vedlegg $fileName til $recipientPSID"
         )
-
-        val mediaType = MediaType.parse("application/pdf")
-
-//        val att = File("report.pdf")
-//            .apply {
-//                writeBytes(attachment)
-//            }
 
         val request = Request.Builder()
             .url(getUrl())
             .post(
                 MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("filedata", "report.pdf", RequestBody.create(mediaType, attachment))
+                    .addFormDataPart(
+                        "filedata",
+                        fileName,
+                        RequestBody.create(MediaType.parse(mediaType), attachment)
+                    )
                     .addFormDataPart("recipient", "{\"id\":$recipientPSID}")
-                    .addFormDataPart("message", "{\"attachment\":{\"type\":\"${type.strVal}\", \"payload\":{}}}")
+                    .addFormDataPart(
+                        "message",
+                        "{\"attachment\":{\"type\":\"${attachmentTypeFromMediaType(mediaType).strVal}\", \"payload\":{}}}"
+                    )
                     .build()
             )
             .build()
 
-        val response = client.newCall(request).execute()
-
-//        val response: Response = khttp.post(
-//            url = getUrl(),
-//            data = mapOf(
-//                Pair("recipient", "{\"id\":$recipientPSID}"),
-//                Pair("message", "{\"attachment\":{\"type\":\"${type.strVal}\", \"payload\":{}}}"),
-//            ),
-//            files = listOf(FileLike("filedata", att))
-//        )
-
-        if (response.isSuccessful) {
-            logger.info("Vedlegg sendt!")
-        } else {
-            logger.error(
-                format(
-                    "Sending av vedlegg gikk ikke ok. Status: %s - %s",
-                    response.code(),
-                    response.message()
+        client.newCall(request).execute().use {
+            if (it.isSuccessful) {
+                logger.info("Vedlegg sendt!")
+            } else {
+                logger.error(
+                    format(
+                        "Sending av vedlegg gikk ikke ok. Status: %s - %s",
+                        it.code(),
+                        it.message()
+                    )
                 )
-            )
+            }
         }
     }
 
     private fun getUrl() =
         "${messengerProperties.sendUrl}?${MessengerSendApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
+
+    private fun attachmentTypeFromMediaType(mediaType: String): AttachmentType {
+        return when (mediaType) {
+            "application/pdf" -> AttachmentType.FILE
+            else -> {
+                throw NotImplementedError("Støtter ikke vedlegg med type $mediaType")
+            }
+        }
+    }
 }

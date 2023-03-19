@@ -122,7 +122,7 @@ class TestMessenger : BotMessenger {
         TODO("Not yet implemented")
     }
 
-    override fun sendFile(file: ByteArray, recipientID: String) {
+    override fun sendPdf(file: ByteArray, fileName: String, recipientID: String) {
         fileSent = file
         recipient = recipientID
     }

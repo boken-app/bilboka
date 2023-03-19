@@ -36,10 +36,11 @@ internal class Conversation(
         )
     }
 
-    fun sendFile(file: ByteArray) {
-        logger.debug("[meldingslogg] Sender fil")
-        botMessenger.sendFile(
+    fun sendPdf(file: ByteArray, fileName: String) {
+        logger.debug("[meldingslogg] Sender pdf $fileName")
+        botMessenger.sendPdf(
             file,
+            "$fileName.pdf",
             senderID
         )
     }
