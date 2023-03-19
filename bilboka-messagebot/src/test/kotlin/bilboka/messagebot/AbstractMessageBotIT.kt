@@ -16,7 +16,6 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
-import java.io.File
 import java.util.function.Predicate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -107,7 +106,7 @@ class TestMessenger : BotMessenger {
 
     var messageSent: String? = null
     var recipient: String? = null
-    var fileSent: File? = null
+    var fileSent: ByteArray? = null
 
     fun reset() {
         messageSent = null
@@ -123,7 +122,7 @@ class TestMessenger : BotMessenger {
         TODO("Not yet implemented")
     }
 
-    override fun sendFile(file: File, recipientID: String) {
+    override fun sendFile(file: ByteArray, recipientID: String) {
         fileSent = file
         recipient = recipientID
     }
