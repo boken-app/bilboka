@@ -3,10 +3,11 @@ package bilboka.messenger.consumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerProfileRequest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import khttp.responses.Response
-import org.json.JSONObject
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.lang.String.format
 
@@ -21,6 +22,7 @@ class MessengerProfileAPIConsumer(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper()
+    private val client = OkHttpClient()
 
     fun doProfileUpdate(profileRequest: MessengerProfileRequest) {
         profileRequest.persistentMenu.firstOrNull()?.let {
@@ -31,33 +33,39 @@ class MessengerProfileAPIConsumer(
         val url =
             "${messengerProperties.profileUrl}?${MessengerProfileApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
 
-        val response: Response = khttp.post(
-            url = url,
-            json = JSONObject(mapper.writeValueAsString(profileRequest)),
-        )
-        if (response.statusCode == HttpStatus.OK.value()) {
-            logger.info("Profil-oppdatering fullført!")
-        } else {
-            logger.error(format("Profil-oppdatering feilet. Status: %s - %s", response.statusCode, response.text))
+        val request = Request.Builder()
+            .url(url)
+            .post(
+                RequestBody.create(MediaType.parse("application/json"), mapper.writeValueAsString(profileRequest))
+            )
+
+        client.newCall(request.build()).execute().use {
+            if (it.isSuccessful) {
+                logger.info("Profil-oppdatering fullført!")
+            } else {
+                logger.error(format("Profil-oppdatering feilet. Status: %s - %s", it.code(), it.message()))
+            }
         }
     }
 
-    fun getCurrentProfileSettings(fields: List<String>): JSONObject? {
+    fun getCurrentProfileSettings(fields: List<String>): String? {
         logger.info("Henter profilinfo for felt {}", fields.joinToString())
 
         val url = "${messengerProperties.profileUrl}?" +
                 "${MessengerProfileApiConfig.FIELDS}=${fields.joinToString(",")}&" +
                 "${MessengerProfileApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
 
-        val response: Response = khttp.get(
-            url = url,
-        )
-        return if (response.statusCode == HttpStatus.OK.value()) {
-            logger.info("Hentet profilinfo")
-            response.jsonObject
-        } else {
-            logger.error(format("Profil-info feilet. Status: %s - %s", response.statusCode, response.text))
-            null
-        }
+        Request.Builder().url(url).build()
+            .run {
+                client.newCall(this).execute().use {
+                    return if (it.isSuccessful) {
+                        logger.info("Hentet profilinfo")
+                        it.body().toString()
+                    } else {
+                        logger.error(format("Profil-info feilet. Status: %s - %s", it.code(), it.message()))
+                        null
+                    }
+                }
+            }
     }
 }

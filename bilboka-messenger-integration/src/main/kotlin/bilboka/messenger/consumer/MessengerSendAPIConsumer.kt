@@ -3,11 +3,9 @@ package bilboka.messenger.consumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.AttachmentType
 import bilboka.messenger.dto.FacebookMessaging
-import khttp.responses.Response
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.*
-import org.json.JSONObject
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.lang.String.format
 
@@ -20,6 +18,7 @@ class MessengerSendAPIConsumer(
     private val messengerProperties: MessengerProperties
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val mapper = jacksonObjectMapper()
     private val client = OkHttpClient()
 
     fun sendMessage(message: FacebookMessaging) {
@@ -28,14 +27,18 @@ class MessengerSendAPIConsumer(
                     "til ${message.recipient?.get("id")}"
         )
 
-        val response: Response = khttp.post(
-            url = getUrl(),
-            json = JSONObject(message)
-        )
-        if (response.statusCode == HttpStatus.OK.value()) {
-            logger.info("Melding sendt!")
-        } else {
-            logger.error(format("Sending gikk ikke ok. Status: %s - %s", response.statusCode, response.text))
+        val request = Request.Builder()
+            .url(getUrl())
+            .post(
+                RequestBody.create(MediaType.parse("application/json"), mapper.writeValueAsString(message))
+            )
+
+        client.newCall(request.build()).execute().use {
+            if (it.isSuccessful) {
+                logger.info("Melding sendt!")
+            } else {
+                logger.error(format("Sending gikk ikke ok. Status: %s - %s", it.code(), it.message()))
+            }
         }
     }
 
@@ -61,9 +64,8 @@ class MessengerSendAPIConsumer(
                     )
                     .build()
             )
-            .build()
 
-        client.newCall(request).execute().use {
+        client.newCall(request.build()).execute().use {
             if (it.isSuccessful) {
                 logger.info("Vedlegg sendt!")
             } else {

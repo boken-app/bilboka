@@ -62,7 +62,7 @@ class ProfileConfig(
                     "persistent_menu"
                 )
             )?.run {
-                logger.info("Current profile config: {}", this.toString())
+                logger.info("Current profile config: {}", this)
             }
         } else {
             logger.info("Profile config already set")

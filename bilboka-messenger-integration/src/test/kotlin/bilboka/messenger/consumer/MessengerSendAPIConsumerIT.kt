@@ -1,12 +1,9 @@
 package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
-import bilboka.messenger.dto.AttachmentType
 import bilboka.messenger.dto.FacebookMessage
 import bilboka.messenger.dto.FacebookMessaging
 import io.mockk.InternalPlatformDsl.toStr
-import io.mockk.mockkStatic
-import io.mockk.verify
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -58,8 +55,6 @@ internal class MessengerSendAPIConsumerIT {
                 .addHeader("Content-Type", "application/json")
         )
 
-        mockkStatic("khttp.KHttp")
-
         val recipient = mapOf(Pair("id", "123"))
         val testMessage = "detteerentest"
 
@@ -74,24 +69,15 @@ internal class MessengerSendAPIConsumerIT {
         // Act
         sendConsumer.sendMessage(testFBMessage)
 
-        // Assert
-        verify { // TODO! Ditche Khttp for å kunne oppgradere javaversjon (bruke Feign eller https://github.com/kittinunf/fuel ? )
-            khttp.post(
-                url = any(),
-                headers = any(),
-                json = any()
-            )
-        }
-
         val takeRequest = mockBackEnd.takeRequest()
 
         assertThat(takeRequest.method).isEqualTo("POST")
         assertThat(takeRequest.requestUrl.toStr()).contains(mockBackEnd.port.toStr())
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
-        assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
+        assertThat(takeRequest.headers["Content-Type"]).contains("application/json")
         assertThat(takeRequest.body.readUtf8())
             .contains("\"text\":\"$testMessage\"")
-            .contains("{\"recipient\":{\"id\":\"123\"}")
+            .contains("\"recipient\":{\"id\":\"123\"")
             .doesNotContain("mid").doesNotContain("seq")
     }
 
@@ -103,10 +89,8 @@ internal class MessengerSendAPIConsumerIT {
                 .addHeader("Content-Type", "application/json")
         )
 
-        mockkStatic("khttp.KHttp")
-
         sendConsumer.sendAttachment(
-            "124", "report".toByteArray(), AttachmentType.FILE
+            "124", "report".toByteArray(), "testfilnavn", "application/pdf"
         )
 
         val takeRequest = mockBackEnd.takeRequest()

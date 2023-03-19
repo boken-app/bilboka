@@ -1,5 +1,7 @@
 package bilboka.messenger.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import java.io.Serializable
@@ -30,11 +32,11 @@ data class FacebookMessaging(
 ) : Serializable
 
 data class FacebookMessage(
-    val mid: String? = null,
+    @JsonInclude(Include.NON_NULL) val mid: String? = null,
     @Deprecated("Fjern denne, aner ikke hvorfor den nekter å kjøre uten")
-    val seq: Long? = null,
-    val text: String? = null,
-    val attachment: Attachment? = null
+    @JsonInclude(Include.NON_NULL) val seq: Long? = null,
+    @JsonInclude(Include.NON_NULL) val text: String? = null,
+    @JsonInclude(Include.NON_NULL) val attachment: Attachment? = null
 ) : Serializable
 
 data class Attachment(

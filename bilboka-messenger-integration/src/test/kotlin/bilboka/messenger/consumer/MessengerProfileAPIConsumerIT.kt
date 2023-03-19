@@ -3,8 +3,6 @@ package bilboka.messenger.consumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.*
 import io.mockk.InternalPlatformDsl.toStr
-import io.mockk.mockkStatic
-import io.mockk.verify
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -56,8 +54,6 @@ internal class MessengerProfileAPIConsumerIT {
                 .addHeader("Content-Type", "application/json")
         )
 
-        mockkStatic("khttp.KHttp")
-
         val testPayload = "detteerentest"
 
         val profilConfig = MessengerProfileRequest(
@@ -77,26 +73,16 @@ internal class MessengerProfileAPIConsumerIT {
         // Act
         profileConsumer.doProfileUpdate(profilConfig)
 
-        // Assert
-        verify { // TODO! Ditche Khttp for å kunne oppgradere javaversjon (bruke Feign eller https://github.com/kittinunf/fuel ? )
-            khttp.post(
-                url = any(),
-                headers = any(),
-                json = any()
-            )
-        }
-
         val takeRequest = mockBackEnd.takeRequest()
 
         assertThat(takeRequest.method).isEqualTo("POST")
         assertThat(takeRequest.requestUrl.toStr()).contains(mockBackEnd.port.toStr())
         assertThat(takeRequest.requestUrl.toStr()).contains(pageAccessToken)
-        assertThat(takeRequest.headers["Content-Type"]).isEqualTo("application/json")
+        assertThat(takeRequest.headers["Content-Type"]).contains("application/json")
         assertThat(takeRequest.body.readUtf8())
             .contains("\"payload\":\"$testPayload\"")
             .contains("persistent_menu")
             .contains("call_to_actions")
             .doesNotContain("mid").doesNotContain("seq")
     }
-
 }

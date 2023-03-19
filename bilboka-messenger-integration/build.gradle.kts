@@ -1,4 +1,3 @@
-import bilboka.dependencies.Libs
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -19,8 +18,6 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-
-    implementation(Libs.kHttp)
 
     testImplementation("org.mockito:mockito-core:3.3.3")
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
