@@ -9,6 +9,7 @@ import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import java.io.File
 import java.lang.String.format
 
 object MessengerSendApiConfig {
@@ -43,13 +44,18 @@ class MessengerSendAPIConsumer(
             "Sender vedlegg til $recipientPSID"
         )
 
+        val att = File("report.pdf")
+            .apply {
+                writeBytes(attachment)
+            }
+
         val response: Response = khttp.post(
             url = getUrl(),
             data = mapOf(
                 Pair("recipient", "{\"id\":$recipientPSID}"),
                 Pair("message", "{\"attachment\":{\"type\":\"${type.strVal}\", \"payload\":{}}}"),
             ),
-            files = listOf(FileLike("filedata", attachment))
+            files = listOf(FileLike("filedata", att))
         )
         if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Vedlegg sendt!")
