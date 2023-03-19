@@ -115,6 +115,7 @@ internal class MessengerSendAPIConsumerIT {
         assertThat(takeRequest.headers["Content-Type"]).contains("multipart/form-data")
         assertThat(takeRequest.body.readUtf8())
             .contains("Content-Disposition: form-data; name=\"filedata\"")
+            .contains("\"type\":\"file\"")
     }
 
 }

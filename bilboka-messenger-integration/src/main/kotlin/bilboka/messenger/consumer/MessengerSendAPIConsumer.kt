@@ -47,7 +47,7 @@ class MessengerSendAPIConsumer(
             url = getUrl(),
             data = mapOf(
                 Pair("recipient", "{\"id\":$recipientPSID}"),
-                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{}}}"),
+                Pair("message", "{\"attachment\":{\"type\":\"${type.strVal}\", \"payload\":{}}}"),
             ),
             files = listOf(FileLike("filedata", attachment))
         )
