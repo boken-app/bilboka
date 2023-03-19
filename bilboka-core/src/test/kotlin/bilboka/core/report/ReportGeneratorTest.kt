@@ -16,7 +16,7 @@ internal class ReportGeneratorTest {
 
     @Test
     fun testReport() {
-        val report = ReportGenerator().generateReport("test-input")
+        val report = ReportGenerator().generateReport("test-input", listOf())
         saveFile(report)
     }
 

@@ -24,7 +24,7 @@ internal class ReportGetter(val book: Book, val vehicleService: VehicleService, 
             }
 
         vehicle?.run {
-            conversation.sendPdf(book.getReport("Testrapport for $name"), "testrapport_$name")
+            conversation.sendPdf(book.getReport(this), "testrapport_$name")
         } ?: conversation.sendReply("Fant ikke bil")
     }
 }

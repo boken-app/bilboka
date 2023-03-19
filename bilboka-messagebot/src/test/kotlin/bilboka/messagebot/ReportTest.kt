@@ -10,8 +10,8 @@ internal class ReportTest : AbstractMessageBotTest() {
 
     @Test
     fun getReport() {
-        every { book.getReport(any()) } returns "rapport-test".toByteArray()
-        mockVehicle("databil")
+        val vehicle = mockVehicle("databil")
+        every { book.getReport(vehicle) } returns "rapport-test".toByteArray()
 
         messagebot.processMessage("rapport databil", registeredSenderID)
 

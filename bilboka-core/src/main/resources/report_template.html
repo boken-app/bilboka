@@ -1,7 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <h3 style="text-align: center; color: blue">
-    <span th:text="'Testrapport for ' + ${input} + '! ' + ${msg} + '!'"></span>
+    <span th:text="${header}"></span>
 </h3>
+<p>
+    <span th:text="${text}"></span>
+</p>
 </body>
 </html>

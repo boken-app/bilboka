@@ -1,5 +1,6 @@
 package bilboka.core.report
 
+import bilboka.core.book.domain.BookEntry
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
@@ -14,10 +15,10 @@ class ReportGenerator {
         val TEMPLATE_NAME = "report_template"
     }
 
-    fun generateReport(input: String): ByteArray {
+    fun generateReport(header: String, entries: List<BookEntry>): ByteArray {
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
-            setVariable("msg", "(fra rapportgenerator)")
-            setVariable("input", input)
+            setVariable("header", header)
+            setVariable("text", "Her var det ${entries.size} rader!")
         }))
     }
 

@@ -84,8 +84,8 @@ class Book(
         }
     }
 
-    fun getReport(input: String): ByteArray {
-        return reportGenerator.generateReport(input)
+    fun getReport(vehicle: Vehicle): ByteArray {
+        return reportGenerator.generateReport("Testrapport for ${vehicle.name}", entries = vehicle.bookEntries.toList())
     }
 }
 
