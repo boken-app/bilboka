@@ -1,3 +1,4 @@
+import bilboka.dependencies.Libs
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -15,15 +16,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation(platform(Libs.okHttp))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     testImplementation("org.mockito:mockito-core:3.3.3")
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
     testImplementation("com.ninja-squad:springmockk:3.0.1")
-    testImplementation("com.squareup.okhttp3:okhttp:4.0.1")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.0.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver")
 }
 
 tasks.getByName<BootJar>("bootJar") {
