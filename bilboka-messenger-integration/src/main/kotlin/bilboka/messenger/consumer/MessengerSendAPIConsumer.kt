@@ -46,11 +46,10 @@ class MessengerSendAPIConsumer(
         val response: Response = khttp.post(
             url = getUrl(),
             data = mapOf(
-                Pair("filedata", attachment),
                 Pair("recipient", "{\"id\":$recipientPSID}"),
-                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{\"is_reusable\":true}}}"),
+                Pair("message", "{\"attachment\":{\"type\":$type, \"payload\":{}}}"),
             ),
-            files = listOf(FileLike("vedlegg", attachment))
+            files = listOf(FileLike("filedata", attachment))
         )
         if (response.statusCode == HttpStatus.OK.value()) {
             logger.info("Vedlegg sendt!")
