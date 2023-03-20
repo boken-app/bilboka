@@ -4,7 +4,15 @@ plugins {
 
     id("org.springframework.boot") version "3.0.4" apply false
 
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 allprojects {
