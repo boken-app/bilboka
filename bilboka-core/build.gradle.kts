@@ -24,9 +24,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:${bilboka.dependencies.Versions.exposed}")
     implementation("org.jetbrains.exposed:exposed-java-time:${bilboka.dependencies.Versions.exposed}")
 
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.3.3.RELEASE")
+    //  implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.0.4")
     implementation("org.thymeleaf:thymeleaf:3.1.1.RELEASE")
-    implementation("org.thymeleaf:thymeleaf-spring5:3.1.1.RELEASE")
+//    implementation("org.thymeleaf:thymeleaf-spring5:3.1.1.RELEASE")
+//    implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
     implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.22")
 
     runtimeOnly("com.h2database:h2")
