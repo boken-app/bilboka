@@ -1,8 +1,8 @@
 plugins {
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.7.10" apply false
+    kotlin("plugin.spring") version "1.8.10" apply false
 
-    id("org.springframework.boot") version "2.6.3" apply false
+    id("org.springframework.boot") version "3.0.4" apply false
 
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -15,8 +15,8 @@ allprojects {
     }
 
     tasks.withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {

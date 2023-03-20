@@ -1,9 +1,9 @@
 package bilboka.dependencies
 
 object Versions {
-    val spring = "2.6.3"
+    val spring = "3.0.4"
 
-    val kotlin = "1.7.10"
+    val kotlin = "1.8.10"
     val jUnitJupiter = "5.8.2"
     val jUnitPlatform = "1.8.2"
 
