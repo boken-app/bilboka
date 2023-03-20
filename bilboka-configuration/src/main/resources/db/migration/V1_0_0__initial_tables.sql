@@ -70,6 +70,6 @@ create table registrationkeys
         constraint fk_registrationkeys_user__id
             references users
             on update restrict on delete restrict,
-    key    varchar(100)         not null,
+    "key"  varchar(100)         not null,
     usable boolean default true not null
 );
