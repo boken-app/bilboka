@@ -17,7 +17,7 @@ internal class ReportGeneratorTest {
 
     companion object {
         val CREATE_FILE = false
-        val LOCATION = "\\bilboka_test\\testrapport.pdf"
+        val LOCATION = "bilboka_test\\testrapport.pdf"
     }
 
     @Test
@@ -43,9 +43,10 @@ internal class ReportGeneratorTest {
 
     private fun saveFile(report: ByteArray) {
         if (CREATE_FILE) {
-            FileOutputStream(System.getProperty("user.home") + File.separator.toString() + LOCATION).use {
+            val filename = System.getProperty("user.home") + File.separator.toString() + LOCATION
+            FileOutputStream(filename).use {
                 it.write(report)
-                logger.warn("Generert testfil: $LOCATION")
+                logger.warn("Generert testfil: $filename")
             }
         }
     }
