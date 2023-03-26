@@ -3,10 +3,10 @@ package bilboka.messenger.consumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerProfileRequest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.lang.String.format
@@ -36,14 +36,14 @@ class MessengerProfileAPIConsumer(
         val request = Request.Builder()
             .url(url)
             .post(
-                mapper.writeValueAsString(profileRequest).toRequestBody("application/json".toMediaTypeOrNull())
+                RequestBody.create(MediaType.parse("application/json"), mapper.writeValueAsString(profileRequest))
             )
 
         client.newCall(request.build()).execute().use {
             if (it.isSuccessful) {
                 logger.info("Profil-oppdatering fullført!")
             } else {
-                logger.error(format("Profil-oppdatering feilet. Status: %s - %s", it.code, it.body?.string()))
+                logger.error(format("Profil-oppdatering feilet. Status: %s - %s", it.code(), it.body()?.string()))
             }
         }
     }
@@ -60,9 +60,9 @@ class MessengerProfileAPIConsumer(
                 client.newCall(this).execute().use {
                     return if (it.isSuccessful) {
                         logger.info("Hentet profilinfo")
-                        it.body?.string()
+                        it.body()?.string()
                     } else {
-                        logger.error(format("Profil-info feilet. Status: %s - %s", it.code, it.body?.string()))
+                        logger.error(format("Profil-info feilet. Status: %s - %s", it.code(), it.body()?.string()))
                         null
                     }
                 }
