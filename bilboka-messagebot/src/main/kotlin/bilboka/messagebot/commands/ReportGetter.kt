@@ -28,7 +28,10 @@ internal class ReportGetter(val book: Book, val vehicleService: VehicleService, 
             .extract(yearRegex) { it.toInt() }
 
         vehicle?.run {
-            conversation.sendPdf(book.getReport(this, year), "testrapport_${name.lowercase().replace(" ", "_")}")
+            conversation.sendPdf(
+                book.getReport(this, year),
+                "rapport${year ?: ""}_${name.lowercase().replace(" ", "_")}"
+            )
         } ?: conversation.sendReply("Fant ikke bil")
     }
 }

@@ -91,7 +91,7 @@ class Book(
     }
 
     private fun reportOfYear(vehicle: Vehicle, year: Year) = reportGenerator.generateReport(
-        header = "Rapport for siste år, ${vehicle.name}",
+        header = "Rapport for $year, ${vehicle.name}",
         entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
     )
 
