@@ -4,11 +4,11 @@ object Versions {
     const val spring = "2.6.3"
 
     const val kotlin = "1.8.10"
-    const val jUnitJupiter = "5.8.2"
-    const val jUnitPlatform = "1.8.2"
+    const val jUnitJupiter = "5.9.2"
+    const val jUnitPlatform = "1.9.2"
 
-    const val slf4j = "1.7.30"
-    const val logback = "1.2.3"
+    const val slf4j = "2.0.7"
+    const val logback = "1.3.6"
 
     const val exposed = "0.41.1"
     const val okHttp = "4.10.0"
