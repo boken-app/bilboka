@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.scheduling.annotation.EnableScheduling
 import java.net.URI
-import java.util.*
 
 @SpringBootApplication
 @EnableScheduling
@@ -15,13 +14,12 @@ class BilbokaApplication
 private val logger = LoggerFactory.getLogger(BilbokaApplication::class.java)
 
 fun main(args: Array<String>) {
-    val app: SpringApplication = SpringApplication(BilbokaApplication::class.java)
+    val app = SpringApplication(BilbokaApplication::class.java)
     val port = System.getenv("PORT")
-    logger.info("Setter port [{}] fra env", port)
+    logger.info("Setting port [{}] from env", port)
 
     app.setDefaultProperties(
-        Collections
-            .singletonMap("server.port", port ?: "8080")
+        mapOf("server.port" to (port ?: "8080"))
     )
     configureDatabase()
     app.run(*args)
