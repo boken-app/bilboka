@@ -1,9 +1,6 @@
 package bilboka.messenger.resource
 
 import bilboka.messenger.MessengerProperties
-import jakarta.servlet.FilterChain
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.codec.binary.Hex
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
@@ -15,6 +12,9 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.security.InvalidKeyException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import javax.servlet.FilterChain
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Component
 class WebhookSignatureVerificationFilter : OncePerRequestFilter() {
