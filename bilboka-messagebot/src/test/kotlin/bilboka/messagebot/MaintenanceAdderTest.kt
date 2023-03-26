@@ -10,7 +10,7 @@ class MaintenanceAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun addMaintenance_doesCallToVehicle() {
-        val mockVehicle = mockVehicle(" testbilen")
+        val mockVehicle = mockVehicle("testbilen")
         mockMaintenanceFor(mockVehicle, "PANSER")
 
         messagebot.processMessage("Bytt panser testbilen 34456", registeredSenderID)
@@ -33,7 +33,7 @@ class MaintenanceAdderTest : AbstractMessageBotTest() {
 
     @Test
     fun addMaintenanceWithExtraComment_setsAsComment() {
-        val mockVehicle = mockVehicle(" testbilen1")
+        val mockVehicle = mockVehicle("testbilen1")
         mockMaintenanceFor(mockVehicle, "OVERLEDNING")
 
         messagebot.processMessage("Bytt overledning testbilen1 45680 grønn og fin", registeredSenderID)
