@@ -9,7 +9,7 @@ class StringMatchExtractor(
         return matchRegex.findAll(matchRemainder)
             .flatMap { it.groupValues }
             .firstNotNullOfOrNull { value ->
-                extractor(value).also { if (it != null) matchRemainder = getRemainingFrom(value) }
+                extractor(value.trim()).also { if (it != null) matchRemainder = getRemainingFrom(value) }
             }
     }
 

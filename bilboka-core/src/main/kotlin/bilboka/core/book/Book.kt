@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Year
 import kotlin.math.sign
 
 @Component
@@ -85,12 +86,19 @@ class Book(
         }
     }
 
-    fun getReport(vehicle: Vehicle): ByteArray {
-        return reportGenerator.generateReport(
-            header = "Rapport for siste år, ${vehicle.name}",
-            entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
-        )
+    fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray {
+        return year?.let { reportOfYear(vehicle, Year.of(year)) } ?: reportOfLastYear(vehicle)
     }
+
+    private fun reportOfYear(vehicle: Vehicle, year: Year) = reportGenerator.generateReport(
+        header = "Rapport for siste år, ${vehicle.name}",
+        entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
+    )
+
+    private fun reportOfLastYear(vehicle: Vehicle) = reportGenerator.generateReport(
+        header = "Rapport for siste år, ${vehicle.name}",
+        entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
+    )
 }
 
 private fun BookEntry.checkIfDuplicate(odoReading: Int?, amount: Double?, costNOK: Double?) {
@@ -134,4 +142,11 @@ fun String.toMaintenanceItem(): String {
 
 private fun SizedIterable<BookEntry>.since(date: LocalDate): List<BookEntry> {
     return filter { (it.dateTime ?: LocalDateTime.MIN) >= date.atStartOfDay() }.toList()
+}
+
+private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): List<BookEntry> {
+    return filter {
+        val itsDate = it.dateTime ?: LocalDateTime.MIN
+        itsDate >= from.atStartOfDay() && itsDate < to.atStartOfDay()
+    }.toList()
 }

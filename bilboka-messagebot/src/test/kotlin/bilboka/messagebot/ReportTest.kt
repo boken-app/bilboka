@@ -20,6 +20,17 @@ internal class ReportTest : AbstractMessageBotTest() {
     }
 
     @Test
+    fun getReportForYear() {
+        val vehicle = mockVehicle("databil")
+        every { book.getReport(vehicle, any()) } returns "rapport-test".toByteArray()
+
+        messagebot.processMessage("rapport 2018 databil", registeredSenderID)
+
+        verify { book.getReport(any(), 2018) }
+        verify { botMessenger.sendPdf(any(), any(), registeredSenderID) }
+    }
+
+    @Test
     fun getReportNotRegistered() {
         messagebot.processMessage("rapport", unregisteredSenderID)
 
