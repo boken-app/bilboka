@@ -14,11 +14,11 @@ class Events : ApplicationListener<ApplicationReadyEvent> {
         private val logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @Autowired
-    lateinit var serverProperties: ServerProperties
+    @Autowired(required = false)
+    var serverProperties: ServerProperties? = null
 
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
         logger.info("Application ready!")
-        serverProperties.port.let { logger.info("Running on port: $it") }
+        serverProperties?.port?.let { logger.info("Running on port: $it") } ?: logger.warn("Missing serverProperties!")
     }
 }
