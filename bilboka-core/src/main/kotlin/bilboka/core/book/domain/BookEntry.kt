@@ -28,7 +28,7 @@ object BookEntries : IntIdTable() {
     val creationTimestamp = timestamp("created_timestamp").clientDefault { now() }
 }
 
-class BookEntry(id: EntityID<Int>) : IntEntity(id) {
+class BookEntry(id: EntityID<Int>) : IntEntity(id), Comparable<BookEntry> {
     companion object : IntEntityClass<BookEntry>(BookEntries)
 
     var dateTime by BookEntries.dateTime
@@ -50,5 +50,20 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id) {
             return null
         }
         return (costNOK!! / amount!!)
+    }
+
+    override fun compareTo(other: BookEntry): Int {
+        return when {
+            (dateTime != null && other.dateTime != null) -> compareValues(dateTime, other.dateTime)
+            (odometer != null && other.odometer != null) -> compareValues(odometer, other.odometer)
+            else -> compareBy<BookEntry> { it.creationTimestamp }
+                .thenComparing(nullsLast(compareBy { type }))
+                .thenComparing(nullsLast(compareBy { maintenanceItem?.item }))
+                .thenComparing(nullsLast(compareBy { event }))
+                .thenComparing(nullsLast(compareBy { amount }))
+                .thenComparing(nullsLast(compareBy { costNOK }))
+                .thenComparing(nullsLast(compareBy { source }))
+                .compare(this, other)
+        }
     }
 }
