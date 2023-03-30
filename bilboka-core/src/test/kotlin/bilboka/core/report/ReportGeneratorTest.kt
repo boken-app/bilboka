@@ -18,7 +18,7 @@ internal class ReportGeneratorTest {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
-        val CREATE_FILE = true
+        val CREATE_FILE = false
         val LOCATION = "bilboka_test\\testrapport.pdf"
     }
 
@@ -44,6 +44,7 @@ internal class ReportGeneratorTest {
             repeat(4) {
                 mockk<BookEntry>(relaxed = true).apply {
                     every { dateTime } returns LocalDateTime.now().minusDays(nextInt(until = 10).toLong())
+                    every { odometer } returns 23566
                     every { type } returns EntryType.MAINTENANCE
                     every { amount } returns null
                     every { costNOK } returns 456.9
@@ -55,12 +56,20 @@ internal class ReportGeneratorTest {
             repeat(4) {
                 mockk<BookEntry>(relaxed = true).apply {
                     every { dateTime } returns LocalDateTime.now().minusDays(nextInt(until = 10).toLong())
+                    every { odometer } returns null
                     every { type } returns EntryType.EVENT
                     every { amount } returns null
                     every { event } returns EventType.EU_KONTROLL_OK
                     every { comment } returns "Jauda"
                 }.also { add(it) }
             }
+            mockk<BookEntry>(relaxed = true).apply {
+                every { dateTime } returns null
+                every { odometer } returns 23566
+                every { type } returns EntryType.EVENT
+                every { event } returns EventType.SERVICE
+                every { comment } returns "Ingen dato her nei"
+            }.also { add(it) }
         }.shuffled()
     }
 

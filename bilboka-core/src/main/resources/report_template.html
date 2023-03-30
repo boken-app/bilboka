@@ -14,7 +14,8 @@
         <th>Kommentar</th>
     </tr>
     <tr th:each="entry : ${entries}">
-        <td th:text="*{entry.datetime.toLocalDate()}?: '(ukjent)'">01.01.2011</td>
+        <td th:if="${entry.datetime != null}" th:text="${entry.datetime.toLocalDate()}">01.01.2011</td>
+        <td th:if="${entry.datetime == null}">(ukjent)</td>
         <td th:text="*{entry.odometer}?: '(ukjent)'">2346</td>
         <td th:text="${entry.type}"
             th:if="${entry.type.toString() != 'MAINTENANCE' && entry.type.toString() != 'EVENT'}">TYPE
