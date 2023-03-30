@@ -12,13 +12,13 @@ import java.io.ByteArrayOutputStream
 @Service
 class ReportGenerator {
     companion object {
-        val TEMPLATE_NAME = "report_template"
+        const val TEMPLATE_NAME = "report_template"
     }
 
     fun generateReport(header: String, entries: List<BookEntry>): ByteArray {
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
             setVariable("header", header)
-            setVariable("entries", entries)
+            setVariable("entries", entries.sorted())
         }))
     }
 

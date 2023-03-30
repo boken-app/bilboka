@@ -141,12 +141,24 @@ fun String.toMaintenanceItem(): String {
 }
 
 private fun SizedIterable<BookEntry>.since(date: LocalDate): List<BookEntry> {
-    return filter { (it.dateTime ?: LocalDateTime.MIN) >= date.atStartOfDay() }.toList()
+    return firstEntryAfter(date.atStartOfDay())
+        ?.let { firstEntry -> filter { it >= firstEntry } } ?: emptyList()
 }
 
 private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): List<BookEntry> {
-    return filter {
-        val itsDate = it.dateTime ?: LocalDateTime.MIN
-        itsDate >= from.atStartOfDay() && itsDate < to.atStartOfDay()
-    }.toList()
+    val firstEntryIncluded = firstEntryAfter(from.atStartOfDay())
+    val firstEntryNotIncluded = firstEntryAfter(to.atStartOfDay())
+
+    return if (firstEntryIncluded == null) {
+        emptyList()
+    } else if (firstEntryNotIncluded == null) {
+        filter { it >= firstEntryIncluded }
+    } else {
+        filter { it >= firstEntryIncluded && it < firstEntryNotIncluded }
+    }
+}
+
+private fun SizedIterable<BookEntry>.firstEntryAfter(date: LocalDateTime): BookEntry? {
+    sorted().forEach { if (it.dateTime?.run { this > date } == true) return it }
+    return null
 }
