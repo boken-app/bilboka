@@ -4,11 +4,7 @@ import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.AttachmentType
 import bilboka.messenger.dto.FacebookMessaging
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.*
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.lang.String.format
@@ -34,14 +30,14 @@ class MessengerSendAPIConsumer(
         val request = Request.Builder()
             .url(getUrl())
             .post(
-                mapper.writeValueAsString(message).toRequestBody("application/json".toMediaTypeOrNull())
+                RequestBody.create(MediaType.parse("application/json"), mapper.writeValueAsString(message))
             )
 
         client.newCall(request.build()).execute().use {
             if (it.isSuccessful) {
                 logger.info("Melding sendt!")
             } else {
-                logger.error(format("Sending gikk ikke ok. Status: %s - %s", it.code, it.body?.string()))
+                logger.error(format("Sending gikk ikke ok. Status: %s - %s", it.code(), it.body()?.string()))
             }
         }
     }
@@ -59,7 +55,7 @@ class MessengerSendAPIConsumer(
                     .addFormDataPart(
                         "filedata",
                         fileName,
-                        attachment.toRequestBody(mediaType.toMediaTypeOrNull())
+                        RequestBody.create(MediaType.parse(mediaType), attachment)
                     )
                     .addFormDataPart("recipient", "{\"id\":$recipientPSID}")
                     .addFormDataPart(
@@ -76,8 +72,8 @@ class MessengerSendAPIConsumer(
                 logger.error(
                     format(
                         "Sending av vedlegg gikk ikke ok. Status: %s - %s",
-                        it.code,
-                        it.body?.string()
+                        it.code(),
+                        it.body()?.string()
                     )
                 )
             }
