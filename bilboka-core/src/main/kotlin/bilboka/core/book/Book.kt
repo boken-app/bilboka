@@ -86,24 +86,39 @@ class Book(
         }
     }
 
-    fun getMaintenanceReport(vehicle: Vehicle) = reportGenerator.generateReport(
-        header = "Vedlikeholdsrapport for ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
-        entries = vehicle.bookEntries.filter { it.type != EntryType.FUEL }
-    )
+    fun getMaintenanceReport(vehicle: Vehicle): ByteArray? {
+        return reportIfNotEmpty(
+            header = "Vedlikeholdsrapport for ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            entries = vehicle.bookEntries.filter { it.type != EntryType.FUEL }
+        )
+    }
 
-    fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray {
+    fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray? {
         return year?.let { reportOfYear(vehicle, Year.of(year)) } ?: reportOfLastYear(vehicle)
     }
 
-    private fun reportOfYear(vehicle: Vehicle, year: Year) = reportGenerator.generateReport(
-        header = "Rapport for $year, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
-        entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
-    )
+    private fun reportOfYear(vehicle: Vehicle, year: Year): ByteArray? {
+        return reportIfNotEmpty(
+            header = "Rapport for $year, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
+        )
+    }
 
-    private fun reportOfLastYear(vehicle: Vehicle) = reportGenerator.generateReport(
-        header = "Rapport for siste år, ${vehicle.name}",
-        entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
-    )
+    private fun reportOfLastYear(vehicle: Vehicle): ByteArray {
+        return reportGenerator.generateReport(
+            header = "Rapport for siste år, ${vehicle.name}",
+            entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
+        )
+    }
+
+    private fun reportIfNotEmpty(header: String, entries: List<BookEntry>): ByteArray? {
+        return entries.takeIf { it.isNotEmpty() }?.let {
+            reportGenerator.generateReport(
+                header = header,
+                entries = entries
+            )
+        }
+    }
 }
 
 private fun BookEntry.checkIfDuplicate(odoReading: Int?, amount: Double?, costNOK: Double?) {

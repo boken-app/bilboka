@@ -32,16 +32,22 @@ internal class ReportGetter(val book: Book, val vehicleService: VehicleService, 
 
         vehicle?.run {
             if (isMaintenance) {
-                conversation.sendPdf(
-                    book.getMaintenanceReport(this),
-                    "vedlikeholdsrapport_${name.lowercase().replace(" ", "_")}"
-                )
+                replyWithReportOrNothing(
+                    conversation,
+                    filename = "vedlikeholdsrapport_${name.lowercase().replace(" ", "_")}"
+                ) { book.getMaintenanceReport(this) }
             } else {
-                conversation.sendPdf(
-                    book.getReport(this, year),
-                    "rapport${year ?: ""}_${name.lowercase().replace(" ", "_")}"
-                )
+                replyWithReportOrNothing(
+                    conversation,
+                    filename = "rapport${year ?: ""}_${name.lowercase().replace(" ", "_")}"
+                ) { book.getReport(this, year) }
             }
         } ?: conversation.sendReply("Fant ikke bil")
+    }
+
+    private fun replyWithReportOrNothing(conversation: Conversation, filename: String, getReport: () -> ByteArray?) {
+        getReport()?.run {
+            conversation.sendPdf(this, filename)
+        } ?: conversation.sendReply("Ingenting å rapportere ¯\\_(ツ)_/¯")
     }
 }
