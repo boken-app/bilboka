@@ -94,7 +94,7 @@ class Book(
     }
 
     fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray? {
-        return year?.let { reportOfYear(vehicle, Year.of(year)) } ?: reportOfLastYear(vehicle)
+        return if (year != null) reportOfYear(vehicle, Year.of(year)) else reportOfLastYear(vehicle)
     }
 
     private fun reportOfYear(vehicle: Vehicle, year: Year): ByteArray? {
