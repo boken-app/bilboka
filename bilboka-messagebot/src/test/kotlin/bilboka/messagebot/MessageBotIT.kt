@@ -24,6 +24,10 @@ class MessageBotIT : AbstractMessageBotIT() {
 
     @Test
     fun reportGeneration() {
+        processMessagaAndAssertReply(
+            message = "tnk xc70 56789 34l 456kr",
+            reply = { it.contains("Registrert tanking") }
+        )
         messageBot.processMessage("rapport xc70", validSender)
 
         Assertions.assertThat(testMessenger.fileSent).isNotNull
