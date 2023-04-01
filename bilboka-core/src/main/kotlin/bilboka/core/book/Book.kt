@@ -104,9 +104,9 @@ class Book(
         )
     }
 
-    private fun reportOfLastYear(vehicle: Vehicle): ByteArray {
-        return reportGenerator.generateReport(
-            header = "Rapport for siste år, ${vehicle.name}",
+    private fun reportOfLastYear(vehicle: Vehicle): ByteArray? {
+        return reportIfNotEmpty(
+            header = "Rapport for siste år, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
             entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
         )
     }
