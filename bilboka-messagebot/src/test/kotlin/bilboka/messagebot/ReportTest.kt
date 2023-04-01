@@ -31,6 +31,17 @@ internal class ReportTest : AbstractMessageBotTest() {
     }
 
     @Test
+    fun getMaintenanceReport() {
+        val vehicle = mockVehicle("databil")
+        every { book.getMaintenanceReport(vehicle) } returns "rapport-test".toByteArray()
+
+        messagebot.processMessage("rapport vedlikehold databil", registeredSenderID)
+
+        verify { book.getMaintenanceReport(any()) }
+        verify { botMessenger.sendPdf(any(), any(), registeredSenderID) }
+    }
+
+    @Test
     fun getReportNotRegistered() {
         messagebot.processMessage("rapport", unregisteredSenderID)
 

@@ -86,12 +86,17 @@ class Book(
         }
     }
 
+    fun getMaintenanceReport(vehicle: Vehicle) = reportGenerator.generateReport(
+        header = "Vedlikeholdsrapport for ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+        entries = vehicle.bookEntries.filter { it.type != EntryType.FUEL }
+    )
+
     fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray {
         return year?.let { reportOfYear(vehicle, Year.of(year)) } ?: reportOfLastYear(vehicle)
     }
 
     private fun reportOfYear(vehicle: Vehicle, year: Year) = reportGenerator.generateReport(
-        header = "Rapport for $year, ${vehicle.name}",
+        header = "Rapport for $year, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
         entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
     )
 

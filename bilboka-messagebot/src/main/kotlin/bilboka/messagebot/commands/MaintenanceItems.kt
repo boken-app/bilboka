@@ -10,7 +10,7 @@ internal class MaintenanceItems(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "(vedlikeholdspunkt|vedlikehold|vedl)$",
+        "^(vedlikeholdspunkt|vedlikehold|vedl)$",
         RegexOption.IGNORE_CASE
     )
 
