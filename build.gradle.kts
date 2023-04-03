@@ -4,7 +4,7 @@ plugins {
 
     id("org.springframework.boot") version "2.6.3" apply false
 
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
 kotlin {
