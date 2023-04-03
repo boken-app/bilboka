@@ -7,6 +7,14 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
 allprojects {
     apply(plugin = "java-library")
 
@@ -15,8 +23,8 @@ allprojects {
     }
 
     tasks.withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>() {
