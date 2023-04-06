@@ -4,6 +4,7 @@ import bilboka.core.book.domain.*
 import bilboka.core.report.ReportGenerator
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.Vehicle
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -60,7 +61,7 @@ class Book(
         return vehicleService.getVehicle(vehicle).lastEntry(EntryType.FUEL)
     }
 
-    fun getLastFuelPrices(n: Int = 5): List<Pair<LocalDate, Double>> {
+    fun getLastFuelPrices(n: Int = 5, fuelType: FuelType? = null): List<Pair<LocalDate, Double>> {
         return transaction {
             BookEntry
                 .find { BookEntries.type eq EntryType.FUEL }
@@ -68,6 +69,7 @@ class Book(
                 .sortedByDescending { it.dateTime }
                 .filter { it.dateTime != null }
                 .filter { it.pricePerLiter() != null }
+                .filter { fuelType?.run { it.vehicle.fuelType == this } ?: true }
                 .take(n)
                 .map { Pair(it.dateTime!!.toLocalDate(), it.pricePerLiter() as Double) }
                 .toList()

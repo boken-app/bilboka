@@ -30,7 +30,7 @@ class CarBookIT : H2Test() {
 
     @BeforeEach
     fun createVehicle() {
-        vehicle = vehicleService.addVehicle("Xc70", fuelType = FuelType.BENSIN)
+        vehicle = vehicleService.addVehicle("Xc70", fuelType = FuelType.DIESEL)
     }
 
     @Test
@@ -179,6 +179,8 @@ class CarBookIT : H2Test() {
         ).pricePerLiter()
 
         assertThat(book.getLastFuelPrices().map { it.second }).contains(aPrice, anotherPrice)
+        assertThat(book.getLastFuelPrices(1, FuelType.DIESEL).map { it.second }).containsExactly(anotherPrice)
+        assertThat(book.getLastFuelPrices(1, FuelType.BENSIN).map { it.second }).isEmpty()
     }
 
     @Test
