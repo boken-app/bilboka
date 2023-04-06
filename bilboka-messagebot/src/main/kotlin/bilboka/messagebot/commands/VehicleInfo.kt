@@ -35,11 +35,12 @@ internal class VehicleInfo(
         conversation.sendReply(
             "\uD83D\uDE97 \nBil-navn: ${vehicle.name} \n" +
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
-                    "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ikke registrert)"} \n" +
+                    "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ukjent)"} \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
+                    "Tankvolum: ${vehicle.tankVolume ?: "(ukjent)"} \n" +
                     "Drivstofftype: ${vehicle.fuelType} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "?"}"
+                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"}"
         )
     }
 
