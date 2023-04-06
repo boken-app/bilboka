@@ -22,17 +22,17 @@ internal class FuelPriceStatistics(
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        val lastDieselPrices = book.getLastFuelPrices(3, FuelType.DIESEL)
-        val lastBensinPrices = book.getLastFuelPrices(3, FuelType.BENSIN)
+        val lastDieselPrices = book.getLastFuelPrices(4, FuelType.DIESEL)
+        val lastBensinPrices = book.getLastFuelPrices(4, FuelType.BENSIN)
         val toDisplayString: (Pair<LocalDate, Double>) -> String =
             { "${it.first.format()}: ${it.second.format()} kr/l" }
 
         conversation.sendReply(
-            "Siste registrerte drivstoff-priser \n" +
-                    "Gjennomsnitt: ${lastDieselPrices.averaged().format()} kr/l (diesel), " +
-                    "${lastBensinPrices.averaged().format()} kr/l (bensin)\n" +
-                    "Siste dieselpriser: \n${lastDieselPrices.joinToString(" \n", transform = toDisplayString)}" +
-                    "Siste bensinpriser: \n${lastBensinPrices.joinToString(" \n", transform = toDisplayString)}"
+            "Siste registrerte drivstoff-priser" +
+                    "\n\nDieselpriser (snitt ${lastDieselPrices.averaged().format()} kr/l): \n" +
+                    lastDieselPrices.joinToString(" \n", transform = toDisplayString) +
+                    "\n\nBensinpriser (snitt ${lastBensinPrices.averaged().format()} kr/l): \n" +
+                    lastBensinPrices.joinToString(" \n", transform = toDisplayString)
         )
     }
 }
