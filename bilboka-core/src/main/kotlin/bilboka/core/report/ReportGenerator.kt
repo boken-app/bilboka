@@ -16,6 +16,7 @@ class ReportGenerator {
     }
 
     fun generateReport(header: String, entries: List<BookEntry>): ByteArray {
+        // TODO flytte kolonne-logikk fra template og ut hit.
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
             setVariable("header", header)
             setVariable("entries", entries.sorted())
