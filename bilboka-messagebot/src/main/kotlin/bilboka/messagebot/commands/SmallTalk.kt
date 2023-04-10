@@ -36,7 +36,9 @@ internal class SmallTalk : GeneralChatCommand() {
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
+        if (message.lowercase() == "opts") {
+            conversation.replyWithOptions("Velg!", "En ting", "en annen ting", "stats")
+        } else if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
             conversation.sendReply("Cool")
         } else {
             conversation.sendReply(
@@ -45,9 +47,6 @@ internal class SmallTalk : GeneralChatCommand() {
         }
         if (message.lowercase() == "skjer?") {
             conversation.claim(this, State(hasAskedSomething = true))
-        }
-        if (message.lowercase() == "opts") {
-            conversation.replyWithOptions("En ting", "en annen ting", "stats")
         }
     }
 
