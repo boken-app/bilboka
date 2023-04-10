@@ -42,7 +42,9 @@ internal class MaintenanceAdder(
                     }
                     it.completeOrAskForMore(conversation)
                 } else {
-                    conversation.sendReply("Neivel")
+                    it.thingToAdd?.apply {
+                        it.completeAsComment(conversation, this)
+                    } ?: conversation.sendReply("Da var det ingenting å gjøre. ¯\\_(ツ)_/¯")
                 }
             } else {
                 it.recordProvidedData(message) {
@@ -141,6 +143,21 @@ internal class MaintenanceAdder(
             conversation.setUndoable(this@MaintenanceAdder, it)
             conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer ?: "<ukjent>"}" +
                     (it.comment?.run { " (Kommentar: '$this')" } ?: "")
+            )
+        }
+    }
+
+    private fun State.completeAsComment(conversation: Conversation, comment: String) {
+        (vehicle.content as Vehicle).enterComment(
+            odometer = odometer.content as Int?,
+            comment = comment,
+            enteredBy = conversation.withWhom(),
+            source = conversation.getSource()
+        ).also {
+            conversation.setUndoable(this@MaintenanceAdder, it)
+            conversation.sendReply(
+                "Lagt til kommentar på ${it.vehicle.name}: " +
+                        (it.comment.run { "'$this'" })
             )
         }
     }

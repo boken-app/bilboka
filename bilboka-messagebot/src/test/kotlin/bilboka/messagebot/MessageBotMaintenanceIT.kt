@@ -241,6 +241,18 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun addsAsCommentIfNotAsMaintItem() {
+        processMessagaAndAssertReply(
+            message = "bytte underledning xc70 45696",
+            reply = { it.contains("Legge til underledning som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
+            reply = { it.contains("Lagt til kommentar") and it.contains("underledning") },
+        )
+    }
+
+    @Test
     fun canNotHaveUnknownCar() {
         processMessagaAndAssertReply(
             message = "bytte ratt 876534",

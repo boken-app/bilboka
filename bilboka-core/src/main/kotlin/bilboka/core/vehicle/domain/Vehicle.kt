@@ -126,7 +126,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
             val lastWithDate = maintenanceOfRightType.filter { it.dateTime != null }.maxByOrNull { it.dateTime!! }
             val lastWithOdo = maintenanceOfRightType.filter { it.odometer != null }.maxByOrNull { it.odometer!! }
             lastWithDate?.let {
-                if (it.odometer != null && it.odometer!! < lastWithOdo?.odometer ?: 0) lastWithOdo else it
+                if (it.odometer != null && it.odometer!! < (lastWithOdo?.odometer ?: 0)) lastWithOdo else it
             } ?: lastWithOdo
         }
     }
@@ -147,6 +147,29 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
 
     fun hasTegnkombinasjon(tegnkombinasjon: String): Boolean {
         return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert
+    }
+
+    fun enterComment(
+        comment: String,
+        odometer: Int? = null,
+        costNOK: Double? = null,
+        enteredBy: User? = null,
+        source: String,
+        dateTime: LocalDateTime? = LocalDateTime.now(),
+    ): BookEntry {
+        val thisVehicle = this
+        return transaction {
+            BookEntry.new {
+                this.dateTime = dateTime
+                this.comment = comment
+                this.type = EntryType.BASIC
+                this.enteredBy = enteredBy
+                this.odometer = odometer
+                this.vehicle = thisVehicle
+                this.costNOK = costNOK
+                this.source = source
+            }
+        }
     }
 }
 

@@ -166,6 +166,22 @@ internal class VehicleIT : H2Test() {
         }
     }
 
+    @Nested
+    inner class Comment {
+        @Test
+        fun enterComment() {
+            vehicle.enterComment(
+                comment = "kommentar-test",
+                dateTime = LocalDateTime.now().minusDays(2),
+                costNOK = 130.0,
+                odometer = 234565,
+                source = "test",
+            )
+
+            assertThat(vehicle.lastEntry(EntryType.BASIC)).extracting { it?.comment }.isEqualTo("kommentar-test")
+        }
+    }
+
     private fun getVehicle(): Vehicle {
         return transaction { Vehicle[vehicle.id] }
     }
