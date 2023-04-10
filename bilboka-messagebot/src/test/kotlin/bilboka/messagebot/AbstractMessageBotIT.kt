@@ -118,7 +118,7 @@ class TestMessenger : BotMessenger {
         recipient = recipientID
     }
 
-    override fun sendPostback(options: List<String>, recipientID: String) {
+    override fun sendOptions(message: String, options: List<String>, recipientID: String) {
         TODO("Not yet implemented")
     }
 

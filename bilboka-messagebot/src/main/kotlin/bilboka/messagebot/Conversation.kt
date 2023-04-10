@@ -36,6 +36,11 @@ internal class Conversation(
         )
     }
 
+    fun replyWithOptions(message: String, vararg options: String) {
+        logger.debug("[meldingslogg] Sender melding '$message' med ${options.size} svaralternativer")
+        botMessenger.sendOptions(message, options.asList(), senderID)
+    }
+
     fun sendPdf(file: ByteArray, fileName: String) {
         logger.debug("[meldingslogg] Sender pdf $fileName")
         botMessenger.sendPdf(

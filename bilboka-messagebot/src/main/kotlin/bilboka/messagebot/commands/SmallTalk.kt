@@ -31,6 +31,7 @@ internal class SmallTalk : GeneralChatCommand() {
     )
 
     override fun isMatch(message: String): Boolean {
+        if (message.lowercase() == "opts") return true
         return conversations.keys.contains(message.lowercase())
     }
 
@@ -44,6 +45,9 @@ internal class SmallTalk : GeneralChatCommand() {
         }
         if (message.lowercase() == "skjer?") {
             conversation.claim(this, State(hasAskedSomething = true))
+        }
+        if (message.lowercase() == "opts") {
+            conversation.replyWithOptions("En ting", "en annen ting", "stats")
         }
     }
 

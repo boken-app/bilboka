@@ -36,8 +36,25 @@ data class FacebookMessage(
     @Deprecated("Fjern denne, aner ikke hvorfor den nekter å kjøre uten")
     @JsonInclude(Include.NON_NULL) val seq: Long? = null,
     @JsonInclude(Include.NON_NULL) val text: String? = null,
-    @JsonInclude(Include.NON_NULL) val attachment: Attachment? = null
+    @JsonInclude(Include.NON_NULL) val attachment: Attachment? = null,
+
+    @param:JsonProperty("quick_replies")
+    @get:JsonProperty("quick_replies")
+    @JsonInclude(Include.NON_NULL)
+    val quickReplies: List<QuickReply>? = null
 ) : Serializable
+
+data class QuickReply(
+    val title: String,
+    val payload: String,
+    @param:JsonProperty("content_type")
+    @get:JsonProperty("content_type")
+    val contentType: String = "text",
+    @param:JsonProperty("image_url")
+    @get:JsonProperty("image_url")
+    @JsonInclude(Include.NON_NULL)
+    val imageUrl: String? = null,
+)
 
 data class Attachment(
     val type: AttachmentType,
