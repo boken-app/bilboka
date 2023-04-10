@@ -31,7 +31,7 @@ internal class Conversation(
     fun sendReply(message: String) {
         logger.debug("[meldingslogg] Sender melding '$message'")
         botMessenger.sendMessage(
-            message,
+            message.run { if (lastUndoable != null) "✅ $this" else this },
             senderID
         )
     }

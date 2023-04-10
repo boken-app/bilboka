@@ -94,6 +94,7 @@ class MessageBot {
 
         if (noMatches) {
             logger.debug("Matchet ingen chatregel")
+            // TODO prøve å legge til som kommentar
             botMessenger.sendMessage(
                 FALLBACK_MESSAGE,
                 conversation.senderID

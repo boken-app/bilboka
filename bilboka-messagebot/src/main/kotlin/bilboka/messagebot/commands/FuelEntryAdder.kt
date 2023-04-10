@@ -93,9 +93,9 @@ internal class FuelEntryAdder(
         conversation.setUndoable(this, addedFuel)
 
         conversation.sendReply(
-            "⛽ Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer ?: "<ukjent>"} ${addedFuel.vehicle.odometerUnit}: " +
+            "Registrert tanking av ${addedFuel.vehicle.name} ved ${addedFuel.odometer ?: "<ukjent>"} ${addedFuel.vehicle.odometerUnit}: " +
                     "${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, " +
-                    "${addedFuel.pricePerLiter().format()} kr/l"
+                    "${addedFuel.pricePerLiter().format()} kr/l ⛽"
         )
     }
 

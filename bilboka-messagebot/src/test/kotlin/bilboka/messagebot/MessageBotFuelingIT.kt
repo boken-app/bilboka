@@ -8,7 +8,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun sendAddFuelRequest() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 34567 30l 300kr",
-            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
 
@@ -16,7 +16,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun canFuelWithNorwegianLetters() {
         processMessagaAndAssertReply(
             message = "Drivstoff blå testbil 34567 30l 300kr",
-            reply = "⛽ Registrert tanking av blå testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av blå testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
 
@@ -24,7 +24,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentOrder() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 30l 300kr 34567",
-            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
 
@@ -36,7 +36,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "34567",
-            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
 
@@ -48,7 +48,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "300",
-            reply = "⛽ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
 
@@ -56,7 +56,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentCase() {
         processMessagaAndAssertReply(
             message = "fylt en testbil 5555 km 30.2 L 302.0 Kr",
-            reply = "⛽ Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l"
+            reply = "✅ Registrert tanking av en testbil ved 5555 km: 30,2 liter for 302 kr, 10 kr/l ⛽"
         )
     }
 
@@ -64,7 +64,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestDifferentCaseWithComma() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
-            reply = "⛽ Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "✅ Registrert tanking av xc 70 ved 1234 km: 30,44 liter for 608,8 kr, 20 kr/l ⛽"
         )
     }
 
@@ -72,7 +72,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun sendAddFuelRequestNickname() {
         processMessagaAndAssertReply(
             message = "Hei drivstoff crosser 1235 km 30.44 l 608.80 kr",
-            reply = "⛽ Registrert tanking av xc 70 ved 1235 km: 30,44 liter for 608,8 kr, 20 kr/l"
+            reply = "✅ Registrert tanking av xc 70 ved 1235 km: 30,44 liter for 608,8 kr, 20 kr/l ⛽"
         )
     }
 

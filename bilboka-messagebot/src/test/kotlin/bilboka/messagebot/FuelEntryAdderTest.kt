@@ -130,7 +130,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
 
         messagebot.processMessage(message, registeredSenderID)
 
-        verifySentMessage("⛽ Registrert tanking av Testbil ved 34567 km: 123,32 liter for 123,3 kr, 1 kr/l")
+        verifySentMessage("✅ Registrert tanking av Testbil ved 34567 km: 123,32 liter for 123,3 kr, 1 kr/l ⛽")
     }
 
 }
