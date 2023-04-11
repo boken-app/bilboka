@@ -66,6 +66,7 @@ internal class LastEntryGetter(
         when (lastBookEntry?.type) {
             EntryType.FUEL -> conversation.sendReply(
                 "Siste tanking av ${vehicle.name}: ${lastBookEntry.amount.format()} liter " +
+                        lastBookEntry.let { if (it.isFullTank == true) "(full) " else "" } +
                         "for ${lastBookEntry.costNOK.format()} kr (${lastBookEntry.pricePerLiter().format()} kr/l) ${
                             lastBookEntry.dateTime.formatAsDate()
                         } ved ${lastBookEntry.odometer ?: "?"} ${vehicle.odometerUnit}",
