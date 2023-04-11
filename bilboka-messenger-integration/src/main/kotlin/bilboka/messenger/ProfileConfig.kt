@@ -28,23 +28,23 @@ class ProfileConfig(
                         PersistentMenu(
                             callToActions = listOf(
                                 PersistentMenuItem(
-                                    title = "Fyll drivstoff",
+                                    title = "⛽ Fyll drivstoff",
                                     payload = "drivstoff"
                                 ),
                                 PersistentMenuItem(
-                                    title = "Drivstoff-statistikk",
+                                    title = "📊 Drivstoff-statistikk",
                                     payload = "statistikk"
                                 ),
                                 PersistentMenuItem(
-                                    title = "Registrer vedlikehold",
+                                    title = "🔧 Registrer vedlikehold",
                                     payload = "regmaint"
                                 ),
                                 PersistentMenuItem(
-                                    title = "Eksisterende vedlikeholdspunkt",
+                                    title = "📃 Eksisterende vedlikeholdspunkt",
                                     payload = "vedlikeholdspunkt"
                                 ),
                                 PersistentMenuItem(
-                                    title = "Hjelp",
+                                    title = "ℹ Hjelp",
                                     payload = "hlp"
                                 ),
                             )
