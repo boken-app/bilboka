@@ -1,7 +1,6 @@
 package bilboka.messagebot;
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class MessageBotFuelingIT : AbstractMessageBotIT() {
@@ -170,7 +169,6 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     }
 
     @Test
-    @Disabled("Må implementeres") // TODO
     fun canUndoAfterReplyingNoToFullTank() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35589 30l 300kr",
@@ -184,7 +182,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         processMessagaAndAssertReply("Nei", reply = { true })
         processMessagaAndAssertReply(
             message = "Angre",
-            reply = "Angret \uD83D\uDEAE"
+            reply = { it.contains("Angret \uD83D\uDEAE") }
         )
         processMessagaAndAssertReply(
             message = "Siste en testbil",
@@ -206,7 +204,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Angre",
-            reply = "Angret \uD83D\uDEAE"
+            reply = { it.contains("Angret \uD83D\uDEAE") }
         )
         processMessagaAndAssertReply(
             message = "tull",

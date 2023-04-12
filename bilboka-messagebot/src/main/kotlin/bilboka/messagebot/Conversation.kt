@@ -31,7 +31,7 @@ internal class Conversation(
     fun sendReply(message: String) {
         logger.debug("[meldingslogg] Sender melding '$message'")
         botMessenger.sendMessage(
-            message.run { if (lastUndoable != null) "✅ $this" else this },
+            message.run { if (lastUndoable?.valid == true) "✅ $this" else this },
             senderID
         )
     }
@@ -83,7 +83,7 @@ internal class Conversation(
     }
 
     fun undoLast() {
-        lastUndoable?.apply {
+        lastUndoable?.takeIf { it.valid }?.apply {
             action.undo(item)
         } ?: throw NothingToUndoException("Ingen handling å angre")
         resetUndoable()
@@ -94,7 +94,11 @@ internal class Conversation(
     }
 
     fun resetUndoable() {
-        lastUndoable = null
+        lastUndoable?.takeIf { it.valid }?.apply { valid = false } ?: { lastUndoable = null }
+    }
+
+    fun keepUndoable() {
+        lastUndoable?.apply { valid = true }
     }
 
     internal class DuplicateBuster(private val sender: String) {
@@ -122,7 +126,10 @@ internal class Conversation(
     }
 }
 
-internal data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T)
+internal data class UndoableEvent<T : Any>(val action: Undoable<T>, val item: T) {
+    var valid = true
+}
+
 internal data class ConversationClaim<T : ChatCommand>(val claimedBy: T, val state: ChatState?)
 
 class StopRepeatingYourselfException : RuntimeException()

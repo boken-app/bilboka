@@ -40,11 +40,15 @@ internal class FuelEntryAdder(
         if (message.lowercase().trim() == "ja") {
             book.setIsFullTank(state.vehicle.content as String, state.odometer.content as Int)
                 ?.apply {
-                    conversation.setUndoable(this@FuelEntryAdder, this)
+                    conversation.keepUndoable()
                     conversation.sendReply("Full tank registrert ved $odometer")
                 } ?: conversation.sendReply("Fant ingen tanking å registrere som full")
-        } else {
+        } else if (message.lowercase().trim() == "nei") {
+            conversation.keepUndoable()
             conversation.sendReply("👍")
+        } else {
+            conversation.keepUndoable()
+            conversation.sendReply("Tar det som et nei.")
         }
     }
 
@@ -119,7 +123,7 @@ internal class FuelEntryAdder(
             conversation.replyWithOptions(
                 "Full tank? ⛽",
                 "ja" to "✔ Ja",
-                "nei" to "Nei"
+                "nei" to "👎 Nei"
             )
         }
     }
