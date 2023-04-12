@@ -120,6 +120,27 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         verifySentMessage("\uD83D\uDC40 Kjenner ikke til bil test-bil")
     }
 
+    @Test
+    fun sendAddFuelRequest_asksIfFullTank() {
+        mockVehicle("testbil")
+        testAddFuelRequest(
+            message = "Drivstoff testbil 34567 30l 300kr",
+        )
+        verify {
+            botMessenger.sendOptions(
+                "Full tank? ⛽",
+                listOf("✔ Ja", "Nei"),
+                registeredSenderID
+            )
+        }
+
+        messagebot.processMessage("Ja", registeredSenderID)
+
+        verify {
+            book.setIsFullTank("testbil", 34567)
+        }
+    }
+
     private fun testAddFuelRequest(message: String) {
         every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any(), any()) } returns fuelEntry(
             vehicle = vehicle("Testbil", fuelType = FuelType.BENSIN),

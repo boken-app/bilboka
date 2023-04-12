@@ -198,4 +198,25 @@ class CarBookIT : H2Test() {
         assertThat(book.maintenanceItems()).contains("BREMSEKLOSSER")
         assertThat(vehicle.lastMaintenance("BREMSEKLOSSER")?.odometer).isEqualTo(12347)
     }
+
+    @Test
+    fun setTankIsFullAt() {
+        book.addFuelForVehicle(
+            vehicleName = "XC70",
+            odoReading = 1298,
+            amount = 12.4,
+            costNOK = 22.43,
+            source = "test"
+        )
+        book.setIsFullTank(
+            vehicleName = "XC70",
+            odoReading = 1298,
+        )
+
+        val vehicle = vehicleService.getVehicle("xc70")
+        assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+        assertThat(vehicle.lastEntry(EntryType.FUEL)?.isFullTank).isTrue
+        assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(1298)
+    }
+
 }

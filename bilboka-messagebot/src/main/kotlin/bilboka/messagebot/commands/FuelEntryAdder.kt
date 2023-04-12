@@ -24,11 +24,27 @@ internal class FuelEntryAdder(
     override fun execute(conversation: Conversation, message: String) {
         val previouslyProcessed = conversation.withdrawClaim<State>(this)
         if (previouslyProcessed != null) {
-            recordProvidedData(previouslyProcessed, message)
-            finishOrAskForMore(conversation, previouslyProcessed)
+            if (previouslyProcessed.askedIfFullTank) {
+                handleFullTankReply(conversation, previouslyProcessed, message)
+            } else {
+                recordProvidedData(previouslyProcessed, message)
+                finishOrAskForMore(conversation, previouslyProcessed)
+            }
         } else {
             val foundSomeStuffMaybe = findAsMuchDataAsPossible(message)
             finishOrAskForMore(conversation, foundSomeStuffMaybe)
+        }
+    }
+
+    private fun handleFullTankReply(conversation: Conversation, state: State, message: String) {
+        if (message.lowercase().trim() == "ja") {
+            book.setIsFullTank(state.vehicle.content as String, state.odometer.content as Int)
+                ?.apply {
+                    conversation.setUndoable(this@FuelEntryAdder, this)
+                    conversation.sendReply("Full tank registrert ved $odometer")
+                } ?: conversation.sendReply("Fant ingen tanking å registrere som full")
+        } else {
+            conversation.sendReply("👍")
         }
     }
 
@@ -38,6 +54,7 @@ internal class FuelEntryAdder(
                 State.FuelDataType.VEHICLE ->
                     Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)
                         ?.let { vehicleService.getVehicle(it.value) }?.name
+
                 State.FuelDataType.ODOMETER -> message.toInt()
                 State.FuelDataType.AMOUNT -> message.convertToDouble()
                 State.FuelDataType.COST -> message.convertToDouble()
@@ -77,7 +94,7 @@ internal class FuelEntryAdder(
     ) {
         state.complete()?.run {
             finish(
-                conversation, book.addFuelForVehicle(
+                conversation, state, book.addFuelForVehicle(
                     vehicleName = (this.vehicle.content as String),
                     enteredBy = conversation.withWhom(),
                     odoReading = this.odometer.content as Int?,
@@ -89,7 +106,7 @@ internal class FuelEntryAdder(
         } ?: askForNext(conversation, state)
     }
 
-    private fun finish(conversation: Conversation, addedFuel: BookEntry) {
+    private fun finish(conversation: Conversation, state: State, addedFuel: BookEntry) {
         conversation.setUndoable(this, addedFuel)
 
         conversation.sendReply(
@@ -97,6 +114,10 @@ internal class FuelEntryAdder(
                     "${addedFuel.amount.format()} liter for ${addedFuel.costNOK.format()} kr, " +
                     "${addedFuel.pricePerLiter().format()} kr/l ⛽"
         )
+        if (addedFuel.odometer != null) {
+            conversation.claim(this, state.apply { askedIfFullTank = true })
+            conversation.replyWithOptions("Full tank? ⛽", "✔ Ja", "Nei")
+        }
     }
 
     override fun undo(item: BookEntry) {
@@ -118,6 +139,7 @@ internal class FuelEntryAdder(
         val amount = collectedData[FuelDataType.AMOUNT]!!
         val cost = collectedData[FuelDataType.COST]!!
         val costPerAmount = collectedData[FuelDataType.COST_PER_AMOUNT]!!
+        var askedIfFullTank = false
 
         override fun complete(): State? {
             if (!isDoneAskingForStuff()) {

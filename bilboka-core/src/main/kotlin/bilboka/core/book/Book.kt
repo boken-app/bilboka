@@ -57,6 +57,14 @@ class Book(
         vehicle.lastEntry()?.checkChronologyAgainst(dateTime, odoReading)
     }
 
+    fun setIsFullTank(vehicleName: String, odoReading: Int): BookEntry? {
+        return transaction {
+            vehicleService.getVehicle(vehicleName).bookEntries
+                .find { it.odometer == odoReading && it.type == EntryType.FUEL }
+                ?.apply { isFullTank = true }
+        }
+    }
+
     fun getLastFuelEntry(vehicle: String): BookEntry? {
         return vehicleService.getVehicle(vehicle).lastEntry(EntryType.FUEL)
     }

@@ -97,6 +97,10 @@ abstract class AbstractMessageBotIT : H2Test() {
         assertThat(testMessenger.messageSent).matches(reply, matcherDescriptor)
         assertThat(testMessenger.recipient).isEqualTo(sender)
     }
+
+    protected fun skipFullTankQuestion() {
+        processMessagaAndAssertReply("Ja", reply = { true })
+    }
 }
 
 @Component
@@ -105,12 +109,15 @@ class TestMessenger : BotMessenger {
         get() = "test_messenger"
 
     var messageSent: String? = null
+    var optionsAsked: String? = null
     var recipient: String? = null
     var fileSent: ByteArray? = null
 
     fun reset() {
         messageSent = null
         recipient = null
+        optionsAsked = null
+        fileSent = null
     }
 
     override fun sendMessage(message: String, recipientID: String) {
@@ -119,7 +126,7 @@ class TestMessenger : BotMessenger {
     }
 
     override fun sendOptions(message: String, options: List<String>, recipientID: String) {
-        TODO("Not yet implemented")
+        optionsAsked = message
     }
 
     override fun sendPdf(file: ByteArray, fileName: String, recipientID: String) {

@@ -1,5 +1,7 @@
 package bilboka.messagebot;
 
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class MessageBotFuelingIT : AbstractMessageBotIT() {
@@ -10,6 +12,32 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 34567 30l 300kr",
             reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
+    }
+
+    @Test
+    fun sendAddFuelRequestAsksForFullTank() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34567 30l 300kr",
+            reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
+        )
+        assertThat(testMessenger.optionsAsked).contains("Full tank")
+        processMessagaAndAssertReply(
+            message = "Ja",
+            reply = { it.contains("Full tank registrert") }
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequestDoesNotAskForFullTankIfUnknownOdo() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 30l 300kr",
+            reply = { it.contains("Kilometerstand") }
+        )
+        processMessagaAndAssertReply(
+            message = "Ukjent",
+            reply = { it.contains("Registrert tanking av en testbil ved <ukjent> km: 30 liter for 300 kr") }
+        )
+        assertThat(testMessenger.optionsAsked).isNull()
     }
 
     @Test
@@ -99,9 +127,10 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "drivstoff XC 70 1234 km 30,44 l 608,80 kr",
             reply = { it.contains("Registrert tanking") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Siste xc70",
-            reply = { it.contains("Siste tanking av xc 70: 30,44 liter for 608,8 kr (20 kr/l)") }
+            reply = { it.contains("Siste tanking av xc 70: 30,44 liter (full) for 608,8 kr (20 kr/l)") }
         )
     }
 
@@ -120,10 +149,12 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 35589 30l 300kr",
             reply = { it.contains("Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 35592 20l 200kr",
             reply = { it.contains("Registrert tanking av en testbil ved 35592 km: 20 liter for 200 kr") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Anfgre",
             reply = FALLBACK_MESSAGE
@@ -134,7 +165,30 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Siste en testbil",
-            reply = { it.contains("Siste tanking av en testbil: 30 liter for 300 kr") }
+            reply = { it.contains("Siste tanking av en testbil: 30 liter (full) for 300 kr") }
+        )
+    }
+
+    @Test
+    @Disabled("Må implementeres") // TODO
+    fun canUndoAfterReplyingNoToFullTank() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 35589 30l 300kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 35589 km: 30 liter for 300 kr, 10 kr/l") }
+        )
+        skipFullTankQuestion()
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 35592 20l 200kr",
+            reply = { it.contains("Registrert tanking av en testbil ved 35592 km: 20 liter for 200 kr") }
+        )
+        processMessagaAndAssertReply("Nei", reply = { true })
+        processMessagaAndAssertReply(
+            message = "Angre",
+            reply = "Angret \uD83D\uDEAE"
+        )
+        processMessagaAndAssertReply(
+            message = "Siste en testbil",
+            reply = { it.contains("Siste tanking av en testbil: 30 liter (full) for 300 kr") }
         )
     }
 
@@ -144,10 +198,12 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 36590 30l 300kr",
             reply = { it.contains("Registrert tanking av en testbil ved 36590 km: 30 liter for 300 kr, 10 kr/l") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 36592 20l 200kr",
             reply = { it.contains("Registrert tanking av en testbil ved 36592 km: 20 liter for 200 kr") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Angre",
             reply = "Angret \uD83D\uDEAE"
@@ -168,13 +224,15 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 37589 30l 300kr",
             reply = { it.contains("Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 37592 20l 200kr",
             reply = { it.contains("Registrert tanking av en testbil ved 37592 km: 20 liter for 200 kr") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Siste en testbil",
-            reply = { it.contains("Siste tanking av en testbil: 20 liter for 200 kr (10 kr/l)") }
+            reply = { it.contains("Siste tanking av en testbil: 20 liter (full) for 200 kr (10 kr/l)") }
         )
         processMessagaAndAssertReply(
             message = "Hei",
@@ -186,7 +244,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Siste en testbil",
-            reply = { it.contains("Siste tanking av en testbil: 20 liter for 200 kr (10 kr/l)") }
+            reply = { it.contains("Siste tanking av en testbil: 20 liter (full) for 200 kr (10 kr/l)") }
         )
     }
 
@@ -196,6 +254,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 37589 30l 300kr",
             reply = { it.contains("Registrert tanking av en testbil ved 37589 km: 30 liter for 300 kr, 10 kr/l") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "Drivstoff",
             reply = "Hvilken bil? \uD83D\uDE97"
@@ -324,6 +383,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             message = "Drivstoff en testbil 37589 30l 10 kr/l",
             reply = { it.contains("Registrert tanking") }
         )
+        skipFullTankQuestion()
         processMessagaAndAssertReply(
             message = "prisstatistikk",
             reply = { it.contains("10 kr/l") }

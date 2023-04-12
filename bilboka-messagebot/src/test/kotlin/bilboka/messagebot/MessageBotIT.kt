@@ -28,6 +28,7 @@ class MessageBotIT : AbstractMessageBotIT() {
             message = "tnk xc70 56789 34l 456kr",
             reply = { it.contains("Registrert tanking") }
         )
+        skipFullTankQuestion()
         messageBot.processMessage("rapport xc70", validSender)
 
         Assertions.assertThat(testMessenger.fileSent).isNotNull

@@ -51,6 +51,7 @@ abstract class AbstractMessageBotTest {
         Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
         every { botMessenger.sourceID } returns messengerSourceID
         justRun { botMessenger.sendMessage(any(), any()) }
+        justRun { botMessenger.sendOptions(any(), any(), any()) }
         setupUser()
         messagebot.reset()
     }
