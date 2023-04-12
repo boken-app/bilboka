@@ -18,14 +18,14 @@ class FacebookMessenger(
         sendReply(message, recipientID)
     }
 
-    override fun sendOptions(message: String, options: List<String>, recipientID: String) {
+    override fun sendOptions(message: String, options: List<Pair<String, String>>, recipientID: String) {
         messengerConsumer.sendMessage(
             FacebookMessaging(
                 recipient = mapOf(Pair("id", recipientID)),
                 message = FacebookMessage(
                     text = message,
                     quickReplies = options.map {
-                        QuickReply(title = it, payload = it)
+                        QuickReply(payload = it.first, title = it.second)
                     }
                 )
             )

@@ -36,7 +36,7 @@ internal class Conversation(
         )
     }
 
-    fun replyWithOptions(message: String, vararg options: String) {
+    fun replyWithOptions(message: String, vararg options: Pair<String, String>) {
         logger.debug("[meldingslogg] Sender melding '$message' med ${options.size} svaralternativer")
         botMessenger.sendOptions(message, options.asList(), senderID)
     }

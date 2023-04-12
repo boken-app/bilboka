@@ -31,14 +31,11 @@ internal class SmallTalk : GeneralChatCommand() {
     )
 
     override fun isMatch(message: String): Boolean {
-        if (message.lowercase() == "opts") return true
         return conversations.keys.contains(message.lowercase())
     }
 
     override fun execute(conversation: Conversation, message: String) {
-        if (message.lowercase() == "opts") {
-            conversation.replyWithOptions("Velg!", "En ting", "en annen ting", "stats")
-        } else if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
+        if (conversation.withdrawClaim<State>(this)?.hasAskedSomething == true) {
             conversation.sendReply("Cool")
         } else {
             conversation.sendReply(

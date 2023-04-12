@@ -125,7 +125,7 @@ class TestMessenger : BotMessenger {
         recipient = recipientID
     }
 
-    override fun sendOptions(message: String, options: List<String>, recipientID: String) {
+    override fun sendOptions(message: String, options: List<Pair<String, String>>, recipientID: String) {
         optionsAsked = message
     }
 

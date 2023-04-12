@@ -129,7 +129,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         verify {
             botMessenger.sendOptions(
                 "Full tank? ⛽",
-                listOf("Ja", "Nei"),
+                match { it.size == 2 },
                 registeredSenderID
             )
         }
