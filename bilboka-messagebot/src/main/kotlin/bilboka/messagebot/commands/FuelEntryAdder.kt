@@ -116,7 +116,7 @@ internal class FuelEntryAdder(
         )
         if (addedFuel.odometer != null) {
             conversation.claim(this, state.apply { askedIfFullTank = true })
-            conversation.replyWithOptions("Full tank? ⛽", "✔ Ja", "Nei")
+            conversation.replyWithOptions("Full tank? ⛽", "Ja", "Nei")
         }
     }
 
