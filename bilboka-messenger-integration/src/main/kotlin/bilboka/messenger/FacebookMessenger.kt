@@ -28,8 +28,10 @@ class FacebookMessenger(
                 message = FacebookMessage(
                     text = message,
                     quickReplies = options.map {
-                        QuickReply(payload = it.first, title = it.second)
-                            .also { qr -> logger.debug("Option: payload={}, title={}", qr.payload, qr.title) }
+                        QuickReply(
+                            payload = it.first,
+                            title = it.first
+                        ) // TODO bruke second som title når håndtering av payload er implementert
                     }
                 )
             )

@@ -25,6 +25,7 @@ class FacebookMessageHandler {
             val messageEvent = entry.messaging[0]
             val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
 
+            // TODO håndtere quick reply payloads på noe vis?
             if (messageEvent.message?.text != null) {
                 val text = messageEvent.message.text
                 logger.info(format("Mottok melding fra PSID=%s", senderPSID))

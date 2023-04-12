@@ -31,6 +31,7 @@ data class FacebookMessaging(
     val postback: FacebookPostback? = null
 ) : Serializable
 
+// TODO noe her bør nok splittes for webhook og sendAPI
 data class FacebookMessage(
     @JsonInclude(Include.NON_NULL) val mid: String? = null,
     @Deprecated("Fjern denne, aner ikke hvorfor den nekter å kjøre uten")
