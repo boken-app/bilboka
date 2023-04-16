@@ -1,6 +1,7 @@
 package bilboka.core.report
 
 import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.sort
 import org.springframework.stereotype.Service
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
@@ -19,7 +20,7 @@ class ReportGenerator {
         // TODO flytte kolonne-logikk fra template og ut hit.
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
             setVariable("header", header)
-            setVariable("entries", entries.sorted())
+            setVariable("entries", entries.sort())
         }))
     }
 

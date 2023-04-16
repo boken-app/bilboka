@@ -69,3 +69,7 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id), Comparable<BookEntry> {
         }
     }
 }
+
+fun Collection<BookEntry>.sort(): List<BookEntry> {
+    return sortedBy { it.dateTime }.sortedBy { it.odometer }.sorted()
+}
