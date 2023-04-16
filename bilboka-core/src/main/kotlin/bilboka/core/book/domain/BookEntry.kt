@@ -56,7 +56,9 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id), Comparable<BookEntry> {
         return when {
             (dateTime != null && other.dateTime != null) -> compareValues(dateTime, other.dateTime)
             (odometer != null && other.odometer != null) -> compareValues(odometer, other.odometer)
-            else -> compareBy<BookEntry> { it.creationTimestamp }
+            else -> nullsFirst(compareBy<BookEntry> { it.dateTime })
+                .thenComparing(nullsLast(compareBy { odometer }))
+                .thenComparing(compareBy { creationTimestamp })
                 .thenComparing(nullsLast(compareBy { type }))
                 .thenComparing(nullsLast(compareBy { maintenanceItem?.item }))
                 .thenComparing(nullsLast(compareBy { event }))
