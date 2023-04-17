@@ -16,7 +16,7 @@ private val keywordRegex = Regex(
     IGNORE_CASE
 )
 private val vehicleRegex = VEHICLE_REGEX
-private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-]\\wæøå]+)*)", IGNORE_CASE)
+private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-][\\wæøå]+)*)", IGNORE_CASE)
 private val commentRegex = Regex("[\\w\\d\\sæøå?!,.-]{3,}")
 
 internal class MaintenanceAdder(
@@ -87,7 +87,7 @@ internal class MaintenanceAdder(
             }
         )
         sendReply(
-            "Legge til $itemToAdd som et vedlikeholdspunkt? " +
+            "Legge til '$itemToAdd' som et vedlikeholdspunkt? " +
                     "(for å se liste over alle eksisterende, skriv 'vedlikehold')"
         )
     }
@@ -204,5 +204,5 @@ internal class MaintenanceAdder(
 }
 
 private fun String.isReasonableMaintenanceItem(): Boolean {
-    return this.length >= 3 && maintenanceItemRegex.matches(this)
+    return this.length in 3..40 && maintenanceItemRegex.matches(this)
 }

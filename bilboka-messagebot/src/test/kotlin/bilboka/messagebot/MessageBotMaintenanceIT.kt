@@ -8,7 +8,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     fun canGetMaintenanceOptions() {
         processMessagaAndAssertReply(
             message = "bytte bremseklosser xc70 45677",
-            reply = { it.contains("Legge til bremseklosser som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'bremseklosser' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -28,7 +28,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     fun canGetLastMaintenance() {
         processMessagaAndAssertReply(
             message = "bytte bremseskiver xc70 45677",
-            reply = { it.contains("Legge til bremseskiver som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'bremseskiver' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -45,10 +45,30 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun canDoMaintenanceWithMultipleWords() {
+        processMessagaAndAssertReply(
+            message = "bytte bremse-skiver foran xc70 45684",
+            reply = { it.contains("Legge til 'bremse-skiver foran' som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("kommentar") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
+            reply = { it.contains("Registrert") },
+        )
+//        processMessagaAndAssertReply(
+//            message = "Siste bremse-skiver foran xc70",
+//            reply = { it.contains("45684") },
+//        )
+    }
+
+    @Test
     fun canRegisterExistingMaintenance() {
         processMessagaAndAssertReply(
             message = "bytte blinklysvæske xc70 45677",
-            reply = { it.contains("Legge til blinklysvæske som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'blinklysvæske' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -72,7 +92,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     fun canRegisterExistingMaintenanceInDifferentOrder() {
         processMessagaAndAssertReply(
             message = "bytte vindusviskere xc70 45677",
-            reply = { it.contains("Legge til vindusviskere som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'vindusviskere' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -112,7 +132,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "batteri",
-            reply = { it.contains("Legge til batteri som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'batteri' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -136,7 +156,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "girkasse",
-            reply = { it.contains("Legge til girkasse som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'girkasse' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -152,7 +172,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     fun canRegisterExistingMaintenancePartWise() {
         processMessagaAndAssertReply(
             message = "bytte vindu xc70 45677",
-            reply = { it.contains("Legge til vindu som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'vindu' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -204,7 +224,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "overledning",
-            reply = { it.contains("Legge til overledning som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'overledning' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -228,7 +248,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "ratt",
-            reply = { it.contains("Legge til ratt som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'ratt' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "ja",
@@ -244,7 +264,7 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     fun addsAsCommentIfNotAsMaintItem() {
         processMessagaAndAssertReply(
             message = "bytte underledning xc70 45696",
-            reply = { it.contains("Legge til underledning som et vedlikeholdspunkt?") },
+            reply = { it.contains("Legge til 'underledning' som et vedlikeholdspunkt?") },
         )
         processMessagaAndAssertReply(
             message = "nei",
