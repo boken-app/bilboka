@@ -9,6 +9,8 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.commands.common.StringMatchExtractor
+import bilboka.messagebot.commands.common.VEHICLE_REGEX
 import bilboka.messagebot.format
 import bilboka.messagebot.formatAsDate
 
@@ -17,44 +19,43 @@ internal class LastEntryGetter(
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService) {
-    private val matcher = Regex(
-        "siste",
-        RegexOption.IGNORE_CASE
-    )
-    private val allMatcher = Regex(
-        "siste\\s+(?:([\\wæøå-]+)\\s+)?([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
-        RegexOption.IGNORE_CASE
-    )
-    private val vehicleMatcher = Regex(
-        "siste\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
-        RegexOption.IGNORE_CASE
-    )
+    private val keywordMatcher = Regex("siste", RegexOption.IGNORE_CASE)
+    private val vehicleRegex = VEHICLE_REGEX
+    private val maintenanceItemRegex = Regex("([\\wæøå]+(?:[\\s-][\\wæøå]+)*)", RegexOption.IGNORE_CASE)
 
     override fun isMatch(message: String): Boolean {
-        return matcher.containsMatchIn(message)
+        return keywordMatcher.containsMatchIn(message)
     }
 
-    // TODO dette bør bli penere
     override fun execute(conversation: Conversation, message: String) {
-        allMatcher.find(message)?.apply {
+        var vehicle: Vehicle?
+        var maintenanceItem: String? = null
 
-            val category = groupValues[1].toMaintenanceItem()
-
-            if (book.maintenanceItems().contains(category)) {
-                val vehicle = vehicleService.getVehicle(groupValues[2])
-                replyWithLastEntry(vehicle, vehicle.lastMaintenance(category), conversation)
-            } else {
-                val vehicle = vehicleMatcher.find(message)?.groupValues?.get(1)?.let {
-                    vehicleService.getVehicle(it)
-                }
-                vehicle?.lastEntry(EntryType.FUEL)?.apply {
-                    replyWithLastEntry(this.vehicle, this, conversation)
-                } ?: conversation.sendReply(
-                    "Finner ingen tankinger for ${vehicle?.name}"
-                )
+        StringMatchExtractor(message)
+            .apply { extract(keywordMatcher) {} }
+            .apply {
+                extract(vehicleRegex) {
+                    vehicleService.findVehicle(it)
+                }.also { vehicle = it }
             }
-        } ?: conversation.sendReply(
-            "Skjønte ikke noe av det der"
+            .apply {
+                extract(maintenanceItemRegex) {
+                    it.takeIf { book.maintenanceItems().contains(it.toMaintenanceItem()) }
+                }?.also { maintenanceItem = it.toMaintenanceItem() }
+            }
+
+        vehicle?.apply {
+            maintenanceItem?.let {
+                replyWithLastEntry(this, lastMaintenance(it), conversation)
+            } ?: conversation.replyWithLastFuel(this)
+        } ?: conversation.sendReply("Ukjent bil")
+    }
+
+    private fun Conversation.replyWithLastFuel(vehicle: Vehicle) {
+        vehicle.lastEntry(EntryType.FUEL)?.apply {
+            replyWithLastEntry(this.vehicle, this, this@replyWithLastFuel)
+        } ?: sendReply(
+            "Finner ingen tankinger for ${vehicle?.name}"
         )
     }
 

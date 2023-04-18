@@ -56,12 +56,32 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "nei",
+            reply = { it.contains("Registrert BREMSE-SKIVER_FORAN") },
+        )
+        processMessagaAndAssertReply(
+            message = "Siste bremse-skiver foran xc70",
+            reply = { it.contains("45684") },
+        )
+    }
+
+    @Test
+    fun repliesUnknownVehicle() {
+        processMessagaAndAssertReply(
+            message = "bytte bremseskiver bak xc70 45684",
+            reply = { it.contains("Legge til 'bremseskiver bak' som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "ja",
+            reply = { it.contains("kommentar") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
             reply = { it.contains("Registrert") },
         )
-//        processMessagaAndAssertReply(
-//            message = "Siste bremse-skiver foran xc70",
-//            reply = { it.contains("45684") },
-//        )
+        processMessagaAndAssertReply(
+            message = "Siste bremseskiver bak blah",
+            reply = { it.contains("Ukjent bil") },
+        )
     }
 
     @Test
