@@ -141,7 +141,7 @@ internal class MaintenanceAdder(
             source = conversation.getSource()
         ).also {
             conversation.setUndoable(this@MaintenanceAdder, it)
-            conversation.sendReply("Registrert ${it.maintenanceItem?.item} ved ${it.odometer ?: "<ukjent>"}" +
+            conversation.sendReply("${it.vehicle.name}: Registrert ${it.maintenanceItem?.item} ved ${it.odometer ?: "<ukjent>"}" +
                     (it.comment?.run { " (Kommentar: '$this')" } ?: "")
             )
         }
