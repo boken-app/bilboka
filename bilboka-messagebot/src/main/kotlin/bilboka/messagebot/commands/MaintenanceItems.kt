@@ -20,7 +20,7 @@ internal class MaintenanceItems(
 
     override fun execute(conversation: Conversation, message: String) {
         conversation.sendReply(
-            book.maintenanceItems().joinToString(
+            book.maintenanceItems().sorted().joinToString(
                 prefix = "Eksisterende vedlikeholdspunkt: \n  ",
                 separator = "\n  ",
                 postfix = " \n(Skriv 'Siste [vedlikeholdspunkt] [bil-navn]' for å se siste oppføring på gitt bil)"
