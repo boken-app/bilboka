@@ -134,7 +134,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastConsumptionEstimate(): ConsumptionEstimationResult? {
-        return ConsumptionEstimator.lastEstimate(bookEntries.toList())
+        return ConsumptionEstimator.lastEstimate(bookEntries.toList(), odometerUnit)
     }
 
     private fun datedEntries(): List<BookEntry> {
