@@ -2,12 +2,13 @@ package bilboka.core.fuelestimation
 
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.sort
+import bilboka.core.vehicle.domain.OdometerUnit
 import java.time.Period
 
 // TODO Lage total-estimator som returnerer samling med estimater fra tidenes morgen
 object ConsumptionEstimator {
 
-    fun lastEstimate(entries: Collection<BookEntry>): ConsumptionEstimationResult? {
+    fun lastEstimate(entries: Collection<BookEntry>, odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
         var totalAmountFilled = 0.0
 
         var startEntry: BookEntry? = null
@@ -32,9 +33,10 @@ object ConsumptionEstimator {
 
         if (startEntry != null) {
             return ConsumptionEstimationResult(
-                consumption = totalAmountFilled / (endEntry?.odometer!! - startEntry?.odometer!!),
+                amountPerDistanceUnit = totalAmountFilled / (endEntry?.odometer!! - startEntry?.odometer!!),
                 estimatedAt = endEntry!!,
-                estimatedFrom = startEntry!!
+                estimatedFrom = startEntry!!,
+                odometerUnit = odoUnit
             )
         }
 
@@ -43,9 +45,10 @@ object ConsumptionEstimator {
 }
 
 data class ConsumptionEstimationResult(
-    val consumption: Double,
+    val amountPerDistanceUnit: Double,
     val estimatedAt: BookEntry,
-    val estimatedFrom: BookEntry
+    val estimatedFrom: BookEntry,
+    val odometerUnit: OdometerUnit?
 ) {
     val estimationPeriod = estimatedFrom.dateTime?.let { from ->
         estimatedAt.dateTime?.let { to ->
@@ -54,5 +57,11 @@ data class ConsumptionEstimationResult(
                 to.toLocalDate()
             )
         }
+    }
+
+    fun litersPer10Km(): Double {
+        return odometerUnit?.run {
+            amountPerDistanceUnit * (10 / conversionToKilometers())
+        } ?: throw IllegalStateException("Mangler enhet for konvertering til kilometer")
     }
 }

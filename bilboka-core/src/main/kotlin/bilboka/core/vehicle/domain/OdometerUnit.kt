@@ -7,4 +7,11 @@ enum class OdometerUnit(val displayValue: String) {
     override fun toString(): String {
         return displayValue
     }
+
+    fun conversionToKilometers(): Double {
+        return when (this) {
+            KILOMETERS -> 1.0
+            MILES -> 1.609344
+        }
+    }
 }

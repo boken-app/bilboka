@@ -2,6 +2,8 @@ package bilboka.core.vehicle.domain
 
 import bilboka.core.book.MaintenanceItemMissingException
 import bilboka.core.book.domain.*
+import bilboka.core.fuelestimation.ConsumptionEstimationResult
+import bilboka.core.fuelestimation.ConsumptionEstimator
 import bilboka.core.user.domain.User
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -129,6 +131,10 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
                 if (it.odometer != null && it.odometer!! < (lastWithOdo?.odometer ?: 0)) lastWithOdo else it
             } ?: lastWithOdo
         }
+    }
+
+    fun lastConsumptionEstimate(): ConsumptionEstimationResult? {
+        return ConsumptionEstimator.lastEstimate(bookEntries.toList())
     }
 
     private fun datedEntries(): List<BookEntry> {

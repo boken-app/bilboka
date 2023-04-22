@@ -5,6 +5,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.format
 
 internal class VehicleInfo(
     private val vehicleService: VehicleService,
@@ -36,6 +37,10 @@ internal class VehicleInfo(
             "\uD83D\uDE97 \nBil-navn: ${vehicle.name} \n" +
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ukjent)"} \n" +
+                    "Siste forbruk: ${
+                        vehicle.lastConsumptionEstimate()?.litersPer10Km()
+                            ?.let { "${it.format()} liter per mil" } ?: "(ukjent)"
+                    } \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Tankvolum: ${vehicle.tankVolume ?: "(ukjent)"} \n" +
                     "Drivstofftype: ${vehicle.fuelType} \n" +
