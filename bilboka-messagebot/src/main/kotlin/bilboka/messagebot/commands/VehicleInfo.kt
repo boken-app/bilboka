@@ -1,11 +1,13 @@
 package bilboka.messagebot.commands
 
+import bilboka.core.book.entryClosestTo
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
+import java.time.LocalDateTime.now
 
 internal class VehicleInfo(
     private val vehicleService: VehicleService,
@@ -43,10 +45,26 @@ internal class VehicleInfo(
                     } \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Tankvolum: ${vehicle.tankVolume ?: "(ukjent)"} \n" +
-                    "Drivstofftype: ${vehicle.fuelType} \n" +
+                    "Drivstofftype: ${vehicle.fuelType ?: "(ukjent)"} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"}"
+                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"} \n" +
+                    "Kjørt siste år: ${getDistanceLastYear(vehicle)}"
         )
+    }
+
+    private fun getDistanceLastYear(vehicle: Vehicle): String {
+        return vehicle.bookEntries.toList()
+            .entryClosestTo(now().minusYears(1)) { it.odometer != null }
+            ?.let {
+                val diff = vehicle.lastOdometer()?.minus(it.odometer!!)
+                if (vehicle.odometerUnit == null) {
+                    "(mangler enhet)"
+                } else if (diff == null) {
+                    "(ukjent)"
+                } else {
+                    "${diff * vehicle.odometerUnit!!.conversionToKilometers()} km (siden ${it.dateTime.format()})"
+                }
+            } ?: "(ukjent)"
     }
 
 }
