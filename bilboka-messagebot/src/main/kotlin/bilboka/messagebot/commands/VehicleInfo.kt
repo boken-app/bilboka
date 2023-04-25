@@ -8,6 +8,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
+import bilboka.messagebot.formatAsDate
 import java.time.LocalDateTime.now
 
 internal class VehicleInfo(
@@ -63,9 +64,9 @@ internal class VehicleInfo(
                 } else if (diff == null) {
                     "(ukjent)"
                 } else {
-                    "${diff * vehicle.odometerUnit!!.conversionToKilometers()} km " +
+                    "${(diff * vehicle.odometerUnit!!.conversionToKilometers()).toInt()} km " +
                             (if (vehicle.odometerUnit != KILOMETERS) "/ $diff ${vehicle.odometerUnit} " else "") +
-                            "(siden ${it.dateTime.format()})"
+                            "(siden ${it.dateTime.formatAsDate()})"
                 }
             } ?: "(ukjent)"
     }
