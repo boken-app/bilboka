@@ -3,6 +3,7 @@ package bilboka.messagebot.commands
 import bilboka.core.book.entryClosestTo
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.OdometerUnit.KILOMETERS
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
@@ -62,7 +63,9 @@ internal class VehicleInfo(
                 } else if (diff == null) {
                     "(ukjent)"
                 } else {
-                    "${diff * vehicle.odometerUnit!!.conversionToKilometers()} km (siden ${it.dateTime.format()})"
+                    "${diff * vehicle.odometerUnit!!.conversionToKilometers()} km " +
+                            (if (vehicle.odometerUnit != KILOMETERS) "/ $diff ${vehicle.odometerUnit} " else "") +
+                            "(siden ${it.dateTime.format()})"
                 }
             } ?: "(ukjent)"
     }
