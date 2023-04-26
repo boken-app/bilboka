@@ -1,6 +1,10 @@
 package bilboka.integration.autosys.consumer
 
 import bilboka.integration.autosys.AutosysProperties
+import bilboka.integration.autosys.dto.AutosysKjoretoyResponseDto
+import bilboka.integration.autosys.dto.KjoretoyId
+import bilboka.integration.autosys.dto.Kjoretoydata
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -13,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 // TODO prop inject?
 internal class AkfDatautleveringConsumerTest {
+    private val mapper = jacksonObjectMapper()
 
     lateinit var akfDatautleveringConsumer: AkfDatautleveringConsumer
     lateinit var testUrl: String
@@ -48,14 +53,24 @@ internal class AkfDatautleveringConsumerTest {
         // Arrange
         mockBackEnd.enqueue(
             MockResponse()
-                .setBody("\"test\" : \"testbody\"")
+                .setBody(
+                    mapper.writeValueAsString(
+                        AutosysKjoretoyResponseDto(
+                            listOf(
+                                Kjoretoydata(
+                                    kjoretoyId = KjoretoyId(kjennemerke = "AB123")
+                                )
+                            )
+                        )
+                    )
+                )
                 .addHeader("Content-Type", "application/json")
         )
 
         // Act
         val kjoretoydata = akfDatautleveringConsumer.hentKjoretoydata("AB12345")
 
-        assertThat(kjoretoydata).contains("testbody")
+        assertThat(kjoretoydata.kjoretoydataListe.first().kjoretoyId?.kjennemerke).isEqualTo("AB123")
 
         val takeRequest = mockBackEnd.takeRequest()
 

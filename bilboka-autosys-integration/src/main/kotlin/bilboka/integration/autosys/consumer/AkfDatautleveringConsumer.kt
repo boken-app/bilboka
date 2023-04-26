@@ -1,6 +1,7 @@
 package bilboka.integration.autosys.consumer
 
 import bilboka.integration.autosys.AutosysProperties
+import bilboka.integration.autosys.dto.AutosysKjoretoyResponseDto
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,25 +14,30 @@ class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties
     private val mapper = jacksonObjectMapper()
     private val client = OkHttpClient()
 
-    fun hentKjoretoydata(kjennemerke: String): String {
+    fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
         client.newCall(
             Request.Builder()
                 .url("${autosysProperties.akfDatautleveringUrl}?kjennemerke=$kjennemerke")
                 .header("SVV-Authorization", "Apikey ${autosysProperties.apiKey}")
                 .build()
-        ).execute().use {
-            if (it.isSuccessful) {
+        ).execute().use { response ->
+            if (response.isSuccessful) {
                 logger.info("Hentet kjøretøydata for $kjennemerke")
-                return it.body()?.string() ?: throw KjoretoydataFeiletException("Mottok ingen body fra kjøretøydata")
+                return response.body()?.string()?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
+                    ?: throw KjoretoydataFeiletException("Mottok ingen body fra kjøretøydata")
             } else {
                 logger.error(
                     String.format(
                         "Hent kjøretøydata for $kjennemerke gikk ikke ok. Status: %s - %s",
-                        it.code(),
-                        it.body()?.string()
+                        response.code(),
+                        response.body()?.string()
                     )
                 )
-                throw KjoretoydataFeiletException("Feilrespons fra kjøretøydata (${it.code()}). ${it.body()?.string()}")
+                throw KjoretoydataFeiletException(
+                    "Feilrespons fra kjøretøydata (${response.code()}). ${
+                        response.body()?.string()
+                    }"
+                )
             }
         }
     }
