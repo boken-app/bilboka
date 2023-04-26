@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.vehicle.domain.FuelType
+import bilboka.integration.autosys.dto.Kjoretoydata
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -20,6 +21,21 @@ class VehicleInfoTest : AbstractMessageBotTest() {
                 registeredSenderID
             )
             vehicleService.getVehicle("testbil")
+        }
+    }
+
+    @Test
+    fun getInfoAutosys_callsForInfo() {
+        every { vehicleService.getAutosysKjoretoydata(any()) } returns Kjoretoydata()
+
+        messagebot.processMessage("autosys-kjoretoydata testbil", registeredSenderID)
+
+        verify {
+            botMessenger.sendMessage(
+                message = match { msg -> msg.contains("Kjøretøydata fra Autosys") },
+                registeredSenderID
+            )
+            vehicleService.getAutosysKjoretoydata("testbil")
         }
     }
 }

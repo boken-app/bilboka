@@ -43,6 +43,7 @@ class MessageBot {
             SmallTalk(),
             Helper(),
             VehicleInfo(vehicleService, userService),
+            VehicleInfoAutosys(vehicleService, userService),
             ReportGetter(book, vehicleService, userService),
             UserInfo(),
             RegisterUser(userService),
