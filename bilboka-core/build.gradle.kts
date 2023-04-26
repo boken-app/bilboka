@@ -30,6 +30,8 @@ dependencies {
 //    implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
     implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.22")
 
+    implementation(project(":bilboka-autosys-integration"))
+
     runtimeOnly("com.h2database:h2")
 
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon

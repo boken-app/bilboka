@@ -4,11 +4,15 @@ import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
+import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
+import bilboka.integration.autosys.dto.Kjoretoydata
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class VehicleService() {
+class VehicleService(
+    private val akfDatautleveringConsumer: AkfDatautleveringConsumer
+) {
 
     fun addVehicle(
         name: String,
@@ -44,6 +48,15 @@ class VehicleService() {
             transaction {
                 Vehicle.all().singleOrNull { vehicle -> vehicle.isCalled(it) }
             }
+        }
+    }
+
+    fun getAutosysKjoretoydata(vehicleName: String): Kjoretoydata {
+        return getVehicle(vehicleName).run {
+            akfDatautleveringConsumer.hentKjoretoydata(
+                this.tegnkombinasjonNormalisert
+                    ?: throw VehicleMissingDataException("Mangler registreringsnummer for oppslag mot autosys")
+            ).kjoretoydataListe.first()
         }
     }
 

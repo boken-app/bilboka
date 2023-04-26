@@ -25,7 +25,9 @@ class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties
         ).execute().use { response ->
             if (response.isSuccessful) {
                 logger.info("Hentet kjøretøydata for $kjennemerke")
-                return response.body()?.string()?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
+                return response.body()?.string()
+                    ?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
+                    ?.also { logResponse(it) }
                     ?: throw KjoretoydataFeiletException("Mottok ingen body fra kjøretøydata")
             } else {
                 logger.error(
@@ -42,6 +44,10 @@ class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties
                 )
             }
         }
+    }
+
+    private fun logResponse(kjoretoyResponseDto: AutosysKjoretoyResponseDto) {
+        logger.info("Kall til AKF Datautlevering ga ${kjoretoyResponseDto.kjoretoydataListe.size} treff")
     }
 }
 
