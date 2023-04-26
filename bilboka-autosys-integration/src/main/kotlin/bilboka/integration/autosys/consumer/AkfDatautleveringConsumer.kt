@@ -28,7 +28,7 @@ class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties
                 return response.body()?.string()
                     ?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
                     ?.also { logResponse(it) }
-                    ?: throw KjoretoydataFeiletException("Mottok ingen body fra kjøretøydata")
+                    ?: throw KjoretoydataFeiletException("Fikk svar men der var det ingen data")
             } else {
                 logger.error(
                     String.format(
