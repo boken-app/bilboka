@@ -21,6 +21,7 @@ dependencyManagement {
 
 dependencies {
 	implementation(project(":bilboka-messenger-integration"))
+	implementation(project(":bilboka-autosys-integration"))
 
 	implementation("org.postgresql:postgresql:42.5.4")
 	implementation("org.flywaydb:flyway-core")
