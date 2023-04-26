@@ -11,11 +11,9 @@ fun Collection<BookEntry>.entryClosestTo(
     filter: ((entry: BookEntry) -> Boolean)? = { true }
 ): BookEntry? {
     return this.entryClosestTo(
-        target = targetTime,
-        getParameter = { dateTime },
-        distanceFunction = { first, last -> Duration.between(first, last).seconds },
-        filter
-    )
+        filter,
+        getParameter = { dateTime }
+    ) { itemTime -> Duration.between(targetTime, itemTime).seconds }
 }
 
 fun Collection<BookEntry>.entryClosestTo(
@@ -23,28 +21,25 @@ fun Collection<BookEntry>.entryClosestTo(
     filter: ((entry: BookEntry) -> Boolean)? = { true }
 ): BookEntry? {
     return this.entryClosestTo(
-        target = targetOdo,
-        getParameter = { odometer },
-        distanceFunction = { first, last -> (last - first).toLong() },
-        filter
-    )
+        filter,
+        getParameter = { odometer }
+    ) { itemOdo -> (itemOdo - targetOdo).toLong() }
 }
 
 private fun <T> Collection<BookEntry>.entryClosestTo(
-    target: T,
+    filter: ((entry: BookEntry) -> Boolean)?,
     getParameter: BookEntry.() -> T?,
-    distanceFunction: (first: T, last: T) -> Long,
-    filter: ((entry: BookEntry) -> Boolean)?
+    distanceFunction: (item: T) -> Long
 ): BookEntry? {
     val entriesBackwards = sort().reversed().filter(filter ?: { true })
 
     var previousEntry: BookEntry? = entriesBackwards.firstOrNull { it.getParameter() != null }
-    var previousDistance = previousEntry?.let { distanceFunction(target, it.getParameter()!!) }
+    var previousDistance = previousEntry?.let { distanceFunction(it.getParameter()!!) }
 
     if (previousDistance != null) {
         entriesBackwards.forEach {
             it.getParameter()?.run {
-                val diff = distanceFunction(target, this)
+                val diff = distanceFunction(this)
                 if (diff < 0) {
                     return if (abs(diff) < abs(previousDistance!!)) it else previousEntry
                 }

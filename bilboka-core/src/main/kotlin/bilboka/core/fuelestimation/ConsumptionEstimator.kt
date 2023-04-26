@@ -11,31 +11,31 @@ object ConsumptionEstimator {
     fun lastEstimate(entries: Collection<BookEntry>, odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
         var totalAmountFilled = 0.0
 
-        var startEntry: BookEntry? = null
-        var endEntry: BookEntry? = null
-        val iterator = entries.sort().reversed().iterator()
+        var estimateFrom: BookEntry? = null
+        var estimateTo: BookEntry? = null
+        val entriesFromTheLastOne = entries.sort().reversed().iterator()
 
-        while (iterator.hasNext() && startEntry == null) {
-            iterator.next().apply {
+        while (entriesFromTheLastOne.hasNext() && estimateFrom == null) {
+            entriesFromTheLastOne.next().apply {
                 if (isFullTank == true && odometer != null) {
-                    if (endEntry == null) {
-                        endEntry = this
+                    if (estimateTo == null) {
+                        estimateTo = this
                     } else {
-                        startEntry = this
+                        estimateFrom = this
                     }
                 }
 
-                if (amount != null && startEntry == null && endEntry != null) {
+                if (amount != null && estimateFrom == null && estimateTo != null) {
                     totalAmountFilled += amount ?: 0.0
                 }
             }
         }
 
-        if (startEntry != null) {
+        if (estimateFrom != null) {
             return ConsumptionEstimationResult(
-                amountPerDistanceUnit = totalAmountFilled / (endEntry?.odometer!! - startEntry?.odometer!!),
-                estimatedAt = endEntry!!,
-                estimatedFrom = startEntry!!,
+                amountPerDistanceUnit = totalAmountFilled / (estimateTo?.odometer!! - estimateFrom?.odometer!!),
+                estimatedAt = estimateTo!!,
+                estimatedFrom = estimateFrom!!,
                 odometerUnit = odoUnit
             )
         }
