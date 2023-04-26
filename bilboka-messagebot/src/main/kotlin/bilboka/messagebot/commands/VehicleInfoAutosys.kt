@@ -11,7 +11,7 @@ internal class VehicleInfoAutosys(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "(autosys-kjoretoydata)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
+        "(autosys-data)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
         RegexOption.IGNORE_CASE
     )
 

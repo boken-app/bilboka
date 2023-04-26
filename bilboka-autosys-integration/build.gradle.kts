@@ -11,6 +11,8 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation(platform(bilboka.dependencies.Libs.okHttp))
