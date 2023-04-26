@@ -43,10 +43,10 @@ internal class VehicleInfo(
                     "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ukjent)"} \n" +
                     "Siste forbruk: ${
                         vehicle.lastConsumptionEstimate()?.litersPer10Km()
-                            ?.let { "${it.format()} liter per mil" } ?: "(ukjent)"
+                            ?.let { "${it.format()} liter per mil" } ?: "(mangler data)"
                     } \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
-                    "Tankvolum: ${vehicle.tankVolume ?: "(ukjent)"} \n" +
+                    "Tankvolum: ${vehicle.tankVolume?.let { "$it liter" } ?: "(ukjent)"} \n" +
                     "Drivstofftype: ${vehicle.fuelType ?: "(ukjent)"} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
                     "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"} \n" +
@@ -62,13 +62,13 @@ internal class VehicleInfo(
                 if (vehicle.odometerUnit == null) {
                     "(mangler enhet)"
                 } else if (diff == null) {
-                    "(ukjent)"
+                    "(mangler data)"
                 } else {
-                    "${(diff * vehicle.odometerUnit!!.conversionToKilometers()).toInt()} km " +
+                    "${(vehicle.odometerUnit!!.convertToKilometers(diff))} km " +
                             (if (vehicle.odometerUnit != KILOMETERS) "/ $diff ${vehicle.odometerUnit} " else "") +
                             "(siden ${it.dateTime.formatAsDate()})"
                 }
-            } ?: "(ukjent)"
+            } ?: "(mangler data)"
     }
 
 }

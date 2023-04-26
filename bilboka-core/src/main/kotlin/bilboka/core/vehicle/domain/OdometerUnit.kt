@@ -1,5 +1,7 @@
 package bilboka.core.vehicle.domain
 
+import kotlin.math.roundToInt
+
 enum class OdometerUnit(val displayValue: String) {
     KILOMETERS("km"),
     MILES("mi");
@@ -13,5 +15,9 @@ enum class OdometerUnit(val displayValue: String) {
             KILOMETERS -> 1.0
             MILES -> 1.609344
         }
+    }
+
+    fun convertToKilometers(odo: Int): Int {
+        return conversionToKilometers().times(odo).roundToInt()
     }
 }
