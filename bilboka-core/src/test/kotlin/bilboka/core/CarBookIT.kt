@@ -7,6 +7,8 @@ import bilboka.core.report.ReportGenerator
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.Vehicle
+import bilboka.integration.autosys.AutosysProperties
+import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@SpringBootTest(classes = [VehicleService::class, Book::class, ReportGenerator::class])
+@SpringBootTest(classes = [VehicleService::class, Book::class, ReportGenerator::class, AkfDatautleveringConsumer::class, AutosysProperties::class])
 class CarBookIT : H2Test() {
 
     @Autowired

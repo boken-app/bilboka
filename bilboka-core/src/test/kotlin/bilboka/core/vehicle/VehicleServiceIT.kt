@@ -2,12 +2,13 @@ package bilboka.core.vehicle
 
 import bilboka.core.H2Test
 import bilboka.core.vehicle.domain.FuelType
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class VehicleServiceIT : H2Test() {
 
-    private val vehicleService: VehicleService = VehicleService()
+    private val vehicleService: VehicleService = VehicleService(mockk())
 
     @Test
     fun vehicleExistsAfterSave() {
