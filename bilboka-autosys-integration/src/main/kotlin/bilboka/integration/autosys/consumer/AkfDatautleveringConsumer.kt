@@ -17,6 +17,7 @@ class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties
     private val client = OkHttpClient()
 
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
+        logger.info("AKF-url: ${autosysProperties.akfDatautleveringUrl}")
         client.newCall(
             Request.Builder()
                 .url("${autosysProperties.akfDatautleveringUrl}?kjennemerke=$kjennemerke")
