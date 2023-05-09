@@ -1,8 +1,10 @@
 package bilboka.messenger.consumer
 
+import bilboka.integration.autosys.AutosysProperties
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.*
 import io.mockk.InternalPlatformDsl.toStr
+import io.mockk.mockk
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -20,7 +22,7 @@ internal class MessengerProfileAPIConsumerIT {
     lateinit var testUrl: String
     lateinit var mockBackEnd: MockWebServer
 
-    val pageAccessToken: String = "testPageAccess"
+    private val pageAccessToken: String = "testPageAccess"
 
     @BeforeAll
     fun setUp() {
@@ -42,7 +44,9 @@ internal class MessengerProfileAPIConsumerIT {
         val messengerProperties = MessengerProperties()
         messengerProperties.profileUrl = testUrl
         messengerProperties.pageAccessToken = pageAccessToken
-        profileConsumer = MessengerProfileAPIConsumer(messengerProperties)
+        val autosysProperties = AutosysProperties()
+        autosysProperties.akfDatautleveringUrl = testUrl
+        profileConsumer = MessengerProfileAPIConsumer(messengerProperties, autosysProperties, mockk(relaxed = true))
     }
 
     @Test
