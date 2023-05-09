@@ -1,10 +1,7 @@
 package bilboka.messenger
 
 import bilboka.messenger.consumer.MessengerProfileAPIConsumer
-import bilboka.messenger.dto.GetStarted
-import bilboka.messenger.dto.MessengerProfileRequest
-import bilboka.messenger.dto.PersistentMenu
-import bilboka.messenger.dto.PersistentMenuItem
+import bilboka.messenger.dto.*
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -47,6 +44,16 @@ class ProfileConfig(
                                     title = "Hjelp",
                                     payload = "hlp"
                                 ),
+                            )
+                        )
+                    ),
+                    iceBreakers = listOf(
+                        IceBreaker(
+                            listOf(
+                                IceBreakerAction(
+                                    question = "Tank",
+                                    payload = "tnk"
+                                )
                             )
                         )
                     ),

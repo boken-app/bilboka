@@ -36,6 +36,10 @@ class MessengerProfileAPIConsumer(
             logger.info("Setter persistent menu")
             logger.info("Items: {}", it.callToActions.joinToString { c -> c.title })
         }
+        profileRequest.iceBreakers.firstOrNull()?.let {
+            logger.info("Setter icebreaker")
+            logger.info("Items: {}", it.callToActions.joinToString { c -> c.question })
+        }
 
         val url =
             "${messengerProperties.profileUrl}?${MessengerProfileApiConfig.ACCESS_TOKEN}=${messengerProperties.pageAccessToken}"
