@@ -44,6 +44,6 @@ private fun configureDatabase(): Database {
 }
 
 private fun checkEnvVars() {
-    logger.info("¤¤¤¤¤¤ Profile url: ${System.getenv("MESSENGER_PROFILE_URL")}")
-    logger.info("¤¤¤¤¤¤ Autosys url: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
+    logger.info("¤¤¤¤¤¤ Profile url env: ${System.getenv("MESSENGER_PROFILE_URL")}")
+    logger.info("¤¤¤¤¤¤ Autosys url env: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
 }

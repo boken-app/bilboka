@@ -29,8 +29,8 @@ class MessengerProfileAPIConsumer(
     private val client = OkHttpClient()
 
     fun doProfileUpdate(profileRequest: MessengerProfileRequest) {
-        logger.info("¤¤¤¤¤ Profile url: ${messengerProperties.profileUrl}")
-        logger.info("¤¤¤¤¤ Autosys url: ${autosysProperties.akfDatautleveringUrl}")
+        logger.info("¤¤¤¤¤ Profile url prop: ${messengerProperties.profileUrl}")
+        logger.info("¤¤¤¤¤ Autosys url prop: ${autosysProperties.akfDatautleveringUrl}")
         akfDatautleveringConsumer.hentKjoretoydata("ab123")
         profileRequest.persistentMenu.firstOrNull()?.let {
             logger.info("Setter persistent menu")
