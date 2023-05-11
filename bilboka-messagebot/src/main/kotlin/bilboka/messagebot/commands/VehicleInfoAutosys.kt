@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
+import bilboka.integration.autosys.dto.Godkjenning
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
@@ -38,9 +39,19 @@ internal class VehicleInfoAutosys(
                     "Understellsnr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
                     "Reg.status: ${data.registrering?.registreringsstatus?.kodeBeskrivelse ?: "(ukjent)"} \n" +
                     "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato ?: "(ukjent)"} \n" +
+                    "Egenvekt: ${data.godkjenning?.tekniskeData?.vekter?.egenvekt ?: "(ukjent)"} \n" +
+                    "Nyttelast: ${data.godkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
+                    "Bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist ?: "(ukjent)"} \n"
         )
     }
 
+    private fun Godkjenning.hasBevaringsverdig(): Boolean {
+        return unntak.any { it.unntak.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
+    }
+
+    private fun Boolean.toText(): String {
+        return if (this) "Ja" else "Nei"
+    }
 }
