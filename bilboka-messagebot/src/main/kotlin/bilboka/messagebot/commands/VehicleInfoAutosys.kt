@@ -34,7 +34,11 @@ internal class VehicleInfoAutosys(
     ) {
         conversation.sendReply(
             "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
-                    "\uD83D\uDE97 \nKjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n"
+                    "Kjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
+                    "Understellsnr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
+                    "Reg.status: ${data.registrering?.registreringsstatus?.kodeBeskrivelse ?: "(ukjent)"} \n" +
+                    "Sist godkj. PKK: ${data.registrering?.periodiskKjoretoyKontroll?.sistGodkjent ?: "(ukjent)"} \n" +
+                    "PKK-frist: ${data.registrering?.periodiskKjoretoyKontroll?.kontrollfrist ?: "(ukjent)"} \n"
         )
     }
 
