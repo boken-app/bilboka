@@ -1,28 +1,34 @@
 package bilboka.integration.autosys.consumer
 
-import bilboka.integration.autosys.AutosysProperties
 import bilboka.integration.autosys.dto.AutosysKjoretoyResponseDto
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class AkfDatautleveringConsumer(private val autosysProperties: AutosysProperties) {
+class AkfDatautleveringConsumer {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     private val client = OkHttpClient()
 
+    @Value("\${autosys.akfDatautleveringUrl}")
+    private lateinit var akfDatautleveringUrl: String
+
+    @Value("\${autosys.apiKey}")
+    private lateinit var apiKey: String
+
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
         logger.info("¤¤¤¤¤¤ AKF url env var: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
-        logger.info("AKF-url: ${autosysProperties.akfDatautleveringUrl}")
+        logger.info("AKF-url: ${akfDatautleveringUrl}")
         client.newCall(
             Request.Builder()
-                .url("${autosysProperties.akfDatautleveringUrl}?kjennemerke=$kjennemerke")
-                .header("SVV-Authorization", "Apikey ${autosysProperties.apiKey}")
+                .url("${akfDatautleveringUrl}?kjennemerke=$kjennemerke")
+                .header("SVV-Authorization", "Apikey ${apiKey}")
                 .build()
         ).execute().use { response ->
             if (response.isSuccessful) {
