@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
     )
     configureDatabase()
     app.run(*args)
-    checkEnvVars()
+ //   checkEnvVars()
 }
 
 private fun configureDatabase(): Database {
