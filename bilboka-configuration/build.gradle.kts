@@ -8,7 +8,7 @@ plugins {
 //	id("org.flywaydb.flyway") version "9.8.1"
 }
 
-group = "ivaralek" // TODO bilboka
+group = "bilboka"
 version = "0.0.1-SNAPSHOT"
 
 repositories {

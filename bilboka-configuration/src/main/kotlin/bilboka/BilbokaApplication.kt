@@ -23,7 +23,6 @@ fun main(args: Array<String>) {
     )
     configureDatabase()
     app.run(*args)
- //   checkEnvVars()
 }
 
 private fun configureDatabase(): Database {
@@ -41,9 +40,4 @@ private fun configureDatabase(): Database {
         user = username,
         password = pwd
     )
-}
-
-private fun checkEnvVars() {
-    logger.info("¤¤¤¤¤¤ Profile url env: ${System.getenv("MESSENGER_PROFILE_URL")}")
-    logger.info("¤¤¤¤¤¤ Autosys url env: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
 }

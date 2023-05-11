@@ -17,11 +17,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 // TODO prop inject?
 internal class MessengerSendAPIConsumerIT {
 
-    lateinit var sendConsumer: MessengerSendAPIConsumer
-    lateinit var testUrl: String
-    lateinit var mockBackEnd: MockWebServer
+    private lateinit var sendConsumer: MessengerSendAPIConsumer
+    private lateinit var testUrl: String
+    private lateinit var mockBackEnd: MockWebServer
 
-    val pageAccessToken: String = "testPageAccess"
+    private val pageAccessToken: String = "testPageAccess"
 
     @BeforeAll
     fun setUp() {

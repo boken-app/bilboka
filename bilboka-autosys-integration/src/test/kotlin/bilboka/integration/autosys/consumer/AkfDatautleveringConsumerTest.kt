@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Disabled // TODO
+@Disabled // TODO Aktivere når props-bug er fikset
 internal class AkfDatautleveringConsumerTest {
     private val mapper = jacksonObjectMapper()
 

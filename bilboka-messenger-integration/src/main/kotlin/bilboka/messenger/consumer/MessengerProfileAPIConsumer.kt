@@ -1,7 +1,5 @@
 package bilboka.messenger.consumer
 
-import bilboka.integration.autosys.AutosysProperties
-import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.MessengerProfileRequest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -21,19 +19,12 @@ object MessengerProfileApiConfig {
 @Component
 class MessengerProfileAPIConsumer(
     private val messengerProperties: MessengerProperties,
-    private val autosysProperties: AutosysProperties, // TODO denne blir altså ikke autowired her
-    private val akfDatautleveringConsumer: AkfDatautleveringConsumer
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper()
     private val client = OkHttpClient()
 
     fun doProfileUpdate(profileRequest: MessengerProfileRequest) {
-        logger.info("¤¤¤¤¤¤ Profile url env: ${System.getenv("MESSENGER_PROFILE_URL")}")
-        logger.info("¤¤¤¤¤¤ Autosys url env: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
-        logger.info("¤¤¤¤¤ Profile url prop: ${messengerProperties.profileUrl}")
-        logger.info("¤¤¤¤¤ Autosys url prop: ${autosysProperties.akfDatautleveringUrl}")
-        akfDatautleveringConsumer.hentKjoretoydata("ab123")
         profileRequest.persistentMenu.firstOrNull()?.let {
             logger.info("Setter persistent menu")
             logger.info("Items: {}", it.callToActions.joinToString { c -> c.title })

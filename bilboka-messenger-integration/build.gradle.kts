@@ -7,7 +7,7 @@ plugins {
     id("bilboka.plugin")
 }
 
-group = "ivaralek" // TODO bilboka
+group = "bilboka"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {

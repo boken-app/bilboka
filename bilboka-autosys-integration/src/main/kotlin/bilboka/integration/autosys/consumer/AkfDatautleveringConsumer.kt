@@ -16,12 +16,9 @@ class AkfDatautleveringConsumer {
     private val client = OkHttpClient()
 
     private val akfDatautleveringUrl: String = System.getenv("AKF_DATAUTLEVERING_URL") ?: ""
-
     private val apiKey: String = System.getenv("AUTOSYS_APIKEY") ?: ""
 
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
-        logger.info("¤¤¤¤¤¤ AKF url env var: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
-        logger.info("AKF-url: ${akfDatautleveringUrl}")
         client.newCall(
             Request.Builder()
                 .url("${akfDatautleveringUrl}?kjennemerke=$kjennemerke")
