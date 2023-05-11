@@ -21,7 +21,7 @@ object MessengerProfileApiConfig {
 @Component
 class MessengerProfileAPIConsumer(
     private val messengerProperties: MessengerProperties,
-    private val autosysProperties: AutosysProperties,
+    private val autosysProperties: AutosysProperties, // TODO denne blir altså ikke autowired her
     private val akfDatautleveringConsumer: AkfDatautleveringConsumer
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
