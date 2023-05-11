@@ -7,7 +7,8 @@ data class AutosysKjoretoyResponseDto(
 data class Kjoretoydata(
     val kjoretoyId: KjoretoyId? = null,
     val forstegangsregistrering: Forstegangsregistrering? = null,
-    val registrering: Registrering? = null
+    val registrering: Registrering? = null,
+    val periodiskKjoretoyKontroll: PeriodiskKjoretoyKontroll? = null
 )
 
 data class KjoretoyId(
@@ -24,7 +25,6 @@ data class Registrering(
     val kjoringensArt: KjoringensArt? = null,
     val registreringsstatus: Registreringsstatus? = null,
     val registrertForstegangPaEierskap: String? = null,
-    val periodiskKjoretoyKontroll: PeriodiskKjoretoyKontroll? = null
 )
 
 data class KjoringensArt(
