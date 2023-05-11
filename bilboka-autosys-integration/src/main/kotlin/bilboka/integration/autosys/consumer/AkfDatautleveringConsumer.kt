@@ -16,11 +16,9 @@ class AkfDatautleveringConsumer {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     private val client = OkHttpClient()
 
-    @Value("\${autosys.akfDatautleveringUrl}")
-    private lateinit var akfDatautleveringUrl: String
+    private val akfDatautleveringUrl: String = System.getenv("AKF_DATAUTLEVERING_URL")
 
-    @Value("\${autosys.apiKey}")
-    private lateinit var apiKey: String
+    private val apiKey: String = System.getenv("AUTOSYS_APIKEY")
 
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
         logger.info("¤¤¤¤¤¤ AKF url env var: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
