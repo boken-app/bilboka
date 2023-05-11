@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,9 +15,9 @@ class AkfDatautleveringConsumer {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     private val client = OkHttpClient()
 
-    private val akfDatautleveringUrl: String = System.getenv("AKF_DATAUTLEVERING_URL")
+    private val akfDatautleveringUrl: String = System.getenv("AKF_DATAUTLEVERING_URL") ?: ""
 
-    private val apiKey: String = System.getenv("AUTOSYS_APIKEY")
+    private val apiKey: String = System.getenv("AUTOSYS_APIKEY") ?: ""
 
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
         logger.info("¤¤¤¤¤¤ AKF url env var: ${System.getenv("AKF_DATAUTLEVERING_URL")}")
