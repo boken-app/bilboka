@@ -15,6 +15,7 @@ class AkfDatautleveringConsumer {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     private val client = OkHttpClient()
 
+    // TODO Finne ut av hvordan man kan få inn props på riktig måte
     private val akfDatautleveringUrl: String = System.getenv("AKF_DATAUTLEVERING_URL") ?: ""
     private val apiKey: String = System.getenv("AUTOSYS_APIKEY") ?: ""
 
