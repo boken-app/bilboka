@@ -20,7 +20,7 @@ data class KjoretoyId(
 )
 
 data class Forstegangsregistrering(
-    val registrertForstegangNorgeDato: String? = null
+    val registrertForstegangNorgeDato: LocalDate? = null
 )
 
 data class Registrering(

@@ -42,14 +42,18 @@ internal class VehicleInfoAutosys(
                     "Kjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
                     "Unr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
                     "Reg.status: ${data.registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
-                    "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato ?: "(ukjent)"} \n" +
-                    "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt ?: "(ukjent)"} \n" +
-                    "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
+                    "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
+                    "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
+                    "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
                     "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
         )
     }
+}
+
+private fun Number.kg(): String {
+    return "$this kg"
 }
 
 private fun Godkjenning.hasBevaringsverdig(): Boolean {
