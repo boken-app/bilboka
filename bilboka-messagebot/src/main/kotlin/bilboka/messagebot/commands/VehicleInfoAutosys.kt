@@ -7,6 +7,7 @@ import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.integration.autosys.dto.Registreringsstatus
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.format
 
 internal class VehicleInfoAutosys(
     private val vehicleService: VehicleService,
@@ -43,8 +44,8 @@ internal class VehicleInfoAutosys(
                     "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt ?: "(ukjent)"} \n" +
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
                     "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
-                    "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent ?: "(ukjent)"} \n" +
-                    "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist ?: "(ukjent)"} \n"
+                    "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
+                    "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.format() ?: "(ukjent)"} \n"
         )
     }
 
