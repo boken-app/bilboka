@@ -8,6 +8,8 @@ import bilboka.integration.autosys.dto.Registreringsstatus
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 internal class VehicleInfoAutosys(
     private val vehicleService: VehicleService,
@@ -45,11 +47,9 @@ internal class VehicleInfoAutosys(
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
                     "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
-                    "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.format() ?: "(ukjent)"} \n"
+                    "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
         )
     }
-
-
 }
 
 private fun Godkjenning.hasBevaringsverdig(): Boolean {
@@ -62,4 +62,22 @@ private fun Boolean.toText(): String {
 
 private fun Registreringsstatus.toText(): String {
     return "$kodeBeskrivelse ${if (kodeVerdi == "AVREGISTRERT") "🔴" else if (kodeVerdi == "REGISTRERT") "🟢" else ""}"
+}
+
+private fun LocalDate.formattedDeadlineWithEmoji(): String {
+    val remainingDays = ChronoUnit.DAYS.between(LocalDate.now(), this)
+
+    return "${format()} ${
+        when {
+            remainingDays >= 700 -> "\uD83C\uDF89" // Party emoji (2 years or more)
+            remainingDays >= 300 -> "\uD83D\uDE03" // Happy emoji 
+            remainingDays >= 120 -> "🤠" // (120 days or more)
+            remainingDays >= 60 -> "🤔" // (2 months or more)
+            remainingDays >= 30 -> "\uD83D\uDE31" // Stressed emoji (1 month or more)
+            remainingDays >= 7 -> "\uD83D\uDE33" // Worried emoji (1 week or more)
+            remainingDays >= 1 -> "\uD83D\uDE29" // Anxious emoji (1 day or more)
+            remainingDays == 0L -> "\uD83D\uDE16" // Nervous emoji (deadline is today)
+            else -> "\uD83D\uDE2D" // Sad emoji (deadline has passed)
+        }
+    }"
 }

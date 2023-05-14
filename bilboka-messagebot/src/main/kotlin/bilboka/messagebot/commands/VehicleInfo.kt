@@ -54,7 +54,7 @@ internal class VehicleInfo(
         )
         conversation.replyWithOptions(
             "Hente mer data fra Autosys?",
-            "autosys-data ${vehicle.name}" to "Ja!"
+            "autosys-data ${vehicle.name}" to "Ja! 🚙"
         )
     }
 
