@@ -30,8 +30,8 @@ class FacebookMessenger(
                     quickReplies = options.map {
                         QuickReply(
                             payload = it.first,
-                            title = it.first
-                        ) // TODO bruke second som title når håndtering av payload er implementert
+                            title = it.second
+                        )
                     }
                 )
             )
