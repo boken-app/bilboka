@@ -25,7 +25,7 @@ data class PersistentMenuItem(
 ) : Serializable
 
 data class IceBreaker(
-    @param:JsonProperty("get_started")
+    @param:JsonProperty("call_to_actions")
     val callToActions: List<IceBreakerAction>,
     val locale: String = "default"
 ) : Serializable

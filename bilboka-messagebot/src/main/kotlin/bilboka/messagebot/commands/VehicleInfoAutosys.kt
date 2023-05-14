@@ -36,12 +36,12 @@ internal class VehicleInfoAutosys(
         conversation.sendReply(
             "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
                     "Kjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
-                    "Understellsnr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
+                    "Unr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
                     "Reg.status: ${data.registrering?.registreringsstatus?.kodeBeskrivelse ?: "(ukjent)"} \n" +
                     "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato ?: "(ukjent)"} \n" +
                     "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt ?: "(ukjent)"} \n" +
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
-                    "Bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
+                    "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist ?: "(ukjent)"} \n"
         )
