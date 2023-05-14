@@ -4,6 +4,7 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.integration.autosys.dto.Godkjenning
 import bilboka.integration.autosys.dto.Kjoretoydata
+import bilboka.integration.autosys.dto.Registreringsstatus
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 
@@ -37,7 +38,7 @@ internal class VehicleInfoAutosys(
             "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
                     "Kjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
                     "Unr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
-                    "Reg.status: ${data.registrering?.registreringsstatus?.kodeBeskrivelse ?: "(ukjent)"} \n" +
+                    "Reg.status: ${data.registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
                     "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato ?: "(ukjent)"} \n" +
                     "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt ?: "(ukjent)"} \n" +
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast ?: "(ukjent)"} \n" +
@@ -47,11 +48,17 @@ internal class VehicleInfoAutosys(
         )
     }
 
-    private fun Godkjenning.hasBevaringsverdig(): Boolean {
-        return tekniskGodkjenning.unntak.any { it.unntak?.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
-    }
 
-    private fun Boolean.toText(): String {
-        return if (this) "Ja" else "Nei"
-    }
+}
+
+private fun Godkjenning.hasBevaringsverdig(): Boolean {
+    return tekniskGodkjenning.unntak.any { it.unntak?.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
+}
+
+private fun Boolean.toText(): String {
+    return if (this) "Ja" else "Nei"
+}
+
+private fun Registreringsstatus.toText(): String {
+    return "$kodeBeskrivelse ${if (kodeVerdi == "AVREGISTRERT") "🔴" else if (kodeVerdi == "REGISTRERT") "🟢" else ""}"
 }
