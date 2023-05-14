@@ -12,6 +12,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2")
 
     implementation(platform(bilboka.dependencies.Libs.okHttp))
     implementation("com.squareup.okhttp3:okhttp")

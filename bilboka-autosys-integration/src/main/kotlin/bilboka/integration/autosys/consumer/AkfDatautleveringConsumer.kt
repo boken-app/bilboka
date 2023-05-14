@@ -2,6 +2,7 @@ package bilboka.integration.autosys.consumer
 
 import bilboka.integration.autosys.dto.AutosysKjoretoyResponseDto
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,6 +14,8 @@ class AkfDatautleveringConsumer {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .registerModule(JavaTimeModule())
+
     private val client = OkHttpClient()
 
     // TODO Finne ut av hvordan man kan få inn props på riktig måte
