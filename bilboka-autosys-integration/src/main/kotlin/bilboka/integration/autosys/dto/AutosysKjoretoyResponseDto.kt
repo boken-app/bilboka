@@ -1,5 +1,7 @@
 package bilboka.integration.autosys.dto
 
+import java.time.LocalDate
+
 data class AutosysKjoretoyResponseDto(
     val kjoretoydataListe: List<Kjoretoydata> = emptyList()
 )
@@ -273,6 +275,6 @@ data class Registreringsstatus(
 )
 
 data class PeriodiskKjoretoyKontroll(
-    val kontrollfrist: String? = null,
-    val sistGodkjent: String? = null
+    val kontrollfrist: LocalDate? = null,
+    val sistGodkjent: LocalDate? = null
 )
