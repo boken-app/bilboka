@@ -55,7 +55,7 @@ data class QuickReply(
     @get:JsonProperty("image_url")
     @JsonInclude(Include.NON_NULL)
     val imageUrl: String? = null,
-)
+) : Serializable
 
 data class Attachment(
     val type: AttachmentType,

@@ -24,8 +24,10 @@ class FacebookMessageHandler {
         if (entry.messaging.size == 1) {
             val messageEvent = entry.messaging[0]
             val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
+            logger.info("Håndterer innkommende request med " +
+                    (messageEvent.message?.let { "| melding |" } ?: "") +
+                    (messageEvent.postback?.let { "| postback |" } ?: ""))
 
-            // TODO håndtere quick reply payloads på noe vis?
             if (messageEvent.postback?.payload != null) {
                 logger.info(format("Mottok postback (title=%s) fra PSID=%s", messageEvent.postback.title, senderPSID))
                 logger.trace(format("Payload: '%s'", messageEvent.postback.payload))
