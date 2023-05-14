@@ -24,9 +24,6 @@ class FacebookMessageHandler {
         if (entry.messaging.size == 1) {
             val messageEvent = entry.messaging[0]
             val senderPSID = messageEvent.sender?.get("id") ?: throw IllegalArgumentException("Mangler sender")
-            logger.info("Håndterer innkommende request med " +
-                    (messageEvent.message?.let { "| melding |" } ?: "") +
-                    (messageEvent.postback?.let { "| postback |" } ?: ""))
 
             if (messageEvent.postback?.payload != null) {
                 logger.info(format("Mottok postback (title=%s) fra PSID=%s", messageEvent.postback.title, senderPSID))
@@ -36,7 +33,9 @@ class FacebookMessageHandler {
                 val text = messageEvent.message.text
                 logger.info(format("Mottok melding fra PSID=%s", senderPSID))
                 logger.trace(format("Meldingsinnhold: '%s'", text))
-                messageBot.processMessage(text, senderPSID)
+                val quickReply = messageEvent.message.quickReply?.payload
+                    ?.also { logger.info(format("Mottok quick reply fra PSID=%s", senderPSID)) }
+                messageBot.processMessage(quickReply ?: text, senderPSID)
             } else {
                 logger.debug("Request inneholder ingen melding eller postback.")
                 facebookMessenger.sendMessage("Du sendte noe rart jeg ikke skjønte", senderPSID)
