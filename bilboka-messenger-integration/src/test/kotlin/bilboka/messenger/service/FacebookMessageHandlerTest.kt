@@ -49,6 +49,33 @@ internal class FacebookMessageHandlerTest {
     }
 
     @Test
+    fun handleMessageWithQuickReply() {
+        justRun { messageBot.processMessage(any(), any()) }
+
+        responderService.handleMessage(
+            FacebookEntry(
+                time = 3L,
+                id = "1",
+                messaging = listOf(
+                    MessagingReceived(
+                        sender = mapOf(Pair("id", senderID)),
+                        timestamp = 2L,
+                        message = MessageReceived(
+                            text = testMessage,
+                            quickReply = QuickReplyReceived(
+                                payload = "quick_reply",
+                                title = "Hej!"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        verify { messageBot.processMessage("quick_reply", senderID) }
+    }
+
+    @Test
     fun handleMessageWithBothMessageAndPostback_prioritizesPostback() {
         justRun { messageBot.processMessage(any(), any()) }
 

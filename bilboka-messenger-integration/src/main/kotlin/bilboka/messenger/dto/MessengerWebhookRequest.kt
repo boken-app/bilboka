@@ -37,7 +37,7 @@ data class MessageReceived(
 )
 
 data class QuickReplyReceived(
-    val title: String,
+    val title: String?,
     val payload: String,
 )
 

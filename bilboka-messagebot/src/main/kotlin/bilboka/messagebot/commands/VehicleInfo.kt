@@ -52,6 +52,10 @@ internal class VehicleInfo(
                     "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"} \n" +
                     "Kjørt siste år: ${getDistanceLastYear(vehicle)}"
         )
+        conversation.replyWithOptions(
+            "Hente mer data fra Autosys?",
+            "autosys-data ${vehicle.name}" to "Ja!"
+        )
     }
 
     private fun getDistanceLastYear(vehicle: Vehicle): String {
