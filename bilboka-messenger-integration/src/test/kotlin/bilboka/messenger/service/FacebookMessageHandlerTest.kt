@@ -51,6 +51,34 @@ internal class FacebookMessageHandlerTest {
         verify { messageBot.processMessage(testMessage, senderID) }
     }
 
+    @Test
+    fun handleMessageWithBothMessageAndPostback_prioritizesPostback() {
+        justRun { messageBot.processMessage(any(), any()) }
+
+        responderService.handleMessage(
+            FacebookEntry(
+                time = 3L,
+                id = "1",
+                messaging = listOf(
+                    FacebookMessaging(
+                        sender = mapOf(Pair("id", senderID)),
+                        timestamp = 2L,
+                        message = FacebookMessage(
+                            text = testMessage
+                        ),
+                        postback = FacebookPostback(
+                            "32542",
+                            "title",
+                            payload = "postback_payload"
+                        )
+                    )
+                )
+            )
+        )
+
+        verify(exactly = 1) { messageBot.processMessage("postback_payload", senderID) }
+    }
+
     private fun messageWithText() = FacebookEntry(
         time = 3L,
         id = "1",
