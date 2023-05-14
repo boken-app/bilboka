@@ -178,12 +178,12 @@ internal class MessengerWebhookResourceIT {
                     requestObject = "page", entry = listOf(
                         FacebookEntry(
                             "123", 123L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("456"),
                                     personWithId("354"),
-                                    FacebookMessage(
+                                    MessageReceived(
                                         text = "Test"
                                     ),
                                     null
@@ -205,12 +205,12 @@ internal class MessengerWebhookResourceIT {
                     requestObject = "page", entry = listOf(
                         FacebookEntry(
                             "124", 123L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("456"),
                                     personWithId("354"),
-                                    FacebookMessage(
+                                    MessageReceived(
                                         text = "Test",
                                         mid = "1"
                                     ),
@@ -220,12 +220,12 @@ internal class MessengerWebhookResourceIT {
                         ),
                         FacebookEntry(
                             "125", 124L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("457"),
                                     personWithId("3565"),
-                                    FacebookMessage(
+                                    MessageReceived(
                                         text = "TestMsg2",
                                         mid = "2"
                                     ),
@@ -235,13 +235,13 @@ internal class MessengerWebhookResourceIT {
                         ),
                         FacebookEntry(
                             "125", 125L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("457"),
                                     personWithId("3565"),
                                     null,
-                                    FacebookPostback(
+                                    PostbackReceived(
                                         "1234L2",
                                         "TITLE",
                                         "yes"
@@ -264,12 +264,12 @@ internal class MessengerWebhookResourceIT {
                     requestObject = "page", entry = listOf(
                         FacebookEntry(
                             "124", 123L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("456"),
                                     personWithId("354"),
-                                    FacebookMessage(
+                                    MessageReceived(
                                         text = "Test",
                                         mid = "3"
                                     ),
@@ -279,12 +279,12 @@ internal class MessengerWebhookResourceIT {
                         ),
                         FacebookEntry(
                             "124", 123L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("456"),
                                     personWithId("354"),
-                                    FacebookMessage(
+                                    MessageReceived(
                                         text = "Test",
                                         mid = "3"
                                     ),
@@ -307,13 +307,13 @@ internal class MessengerWebhookResourceIT {
                     requestObject = "page", entry = listOf(
                         FacebookEntry(
                             "127", 123L, listOf(
-                                FacebookMessaging(
+                                MessagingReceived(
                                     1234L,
                                     null,
                                     personWithId("456"),
                                     personWithId("354"),
                                     null,
-                                    FacebookPostback(
+                                    PostbackReceived(
                                         "1234L2",
                                         "TITLE",
                                         "yes"

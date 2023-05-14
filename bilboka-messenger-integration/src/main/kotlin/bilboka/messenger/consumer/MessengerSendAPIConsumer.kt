@@ -2,7 +2,7 @@ package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.AttachmentType
-import bilboka.messenger.dto.FacebookMessaging
+import bilboka.messenger.dto.FacebookSendRequest
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.*
 import org.slf4j.LoggerFactory
@@ -21,7 +21,7 @@ class MessengerSendAPIConsumer(
     private val mapper = jacksonObjectMapper()
     private val client = OkHttpClient()
 
-    fun sendMessage(message: FacebookMessaging) {
+    fun sendMessage(message: FacebookSendRequest) {
         logger.info(
             "Sender melding '${if (logger.isTraceEnabled) message.message?.text else ""}' " +
                     "til ${message.recipient?.get("id")}"

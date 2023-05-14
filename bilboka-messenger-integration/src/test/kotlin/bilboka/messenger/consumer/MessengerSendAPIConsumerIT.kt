@@ -2,7 +2,7 @@ package bilboka.messenger.consumer
 
 import bilboka.messenger.MessengerProperties
 import bilboka.messenger.dto.FacebookMessage
-import bilboka.messenger.dto.FacebookMessaging
+import bilboka.messenger.dto.FacebookSendRequest
 import io.mockk.InternalPlatformDsl.toStr
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -58,11 +58,10 @@ internal class MessengerSendAPIConsumerIT {
         val recipient = mapOf(Pair("id", "123"))
         val testMessage = "detteerentest"
 
-        val testFBMessage = FacebookMessaging(
+        val testFBMessage = FacebookSendRequest(
             recipient = recipient,
             message = FacebookMessage(
                 text = testMessage,
-                mid = null
             )
         )
 

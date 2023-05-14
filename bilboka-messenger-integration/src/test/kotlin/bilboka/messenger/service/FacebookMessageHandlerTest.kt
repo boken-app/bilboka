@@ -2,10 +2,7 @@ package bilboka.messenger.service
 
 import bilboka.messagebot.MessageBot
 import bilboka.messenger.FacebookMessenger
-import bilboka.messenger.dto.FacebookEntry
-import bilboka.messenger.dto.FacebookMessage
-import bilboka.messenger.dto.FacebookMessaging
-import bilboka.messenger.dto.FacebookPostback
+import bilboka.messenger.dto.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -60,13 +57,13 @@ internal class FacebookMessageHandlerTest {
                 time = 3L,
                 id = "1",
                 messaging = listOf(
-                    FacebookMessaging(
+                    MessagingReceived(
                         sender = mapOf(Pair("id", senderID)),
                         timestamp = 2L,
-                        message = FacebookMessage(
+                        message = MessageReceived(
                             text = testMessage
                         ),
-                        postback = FacebookPostback(
+                        postback = PostbackReceived(
                             "32542",
                             "title",
                             payload = "postback_payload"
@@ -83,10 +80,10 @@ internal class FacebookMessageHandlerTest {
         time = 3L,
         id = "1",
         messaging = listOf(
-            FacebookMessaging(
+            MessagingReceived(
                 sender = mapOf(Pair("id", senderID)),
                 timestamp = 2L,
-                message = FacebookMessage(
+                message = MessageReceived(
                     text = testMessage
                 )
             )
@@ -97,10 +94,10 @@ internal class FacebookMessageHandlerTest {
         time = 3L,
         id = "1",
         messaging = listOf(
-            FacebookMessaging(
+            MessagingReceived(
                 sender = mapOf(Pair("id", senderID)),
                 timestamp = 2L,
-                postback = FacebookPostback(
+                postback = PostbackReceived(
                     "32542",
                     "title",
                     testMessage

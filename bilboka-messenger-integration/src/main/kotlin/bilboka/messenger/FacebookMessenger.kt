@@ -3,7 +3,7 @@ package bilboka.messenger
 import bilboka.messagebot.BotMessenger
 import bilboka.messenger.consumer.MessengerSendAPIConsumer
 import bilboka.messenger.dto.FacebookMessage
-import bilboka.messenger.dto.FacebookMessaging
+import bilboka.messenger.dto.FacebookSendRequest
 import bilboka.messenger.dto.QuickReply
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -23,7 +23,7 @@ class FacebookMessenger(
 
     override fun sendOptions(message: String, options: List<Pair<String, String>>, recipientID: String) {
         messengerConsumer.sendMessage(
-            FacebookMessaging(
+            FacebookSendRequest(
                 recipient = mapOf("id" to recipientID),
                 message = FacebookMessage(
                     text = message,
@@ -49,7 +49,7 @@ class FacebookMessenger(
 
     private fun sendReply(text: String, recipientPSID: String) {
         messengerConsumer.sendMessage(
-            FacebookMessaging(
+            FacebookSendRequest(
                 recipient = mapOf("id" to recipientPSID),
                 message = FacebookMessage(
                     text = text
