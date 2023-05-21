@@ -45,6 +45,8 @@ internal class VehicleInfoAutosys(
                     "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
                     "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
+                    "Hengervekt (m/brems): ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
+                    "Lengde: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde ?: "(ukjent)"} \n" +
                     "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
