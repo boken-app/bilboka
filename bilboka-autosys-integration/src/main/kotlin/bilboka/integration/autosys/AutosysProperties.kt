@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties("autosys")
 class AutosysProperties {
 
-    lateinit var akfDatautleveringUrl: String
-    lateinit var apiKey: String
+    var akfDatautleveringUrl: String? = null
+    var apiKey: String? = null
 
 }

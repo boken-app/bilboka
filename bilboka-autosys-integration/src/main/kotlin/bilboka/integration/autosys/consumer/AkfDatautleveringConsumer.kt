@@ -22,8 +22,8 @@ class AkfDatautleveringConsumer(
     private val client = OkHttpClient()
 
     // TODO Finne ut av hvordan man kan få inn props på riktig måte
-    private val akfDatautleveringUrl: String = autosysProperties.akfDatautleveringUrl
-    private val apiKey: String = autosysProperties.apiKey
+    private val akfDatautleveringUrl: String = autosysProperties.akfDatautleveringUrl ?: ""
+    private val apiKey: String = autosysProperties.apiKey ?: ""
 
     fun hentKjoretoydata(kjennemerke: String): AutosysKjoretoyResponseDto {
         client.newCall(
