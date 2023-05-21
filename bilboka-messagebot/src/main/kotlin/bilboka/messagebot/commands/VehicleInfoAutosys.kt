@@ -46,7 +46,7 @@ internal class VehicleInfoAutosys(
                     "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
                     "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
                     "Hengervekt (m/brems): ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
-                    "Lengde: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde ?: "(ukjent)"} \n" +
+                    "Lengde: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
                     "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
@@ -56,6 +56,10 @@ internal class VehicleInfoAutosys(
 
 private fun Number.kg(): String {
     return "$this kg"
+}
+
+private fun Int.formatFromMm(): String {
+    return "${(this / 1000.0).format()} m"
 }
 
 private fun Godkjenning.hasBevaringsverdig(): Boolean {
