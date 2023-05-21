@@ -254,7 +254,7 @@ class ConsumptionEstimatorTest {
 
 }
 
-fun bookEntryWhere(stuff: BookEntry.() -> Unit): BookEntry {
+private fun bookEntryWhere(stuff: BookEntry.() -> Unit): BookEntry {
     return mockk<BookEntry>(relaxed = true).apply {
         stuff()
         every { compareTo(any()) } answers { callOriginal() }
