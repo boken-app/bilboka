@@ -54,7 +54,10 @@ class BookEntry(id: EntityID<Int>) : IntEntity(id), Comparable<BookEntry> {
 
     override fun compareTo(other: BookEntry): Int {
         return when {
-            (dateTime != null && other.dateTime != null) -> compareValues(dateTime, other.dateTime)
+            (dateTime != null && other.dateTime != null) -> compareBy<BookEntry> { it.dateTime }
+                .thenComparing(compareBy { it.odometer })
+                .compare(this, other)
+
             (odometer != null && other.odometer != null) -> compareValues(odometer, other.odometer)
             else -> nullsFirst(compareBy<BookEntry> { it.dateTime })
                 .thenComparing(nullsLast(compareBy { odometer }))

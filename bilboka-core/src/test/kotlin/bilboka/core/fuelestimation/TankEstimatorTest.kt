@@ -26,6 +26,26 @@ class TankEstimatorTest {
         },
     )
 
+    private val entriesGivingTwoLitersPerUnitWith10LiterExtraFilled = listOf(
+        bookEntryWhere {
+            every { type } returns EntryType.FUEL
+            every { odometer } returns 1000
+            every { isFullTank } returns true
+        },
+        bookEntryWhere {
+            every { type } returns EntryType.FUEL
+            every { odometer } returns 1050.also { lastFullAt = it }
+            every { amount } returns 100.0
+            every { isFullTank } returns true
+        },
+        bookEntryWhere {
+            every { type } returns EntryType.FUEL
+            every { odometer } returns 1060
+            every { amount } returns 10.0
+            every { isFullTank } returns false
+        },
+    )
+
     @Test
     fun estimateNullWithoutData() {
         assertThat(TankEstimator.estimate(emptyList(), 10.0, 1000)).isNull()
@@ -61,6 +81,19 @@ class TankEstimatorTest {
         val estimate =
             TankEstimator.estimate(entries = entriesGivingTwoLitersPerUnit, 90.0, currentOdo = lastFullAt + 30)
         assertThat(estimate?.distanceFromEmpty).isEqualTo(15.0)
+    }
+
+    @Test
+    fun filledAfterLastFullTank_addsThatToTankEstimate() {
+        val estimate =
+            TankEstimator.estimate(
+                entries = entriesGivingTwoLitersPerUnitWith10LiterExtraFilled,
+                80.0,
+                currentOdo = lastFullAt + 30
+            )
+        assertThat(estimate).isNotNull
+        assertThat(estimate?.litersFromFull).isEqualTo(50.0)
+        assertThat(estimate?.litersFromEmpty).isEqualTo(30.0)
     }
 
     @Test
