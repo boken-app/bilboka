@@ -47,11 +47,11 @@ internal class TankEstimate(
     ) {
         vehicle.tankEstimate(odometer)?.run {
             conversation.sendReply(
-                "Tank-estimat: " +
-                        "Tanken er ${percentFull().format()} % full." +
-                        "Liter til full: ${litersFromEmpty.format()} \n" +
+                "Tank-estimat: \n" +
+                        "Tanken er ${percentFull().format()} % full. \n" +
                         "Liter igjen: ${litersFromEmpty.format()} \n" +
-                        "Distanse til tom tank: ${distanceFromEmpty.format()} ${vehicle.odometerUnit}\n"
+                        "Liter til full: ${litersFromFull.format()} \n" +
+                        "Ca. ${distanceFromEmpty.format()} ${vehicle.odometerUnit} til tom tank\n"
             )
         } ?: conversation.sendReply("Klarte ikke å estimere")
     }
