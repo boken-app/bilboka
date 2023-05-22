@@ -49,7 +49,8 @@ abstract class AbstractMessageBotIT : H2Test() {
         )
         vehicleService.addVehicle(
             name = "en testbil",
-            fuelType = FuelType.BENSIN
+            fuelType = FuelType.BENSIN,
+            tankVol = 100
         )
         vehicleService.addVehicle(
             name = "blå testbil",

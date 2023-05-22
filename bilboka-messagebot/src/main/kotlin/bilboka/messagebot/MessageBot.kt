@@ -44,6 +44,7 @@ class MessageBot {
             Helper(),
             VehicleInfo(vehicleService, userService),
             VehicleInfoAutosys(vehicleService, userService),
+            TankEstimate(vehicleService, userService),
             ReportGetter(book, vehicleService, userService),
             UserInfo(),
             RegisterUser(userService),
