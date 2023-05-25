@@ -27,13 +27,13 @@ internal class TankEstimate(
     override fun execute(conversation: Conversation, message: String) { // TODO samle verdier stegvis
         val extractor = StringMatchExtractor(message)
             .apply { extract(estimatMatcher) {} }
+        val odometer = extractor
+            .extract(ODOMETER_REGEX) { it.toInt() }
+            .also { if (it == null) conversation.sendReply("Mangler kilometerstand") }
         val vehicle = extractor
             .extract(VEHICLE_REGEX) {
                 vehicleService.findVehicle(it)
             }
-        val odometer = extractor
-            .extract(ODOMETER_REGEX) { it.toInt() }
-            .also { if (it == null) conversation.sendReply("Mangler kilometerstand") }
 
         vehicle?.apply {
             odometer?.let { replyWithInfo(this, conversation, it) }
