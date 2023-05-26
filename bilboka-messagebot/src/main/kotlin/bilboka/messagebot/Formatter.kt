@@ -17,6 +17,14 @@ fun Double?.format(): String {
     } ?: UKJENT
 }
 
+fun Double?.formatShort(): String {
+    return this?.let {
+        val instance = NumberFormat.getInstance(Locale.GERMANY)
+        instance.maximumFractionDigits = 0
+        return instance.format(this)
+    } ?: UKJENT
+}
+
 fun LocalDateTime?.format(): String {
     return this?.let {
         this.format(

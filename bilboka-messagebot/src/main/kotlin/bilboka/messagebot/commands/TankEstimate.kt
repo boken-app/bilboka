@@ -8,7 +8,7 @@ import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.commands.common.ODOMETER_REGEX
 import bilboka.messagebot.commands.common.StringMatchExtractor
 import bilboka.messagebot.commands.common.VEHICLE_REGEX
-import bilboka.messagebot.format
+import bilboka.messagebot.formatShort
 
 internal class TankEstimate(
     private val vehicleService: VehicleService,
@@ -48,10 +48,10 @@ internal class TankEstimate(
         vehicle.tankEstimate(odometer)?.run {
             conversation.sendReply(
                 "Tank-estimat: \n" +
-                        "Tanken er ${percentFull().format()} % full. \n" +
-                        "Liter igjen: ${litersFromEmpty.format()} \n" +
-                        "Liter til full: ${litersFromFull.format()} \n" +
-                        "Ca. ${distanceFromEmpty.format()} ${vehicle.odometerUnit} til tom tank\n"
+                        "Tanken er ${percentFull().formatShort()} % full. \n" +
+                        "Liter igjen: ${litersFromEmpty.formatShort()} \n" +
+                        "Liter til full: ${litersFromFull.formatShort()} \n" +
+                        "Ca. ${distanceFromEmpty.formatShort()} ${vehicle.odometerUnit} til tom tank\n"
             )
         } ?: conversation.sendReply("Klarte ikke å estimere")
     }
