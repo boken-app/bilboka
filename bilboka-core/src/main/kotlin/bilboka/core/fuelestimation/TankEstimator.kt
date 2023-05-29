@@ -14,11 +14,12 @@ object TankEstimator {
         return lastFull?.odometer
             ?.also { if (it > currentOdo) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
             ?.let { ((currentOdo - it) * lastEstimate.amountPerDistanceUnit) }
-            ?.let {
+            ?.let { consumedSinceFull ->
                 makeResult(
-                    litersFromFull = it - fueledSinceFull,
+                    litersFromFull = consumedSinceFull - fueledSinceFull,
                     tankVolume = tankVolume,
-                    consumptionPerDistance = lastEstimate.amountPerDistanceUnit
+                    consumptionPerDistance = lastEstimate.amountPerDistanceUnit,
+                    accuracy = 1 - (consumedSinceFull / (tankVolume + consumedSinceFull))
                 )
             }
     }
@@ -42,14 +43,16 @@ object TankEstimator {
     private fun makeResult(
         litersFromFull: Double,
         tankVolume: Double,
-        consumptionPerDistance: Double
+        consumptionPerDistance: Double,
+        accuracy: Double
     ): TankEstimateResult {
         val litersFromEmpty = litersFromEmpty(tankVolume, litersFromFull)
         return TankEstimateResult(
             fillRatio = litersFromEmpty / tankVolume,
             litersFromFull = litersFromFull,
             litersFromEmpty = litersFromEmpty,
-            distanceFromEmpty = litersFromEmpty / consumptionPerDistance
+            distanceFromEmpty = litersFromEmpty / consumptionPerDistance,
+            accuracy = accuracy
         )
     }
 
@@ -63,7 +66,8 @@ data class TankEstimateResult(
     val fillRatio: Double,
     val litersFromFull: Double,
     val litersFromEmpty: Double,
-    val distanceFromEmpty: Double
+    val distanceFromEmpty: Double,
+    val accuracy: Double
 ) {
     fun percentFull(): Double {
         return fillRatio * 100

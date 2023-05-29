@@ -51,9 +51,22 @@ internal class TankEstimate(
                         "Tanken er ${percentFull().formatShort()} % full. \n" +
                         "Liter igjen: ${litersFromEmpty.formatShort()} \n" +
                         "Liter til full: ${litersFromFull.formatShort()} \n" +
-                        "Ca. ${distanceFromEmpty.formatShort()} ${vehicle.odometerUnit} til tom tank\n"
+                        "Ca. ${distanceFromEmpty.formatShort()} ${vehicle.odometerUnit} til tom tank\n" +
+                        "(Nøyaktighet: ${accuracy.toAccuracyText()})\n"
             )
         } ?: conversation.sendReply("Klarte ikke å estimere")
     }
+}
 
+private fun Double.toAccuracyText(): String {
+    return when {
+        this == 1.0 -> "Eksakt"
+        this > 0.9 -> "Stor"
+        this > 0.8 -> "God"
+        this > 0.6 -> "Brukbar"
+        this > 0.4 -> "Middels"
+        this > 0.2 -> "Dårlig"
+        this > 0.1 -> "Minimal"
+        else -> "Ubrukelig"
+    }
 }

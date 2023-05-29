@@ -118,6 +118,85 @@ class TankEstimatorTest {
         }
     }
 
+    @Test
+    fun lotsOfFillingsGiveLowAccuracy() {
+        val estimate =
+            TankEstimator.estimate(
+                entries = listOf(
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 1000
+                        every { isFullTank } returns true
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 1050.also { lastFullAt = it }
+                        every { amount } returns 5.0
+                        every { isFullTank } returns true
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 1060
+                        every { amount } returns 10.0
+                        every { isFullTank } returns false
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 2160
+                        every { amount } returns 100.0
+                        every { isFullTank } returns false
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 3160
+                        every { amount } returns 100.0
+                        every { isFullTank } returns false
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 4360
+                        every { amount } returns 100.0
+                        every { isFullTank } returns false
+                    },
+                ),
+                120.0,
+                currentOdo = 4370
+            )
+        assertThat(estimate).isNotNull
+        assertThat(estimate?.litersFromFull).isEqualTo(22.0)
+        assertThat(estimate?.accuracy).isLessThan(0.5)
+    }
+
+    @Test
+    fun littleFillingsGiveHighAccuracy() {
+        val estimate = TankEstimator.estimate(
+            listOf(
+                bookEntryWhere {
+                    every { type } returns EntryType.FUEL
+                    every { odometer } returns 1000
+                    every { isFullTank } returns true
+                },
+                bookEntryWhere {
+                    every { type } returns EntryType.FUEL
+                    every { odometer } returns 1050.also { lastFullAt = it }
+                    every { amount } returns 100.0
+                    every { isFullTank } returns true
+                },
+            ), 90.0, lastFullAt + 10
+        )
+
+        assertThat(estimate?.litersFromFull).isEqualTo(20.0)
+        assertThat(estimate?.accuracy).isGreaterThan(0.5)
+        assertThat(estimate?.accuracy).isNotEqualTo(1.0)
+    }
+
+    @Test
+    fun estimateAtFullGivesFullAccuracy() {
+        val estimate = TankEstimator.estimate(entriesGivingTwoLitersPerUnit, 90.0, lastFullAt)
+
+        assertThat(estimate?.litersFromFull).isEqualTo(0.0)
+        assertThat(estimate?.accuracy).isEqualTo(1.0)
+    }
 }
 
 private fun bookEntryWhere(stuff: BookEntry.() -> Unit): BookEntry {
