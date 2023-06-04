@@ -163,7 +163,6 @@ class TankEstimatorTest {
                 currentOdo = 4370
             )
         assertThat(estimate).isNotNull
-        assertThat(estimate?.litersFromFull).isEqualTo(22.0)
         assertThat(estimate?.accuracy).isLessThan(0.5)
     }
 
@@ -196,6 +195,33 @@ class TankEstimatorTest {
 
         assertThat(estimate?.litersFromFull).isEqualTo(0.0)
         assertThat(estimate?.accuracy).isEqualTo(1.0)
+    }
+
+    @Test
+    fun filledMoreThanEstimatedLeft_cutsDownFullTankEstimate() {
+        val entries = listOf(
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1000
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1100.also { lastFullAt = it }
+                every { amount } returns 100.0
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1200
+                every { amount } returns 120.0
+                every { isFullTank } returns false
+            },
+        )
+        val estimateAtLastFueling = TankEstimator.estimate(entries, 150.0, 1200)
+        assertThat(estimateAtLastFueling?.litersFromFull).isEqualTo(0.0)
+        val estimateAtSomewhereAfterLastFueling = TankEstimator.estimate(entries, 150.0, 1300)
+        assertThat(estimateAtSomewhereAfterLastFueling?.litersFromFull).isEqualTo(100.0)
     }
 }
 

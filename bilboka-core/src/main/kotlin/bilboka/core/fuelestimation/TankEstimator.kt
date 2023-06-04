@@ -28,10 +28,6 @@ object TankEstimator {
             }
     }
 
-    private fun Collection<BookEntry>.lastFull(): BookEntry? {
-        return sort().lastOrNull { it.isFullTank == true && it.odometer != null }
-    }
-
     private fun Collection<BookEntry>.amountFromFullEstimatedFrom(
         lastFull: BookEntry,
         consumptionPerDistance: Double,
@@ -52,6 +48,9 @@ object TankEstimator {
                     }
                     if (it.type == EntryType.FUEL) {
                         currentEstimateLeftToFull -= it.amount ?: 0.0
+                    }
+                    if (currentEstimateLeftToFull < 0.0) {
+                        currentEstimateLeftToFull = 0.0
                     }
                 }
             }
