@@ -8,18 +8,22 @@ object TankEstimator {
 
     fun estimate(entries: Collection<BookEntry>, tankVolume: Double, currentOdo: Int): TankEstimateResult? {
         val lastEstimate = ConsumptionEstimator.lastEstimate(entries) ?: return null
-        val lastFull = entries.lastFull()
-        val fueledSinceFull = lastFull?.let { entries.fuelFilledAfter(it) } ?: 0.0
+
+        val sortedEntries = entries.sort()
+        val lastFull = sortedEntries.lastOrNull { it.isFullTank == true && it.odometer != null }
+
+        val litersFromFull = lastFull?.let {
+            entries.amountFromFullEstimatedFrom(it, lastEstimate.amountPerDistanceUnit, currentOdo)
+        } ?: 0.0
 
         return lastFull?.odometer
             ?.also { if (it > currentOdo) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
-            ?.let { ((currentOdo - it) * lastEstimate.amountPerDistanceUnit) }
-            ?.let { consumedSinceFull ->
+            ?.let { lastFullOdo ->
                 makeResult(
-                    litersFromFull = consumedSinceFull - fueledSinceFull,
+                    litersFromFull = litersFromFull,
                     tankVolume = tankVolume,
                     consumptionPerDistance = lastEstimate.amountPerDistanceUnit,
-                    accuracy = 1 - (consumedSinceFull / (tankVolume + consumedSinceFull))
+                    accuracy = 1 - ((currentOdo - lastFullOdo) / (tankVolume + (currentOdo - lastFullOdo)))
                 )
             }
     }
@@ -28,15 +32,30 @@ object TankEstimator {
         return sort().lastOrNull { it.isFullTank == true && it.odometer != null }
     }
 
-    private fun Collection<BookEntry>.fuelFilledAfter(lastFull: BookEntry): Double {
+    private fun Collection<BookEntry>.amountFromFullEstimatedFrom(
+        lastFull: BookEntry,
+        consumptionPerDistance: Double,
+        estimationPointOdo: Int
+    ): Double {
         sort().run {
-            var sum: Double = 0.0
+            var currentEstimateLeftToFull = 0.0
+            var lastOdometer =
+                lastFull.odometer ?: throw IllegalStateException("Mangler kilometerstand på siste fulle tank")
+
             forEach {
-                if (it > lastFull && it.type == EntryType.FUEL) {
-                    sum += it.amount ?: 0.0
+                if (it > lastFull) {
+                    val odoAtCurrent = it.odometer
+
+                    if (odoAtCurrent != null) {
+                        currentEstimateLeftToFull += (odoAtCurrent - lastOdometer) * consumptionPerDistance
+                        lastOdometer = odoAtCurrent
+                    }
+                    if (it.type == EntryType.FUEL) {
+                        currentEstimateLeftToFull -= it.amount ?: 0.0
+                    }
                 }
             }
-            return sum
+            return currentEstimateLeftToFull + (estimationPointOdo - lastOdometer) * consumptionPerDistance
         }
     }
 
