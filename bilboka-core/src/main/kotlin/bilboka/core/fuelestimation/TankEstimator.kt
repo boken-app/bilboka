@@ -17,13 +17,14 @@ object TankEstimator {
         } ?: 0.0
 
         return lastFull?.odometer
-            ?.also { if (it > currentOdo) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
-            ?.let { lastFullOdo ->
+            ?.let { currentOdo - it }
+            ?.also { if (it < 0) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
+            ?.let { drivenSinceLastConfirmedFull ->
                 makeResult(
                     litersFromFull = litersFromFull,
                     tankVolume = tankVolume,
                     consumptionPerDistance = lastEstimate.amountPerDistanceUnit,
-                    accuracy = 1 - ((currentOdo - lastFullOdo) / (tankVolume + (currentOdo - lastFullOdo)))
+                    accuracy = 1 - (drivenSinceLastConfirmedFull / (tankVolume + drivenSinceLastConfirmedFull))
                 )
             }
     }

@@ -223,6 +223,28 @@ class TankEstimatorTest {
         val estimateAtSomewhereAfterLastFueling = TankEstimator.estimate(entries, 150.0, 1300)
         assertThat(estimateAtSomewhereAfterLastFueling?.litersFromFull).isEqualTo(100.0)
     }
+
+    @Test
+    fun neverFullGivesNull() {
+        assertThat(
+            TankEstimator.estimate(
+                listOf(
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 1000
+                        every { isFullTank } returns false
+                    },
+                    bookEntryWhere {
+                        every { type } returns EntryType.FUEL
+                        every { odometer } returns 1050
+                        every { amount } returns 100.0
+                        every { isFullTank } returns false
+                    },
+                ), 90.0, 1100
+            )
+        )
+            .isNull()
+    }
 }
 
 private fun bookEntryWhere(stuff: BookEntry.() -> Unit): BookEntry {
