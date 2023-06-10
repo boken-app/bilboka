@@ -41,7 +41,7 @@ class ProfileConfig(
                                     payload = "vedlikeholdspunkt"
                                 ),
                                 PersistentMenuItem(
-                                    title = "Hjelp",
+                                    title = "Hjelp!",
                                     payload = "hlp"
                                 ),
                             )
@@ -53,6 +53,10 @@ class ProfileConfig(
                                 IceBreakerAction(
                                     question = "Tank",
                                     payload = "tnk"
+                                ),
+                                IceBreakerAction(
+                                    question = "Hjelp",
+                                    payload = "hlp"
                                 )
                             )
                         )
