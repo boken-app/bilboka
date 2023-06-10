@@ -137,9 +137,9 @@ internal class FuelEntryAdder(
 
         override val collectedData = linkedMapOf(
             Pair(FuelDataType.VEHICLE, QueryableDataItem("Hvilken bil? \uD83D\uDE97")),
-            Pair(FuelDataType.ODOMETER, QueryableDataItem("Kilometerstand? 🔢", mayBeUnknown = true)),
             Pair(FuelDataType.AMOUNT, QueryableDataItem("Antall liter?", mayBeUnknown = true)),
             Pair(FuelDataType.COST, QueryableDataItem("Kroner? 💸", mayBeUnknown = true)),
+            Pair(FuelDataType.ODOMETER, QueryableDataItem("Kilometerstand? 🔢", mayBeUnknown = true)),
             Pair(FuelDataType.COST_PER_AMOUNT, QueryableDataItem("Pris per liter?", mayBeUnknown = true)),
         )
         val vehicle = collectedData[FuelDataType.VEHICLE]!!

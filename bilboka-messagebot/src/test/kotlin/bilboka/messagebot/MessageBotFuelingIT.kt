@@ -285,10 +285,6 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "XC 70",
-            reply = "Kilometerstand? 🔢"
-        )
-        processMessagaAndAssertReply(
-            message = "234567",
             reply = "Antall liter?"
         )
         processMessagaAndAssertReply(
@@ -297,6 +293,10 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "600.5",
+            reply = "Kilometerstand? 🔢"
+        )
+        processMessagaAndAssertReply(
+            message = "234567",
             reply = { it.contains("Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 600,5 kr, 13,17 kr/l") }
         )
     }
@@ -305,11 +305,11 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun stepWiseFuelAdding_askForNextDataWhenVehicleProvided() {
         processMessagaAndAssertReply(
             message = "Drivstoff XC 70",
-            reply = "Kilometerstand? 🔢"
+            reply = "Antall liter?"
         )
         processMessagaAndAssertReply(
-            message = "234567",
-            reply = "Antall liter?"
+            message = "30",
+            reply = "Kroner? \uD83D\uDCB8"
         )
     }
 
@@ -317,10 +317,6 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun stepWiseFuelAdding_canHaveUnknowns() {
         processMessagaAndAssertReply(
             message = "Drivstoff XC 70",
-            reply = "Kilometerstand? 🔢"
-        )
-        processMessagaAndAssertReply(
-            message = "ukjent",
             reply = "Antall liter?"
         )
         processMessagaAndAssertReply(
@@ -329,6 +325,10 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "?",
+            reply = "Kilometerstand? 🔢"
+        )
+        processMessagaAndAssertReply(
+            message = "ukjent",
             reply = "Pris per liter?"
         )
         processMessagaAndAssertReply(
@@ -361,14 +361,14 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     fun stepWiseFuelAdding_canUsePricePerLiterToFindAmountWhileAskingForMissingOdometer() {
         processMessagaAndAssertReply(
             message = "Drivstoff XC 70 761,52 kr",
-            reply = "Kilometerstand? \uD83D\uDD22"
-        )
-        processMessagaAndAssertReply(
-            message = "234567",
             reply = "Antall liter?"
         )
         processMessagaAndAssertReply(
             message = "vet ikke",
+            reply = "Kilometerstand? \uD83D\uDD22"
+        )
+        processMessagaAndAssertReply(
+            message = "234567",
             reply = "Pris per liter?"
         )
         processMessagaAndAssertReply(
