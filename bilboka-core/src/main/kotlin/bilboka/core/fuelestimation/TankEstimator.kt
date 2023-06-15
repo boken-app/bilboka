@@ -45,18 +45,19 @@ object TankEstimator {
                 if (it > lastFull) {
                     val odoAtCurrent = it.odometer
 
-                    currentEstimateLeftToFull = currentEstimateLeftToFull.coerceIn(0.0, tankVolume)
                     if (odoAtCurrent != null) {
                         currentEstimateLeftToFull += (odoAtCurrent - lastOdometer) * consumptionPerDistance
+                        currentEstimateLeftToFull = currentEstimateLeftToFull.coerceIn(0.0, tankVolume)
                         lastOdometer = odoAtCurrent
                     }
                     if (it.type == EntryType.FUEL) {
                         currentEstimateLeftToFull -= it.amount ?: 0.0
+                        currentEstimateLeftToFull = currentEstimateLeftToFull.coerceIn(0.0, tankVolume)
                     }
-                    currentEstimateLeftToFull = currentEstimateLeftToFull.coerceIn(0.0, tankVolume)
                 }
             }
-            return currentEstimateLeftToFull + (estimationPointOdo - lastOdometer) * consumptionPerDistance
+            return (currentEstimateLeftToFull + (estimationPointOdo - lastOdometer) * consumptionPerDistance)
+                .coerceIn(0.0, tankVolume)
         }
     }
 
