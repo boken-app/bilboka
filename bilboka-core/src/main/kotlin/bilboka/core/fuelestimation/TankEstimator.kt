@@ -14,7 +14,7 @@ object TankEstimator {
         val lastFull = sortedEntries.lastOrNull { it.isFullTank == true && it.odometer != null }
 
         val litersFromFull = lastFull?.let {
-            entries.amountFromFullEstimatedFrom(it, lastEstimate.amountPerDistanceUnit, currentOdo)
+            entries.amountFromFullEstimatedFrom(it, lastEstimate.amountPerDistanceUnit, currentOdo, tankVolume)
         } ?: 0.0
 
         return lastFull?.odometer
@@ -33,7 +33,8 @@ object TankEstimator {
     private fun Collection<BookEntry>.amountFromFullEstimatedFrom(
         lastFull: BookEntry,
         consumptionPerDistance: Double,
-        estimationPointOdo: Int
+        estimationPointOdo: Int,
+        tankVolume: Double
     ): Double {
         sort().run {
             var currentEstimateLeftToFull = 0.0
@@ -51,9 +52,7 @@ object TankEstimator {
                     if (it.type == EntryType.FUEL) {
                         currentEstimateLeftToFull -= it.amount ?: 0.0
                     }
-                    if (currentEstimateLeftToFull < 0.0) {
-                        currentEstimateLeftToFull = 0.0
-                    }
+                    currentEstimateLeftToFull = currentEstimateLeftToFull.coerceIn(0.0, tankVolume)
                 }
             }
             return currentEstimateLeftToFull + (estimationPointOdo - lastOdometer) * consumptionPerDistance
