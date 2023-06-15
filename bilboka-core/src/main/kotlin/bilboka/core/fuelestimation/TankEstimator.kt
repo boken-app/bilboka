@@ -1,5 +1,6 @@
 package bilboka.core.fuelestimation
 
+import bilboka.core.ImpossibleBilbokaActionException
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
 import bilboka.core.book.domain.sort
@@ -93,4 +94,4 @@ data class TankEstimateResult(
     }
 }
 
-class TankEstimationException(message: String) : IllegalStateException(message)
+class TankEstimationException(message: String) : ImpossibleBilbokaActionException(message)

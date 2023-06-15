@@ -1,7 +1,7 @@
 package bilboka.messagebot
 
+import bilboka.core.ImpossibleBilbokaActionException
 import bilboka.core.book.Book
-import bilboka.core.book.BookEntryException
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.VehicleService
@@ -67,7 +67,7 @@ class MessageBot {
             botMessenger.sendMessage("\uD83D\uDC40 Kjenner ikke til bil ${e.vehicleName}", senderID)
         } catch (e: ImpossibleChatActionException) {
             botMessenger.sendMessage("🤖 Gikk ikke! ${e.message}", senderID)
-        } catch (e: BookEntryException) {
+        } catch (e: ImpossibleBilbokaActionException) {
             botMessenger.sendMessage("Gikk ikke! ${e.message}", senderID)
         } catch (e: Exception) {
             logger.error("Feil ved prosessering av melding '$message'", e)

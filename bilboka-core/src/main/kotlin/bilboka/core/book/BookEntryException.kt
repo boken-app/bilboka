@@ -1,3 +1,5 @@
 package bilboka.core.book
 
-open class BookEntryException(message: String) : RuntimeException(message)
+import bilboka.core.ImpossibleBilbokaActionException
+
+open class BookEntryException(message: String) : ImpossibleBilbokaActionException(message)

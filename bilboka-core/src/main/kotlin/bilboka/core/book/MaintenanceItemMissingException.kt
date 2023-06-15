@@ -1,5 +1,7 @@
 package bilboka.core.book
 
+import bilboka.core.ImpossibleBilbokaActionException
+
 class MaintenanceItemMissingException(maintenanceItem: String) :
-    RuntimeException("Ingen registrerte vedlikeholdspunkt $maintenanceItem") {
+    ImpossibleBilbokaActionException("Ingen registrerte vedlikeholdspunkt $maintenanceItem") {
 }
