@@ -4,10 +4,7 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
-import bilboka.messagebot.commands.common.CarBookCommand
-import bilboka.messagebot.commands.common.ODOMETER_REGEX
-import bilboka.messagebot.commands.common.StringMatchExtractor
-import bilboka.messagebot.commands.common.VEHICLE_REGEX
+import bilboka.messagebot.commands.common.*
 import bilboka.messagebot.formatShort
 
 internal class TankEstimate(
@@ -15,38 +12,47 @@ internal class TankEstimate(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val estimatMatcher = Regex("estimat", RegexOption.IGNORE_CASE)
-    private val matcher = Regex(
-        "(estimat)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)\\s($ODOMETER_REGEX)",
-        RegexOption.IGNORE_CASE
-    )
 
     override fun isMatch(message: String): Boolean {
-        return matcher.containsMatchIn(message)
+        return estimatMatcher.containsMatchIn(message)
     }
 
-    override fun execute(conversation: Conversation, message: String) { // TODO samle verdier stegvis
-        val extractor = StringMatchExtractor(message)
-            .apply { extract(estimatMatcher) {} }
-        val odometer = extractor
-            .extract(ODOMETER_REGEX) { it.toInt() }
-            .also { if (it == null) conversation.sendReply("Mangler kilometerstand") }
-        val vehicle = extractor
-            .extract(VEHICLE_REGEX) {
-                vehicleService.findVehicle(it)
+    override fun execute(conversation: Conversation, message: String) {
+        val state = conversation.withdrawClaim<State>(this)?.apply {
+            recordProvidedData(message) {
+                when (this) {
+                    State.EstimationDataTypes.VEHICLE ->
+                        VEHICLE_REGEX.find(message)
+                            ?.let { vehicleService.getVehicle(it.value) }
+
+                    State.EstimationDataTypes.ODOMETER -> message.toInt()
+                }
             }
+        } ?: firstAttempt(message)
 
-        vehicle?.apply {
-            odometer?.let { replyWithInfo(this, conversation, it) }
-        } ?: conversation.sendReply("Fant ikke bil")
+        state.complete()?.apply {
+            conversation.replyWithInfo(vehicle.content as Vehicle, odometer.content as Int)
+        } ?: askForNext(conversation, state)
     }
 
-    private fun replyWithInfo(
+    private fun firstAttempt(message: String): State {
+        return State().apply {
+            with(StringMatchExtractor(message)) {
+                extract(estimatMatcher) {}
+                extract(ODOMETER_REGEX) { it.toInt() }
+                    .also { odometer.content = it }
+                extract(VEHICLE_REGEX) { vehicleService.findVehicle(it) }
+                    .also { vehicle.content = it }
+            }
+        }
+    }
+
+    private fun Conversation.replyWithInfo(
         vehicle: Vehicle,
-        conversation: Conversation,
         odometer: Int
     ) {
         vehicle.tankEstimate(odometer)?.run {
-            conversation.sendReply(
+            sendReply(
                 "Tank-estimat: \n" +
                         "Tanken er ${percentFull().formatShort()} % full. \n" +
                         "Liter igjen: ${litersFromEmpty.formatShort()} \n" +
@@ -54,7 +60,25 @@ internal class TankEstimate(
                         "Ca. ${distanceFromEmpty.formatShort()} ${vehicle.odometerUnit} til tom tank\n" +
                         "(Treffsikkerhet: ${accuracy.toAccuracyText()})\n"
             )
-        } ?: conversation.sendReply("Klarte ikke å estimere")
+        } ?: sendReply("Klarte ikke å estimere")
+    }
+
+    class State : DataCollectingChatState<State.EstimationDataTypes>() {
+        enum class EstimationDataTypes { VEHICLE, ODOMETER }
+
+        override val collectedData = linkedMapOf(
+            Pair(EstimationDataTypes.VEHICLE, QueryableDataItem("Hvilken bil? \uD83D\uDE97")),
+            Pair(EstimationDataTypes.ODOMETER, QueryableDataItem("Kilometerstand? 🔢")),
+        )
+        val vehicle = collectedData[EstimationDataTypes.VEHICLE]!!
+        val odometer = collectedData[EstimationDataTypes.ODOMETER]!!
+
+        override fun complete(): State? {
+            if (vehicle.isMissing() || odometer.isMissing()) {
+                return null
+            }
+            return this
+        }
     }
 }
 

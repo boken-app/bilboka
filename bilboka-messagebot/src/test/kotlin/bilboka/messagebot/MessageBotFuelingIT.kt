@@ -53,6 +53,40 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun canAskForTankEstimateStepWise() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34569 30l 300kr",
+            reply = "✅ Registrert tanking av en testbil ved 34569 km: 30 liter for 300 kr, 10 kr/l ⛽"
+        )
+        assertThat(testMessenger.optionsAsked).contains("Full tank")
+        processMessagaAndAssertReply(
+            message = "Ja",
+            reply = { it.contains("Full tank registrert") }
+        )
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 34589 30l 300kr",
+            reply = "✅ Registrert tanking av en testbil ved 34589 km: 30 liter for 300 kr, 10 kr/l ⛽"
+        )
+        assertThat(testMessenger.optionsAsked).contains("Full tank")
+        processMessagaAndAssertReply(
+            message = "Ja",
+            reply = { it.contains("Full tank registrert") }
+        )
+        processMessagaAndAssertReply(
+            message = "estimat",
+            reply = { it.contains("Hvilken bil?") }
+        )
+        processMessagaAndAssertReply(
+            message = "en testbil",
+            reply = { it.contains("Kilometerstand?") }
+        )
+        processMessagaAndAssertReply(
+            message = "34599",
+            reply = { it.contains("Tank-estimat") }
+        )
+    }
+
+    @Test
     fun sendAddFuelRequestDoesNotAskForFullTankIfUnknownOdo() {
         processMessagaAndAssertReply(
             message = "Drivstoff en testbil 30l 300kr",
