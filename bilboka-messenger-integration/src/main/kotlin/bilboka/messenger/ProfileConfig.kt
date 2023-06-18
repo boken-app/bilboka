@@ -41,6 +41,10 @@ class ProfileConfig(
                                     payload = "vedlikeholdspunkt"
                                 ),
                                 PersistentMenuItem(
+                                    title = "Tank-estimat",
+                                    payload = "estimat"
+                                ),
+                                PersistentMenuItem(
                                     title = "Hjelp!",
                                     payload = "hlp"
                                 ),
