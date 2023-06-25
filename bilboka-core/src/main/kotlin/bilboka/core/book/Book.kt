@@ -104,7 +104,7 @@ class Book(
     }
 
     fun getReport(vehicle: Vehicle, year: Int? = null): ByteArray? {
-        return if (year != null) reportOfYear(vehicle, Year.of(year)) else reportOfLastYear(vehicle)
+        return if (year != null) reportOfYear(vehicle, Year.of(year)) else reportOfLastEntries(vehicle)
     }
 
     private fun reportOfYear(vehicle: Vehicle, year: Year): ByteArray? {
@@ -114,10 +114,16 @@ class Book(
         )
     }
 
-    private fun reportOfLastYear(vehicle: Vehicle): ByteArray? {
-        return reportIfNotEmpty(
-            header = "Rapport for siste år, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
-            entries = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
+    private fun reportOfLastEntries(vehicle: Vehicle): ByteArray? {
+        val lastYear = vehicle.bookEntries.since(LocalDate.now().minusYears(1))
+        val last10k = vehicle.lastOdometer()?.minus(10000)?.let { vehicle.bookEntries.since(it) } ?: listOf()
+        return if (lastYear.size > last10k.size)
+            reportIfNotEmpty(
+                header = "Rapport for siste år, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+                entries = lastYear
+            ) else reportIfNotEmpty(
+            header = "Rapport for siste 10 000 km, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            entries = last10k
         )
     }
 
@@ -175,6 +181,11 @@ private fun SizedIterable<BookEntry>.since(date: LocalDate): List<BookEntry> {
         ?.let { firstEntry -> filter { it >= firstEntry } } ?: emptyList()
 }
 
+private fun SizedIterable<BookEntry>.since(odo: Int): List<BookEntry> {
+    return firstEntryAfter(odo)
+        ?.let { firstEntry -> filter { it >= firstEntry } } ?: emptyList()
+}
+
 private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): List<BookEntry> {
     val firstEntryIncluded = firstEntryAfter(from.atStartOfDay())
     val firstEntryNotIncluded = firstEntryAfter(to.atStartOfDay())
@@ -190,5 +201,10 @@ private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): Li
 
 private fun SizedIterable<BookEntry>.firstEntryAfter(date: LocalDateTime): BookEntry? {
     sorted().forEach { if (it.dateTime?.run { this > date } == true) return it }
+    return null
+}
+
+private fun SizedIterable<BookEntry>.firstEntryAfter(odo: Int): BookEntry? {
+    sorted().forEach { if (it.odometer?.run { this > odo } == true) return it }
     return null
 }
