@@ -35,6 +35,24 @@ class MessageBotIT : AbstractMessageBotIT() {
         Assertions.assertThat(testMessenger.recipient).isEqualTo(validSender)
     }
 
+    @Test
+    fun reportGenerationAsksForVehicle() {
+        processMessagaAndAssertReply(
+            message = "tnk xc70 56789 34l 456kr",
+            reply = { it.contains("Registrert tanking") }
+        )
+        skipFullTankQuestion()
+        processMessagaAndAssertReply(
+            message = "rapport",
+            reply = { it.contains("Hvilken bil?") }
+        )
+
+        messageBot.processMessage("xc70", validSender)
+
+        Assertions.assertThat(testMessenger.fileSent).isNotNull
+        Assertions.assertThat(testMessenger.recipient).isEqualTo(validSender)
+    }
+
     @Nested
     inner class UserTests {
         @Test
