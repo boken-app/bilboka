@@ -41,6 +41,14 @@ class ProfileConfig(
                                     payload = "vedlikeholdspunkt"
                                 ),
                                 PersistentMenuItem(
+                                    title = "Rapport",
+                                    payload = "rapport"
+                                ),
+                                PersistentMenuItem(
+                                    title = "Vedlikeholdsrapport",
+                                    payload = "rapport vedl"
+                                ),
+                                PersistentMenuItem(
                                     title = "Tank-estimat",
                                     payload = "estimat"
                                 ),

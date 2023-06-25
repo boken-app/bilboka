@@ -38,7 +38,9 @@ internal class ReportGetter(val book: Book, val vehicleService: VehicleService, 
             } else {
                 replyWithReportOrNothing(
                     conversation,
-                    filename = "rapport${year ?: ""}_${(vehicle.content as Vehicle).name.lowercase().replace(" ", "_")}"
+                    filename = "rapport${year.content as Int? ?: ""}_${
+                        (vehicle.content as Vehicle).name.lowercase().replace(" ", "_")
+                    }"
                 ) { book.getReport(vehicle.content as Vehicle, year.content as Int?) }
             }
         } ?: askForNext(conversation, state)
