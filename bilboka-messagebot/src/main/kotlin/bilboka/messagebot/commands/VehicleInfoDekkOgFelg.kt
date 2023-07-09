@@ -39,12 +39,18 @@ internal class VehicleInfoDekkOgFelg(
                     } \n" +
                     "${
                         data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dekkOgFelg?.akselDekkOgFelgKombinasjon
-                            ?.first()?.akselDekkOgFelg?.map {
+                            ?.first()
+                            ?.run {
                                 "Første kombinasjon: \n" +
-                                        "- Dekkdimensjon: ${it.dekkdimensjon} \n" +
-                                        "- Felgdimensjon: ${it.felgdimensjon} \n" +
-                                        "- Belastningskode: ${it.belastningskodeDekk} \n"
-                            }?.joinToString("\n") ?: "(ukjent)"
+                                        akselDekkOgFelg.map { aksel ->
+                                            "Aksel ${aksel.akselId}: \n" +
+                                                    aksel.dekkdimensjon?.let { "- Dekkdimensjon: $it \n" } +
+                                                    aksel.felgdimensjon?.let { "- Felgdimensjon: $it \n" } +
+                                                    aksel.belastningskodeDekk?.let { "- Belastningskode: $it \n" } +
+                                                    aksel.hastighetskodeDekk?.let { "- Hastighetskode: $it \n" } +
+                                                    aksel.innpress?.let { "- Innpress: $it \n" }
+                                        }.joinToString("\n")
+                            } ?: "(ukjent)"
                     } \n"
         )
     }
