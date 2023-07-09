@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
 import bilboka.integration.autosys.dto.Godkjenning
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.integration.autosys.dto.Registreringsstatus
@@ -51,6 +52,12 @@ internal class VehicleInfoAutosys(
                     "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
                     "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
         )
+        data.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
+            conversation.replyWithOptions(
+                "Dekk- og felgdata",
+                "autosys-dekkogfelg $it" to "Ja! 🚙"
+            )
+        }
     }
 }
 
