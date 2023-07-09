@@ -54,8 +54,8 @@ internal class VehicleInfoAutosys(
         )
         data.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
             conversation.replyWithOptions(
-                "Dekk- og felgdata",
-                "autosys-dekkogfelg $it" to "Ja! 🚙"
+                "",
+                "autosys-dekkogfelg $it" to "Dekk- og felgdata ⚫"
             )
         }
     }
