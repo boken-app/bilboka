@@ -43,14 +43,14 @@ internal class VehicleInfoDekkOgFelg(
                             ?.run {
                                 "Første kombinasjon: \n" +
                                         akselDekkOgFelg.map { aksel ->
-                                            "Aksel ${aksel.akselId}: \n" +
-                                                    aksel.dekkdimensjon?.let { "- Dekkdimensjon: $it \n" } +
-                                                    aksel.felgdimensjon?.let { "- Felgdimensjon: $it \n" } +
-                                                    aksel.belastningskodeDekk?.let { "- Belastningskode: $it \n" } +
-                                                    aksel.hastighetskodeDekk?.let { "- Hastighetskode: $it \n" } +
-                                                    aksel.innpress?.let { "- Innpress: $it \n" }
+                                            "  Aksel ${aksel.akselId}: \n" +
+                                                    (aksel.dekkdimensjon?.let { "  - Dekkdimensjon: $it \n" } ?: "") +
+                                                    (aksel.felgdimensjon?.let { "  - Felgdimensjon: $it \n" } ?: "") +
+                                                    (aksel.belastningskodeDekk?.let { "  - Belastningskode: $it \n" } ?: "") +
+                                                    (aksel.hastighetskodeDekk?.let { "  - Hastighetskode: $it \n" } ?: "") +
+                                                    (aksel.innpress?.let { "  - Innpress: $it \n" } ?: "")
                                         }.joinToString("\n")
-                            } ?: "(ukjent)"
+                            } ?: "(ingen data)"
                     } \n"
         )
     }
