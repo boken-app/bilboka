@@ -2,6 +2,7 @@ package bilboka.messagebot.commands
 
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
+import bilboka.integration.autosys.dto.AkselDekkOgFelgKombinasjon
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
@@ -39,19 +40,23 @@ internal class VehicleInfoDekkOgFelg(
                     } \n" +
                     "${
                         data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dekkOgFelg?.akselDekkOgFelgKombinasjon
-                            ?.first()
-                            ?.run {
-                                "Første kombinasjon: \n" +
-                                        akselDekkOgFelg.map { aksel ->
-                                            "  Aksel ${aksel.akselId}: \n" +
-                                                    (aksel.dekkdimensjon?.let { "  - Dekkdimensjon: $it \n" } ?: "") +
-                                                    (aksel.felgdimensjon?.let { "  - Felgdimensjon: $it \n" } ?: "") +
-                                                    (aksel.belastningskodeDekk?.let { "  - Belastningskode: $it \n" } ?: "") +
-                                                    (aksel.hastighetskodeDekk?.let { "  - Hastighetskode: $it \n" } ?: "") +
-                                                    (aksel.innpress?.let { "  - Innpress: $it \n" } ?: "")
-                                        }.joinToString("\n")
-                            } ?: "(ingen data)"
+                            ?.mapIndexed { index, akselDekkOgFelgKombinasjon ->
+                                "---\nKombinasjon ${index + 1}: \n" + akselDekkOgFelgKombinasjon.write()
+                            }
+                            ?.joinToString("\n")
+                            ?: "(ingen data)"
                     } \n"
         )
+    }
+}
+
+fun AkselDekkOgFelgKombinasjon.write(): String {
+    return akselDekkOgFelg.joinToString("\n") { aksel ->
+        "  Aksel ${aksel.akselId}: \n" +
+                (aksel.dekkdimensjon?.let { "  - Dekkdimensjon: $it \n" } ?: "") +
+                (aksel.felgdimensjon?.let { "  - Felgdimensjon: $it \n" } ?: "") +
+                (aksel.belastningskodeDekk?.let { "  - Belastningskode: $it \n" } ?: "") +
+                (aksel.hastighetskodeDekk?.let { "  - Hastighetskode: $it \n" } ?: "") +
+                (aksel.innpress?.let { "  - Innpress: $it \n" } ?: "")
     }
 }
