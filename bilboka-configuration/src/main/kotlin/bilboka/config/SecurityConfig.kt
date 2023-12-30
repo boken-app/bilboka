@@ -1,4 +1,4 @@
-package bilboka.web.config
+package bilboka.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +16,8 @@ class SecurityConfig {
             .authorizeRequests { authorize ->
                 authorize
                     .antMatchers("/").permitAll() // Permit all requests to the root URL
+                    .antMatchers("/webhook").permitAll() // Permit all requests to messenger webhook
+                    .antMatchers("/privacy").permitAll() // Permit all requests to privacy policy
                     .antMatchers("/**/sample").permitAll() // Permit all requests to samples
                     .anyRequest().authenticated() // All other requests require authentication
             }

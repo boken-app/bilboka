@@ -1,5 +1,6 @@
-package bilboka.web.resource
+package bilboka.web
 
+import bilboka.web.resource.HelloResource
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
