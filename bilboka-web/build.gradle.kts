@@ -1,4 +1,3 @@
-import bilboka.dependencies.Libs
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -10,15 +9,20 @@ plugins {
 group = "bilboka"
 version = "0.0.1-SNAPSHOT"
 
-dependencies {
-    implementation(project(":bilboka-messagebot"))
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_17
+//}
 
+dependencies {
+    implementation(project(":bilboka-core"))
+    implementation(project(":bilboka-client"))
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    implementation(platform(Libs.okHttp))
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("org.mockito:mockito-core:3.3.3") // TODO trenger vi mockito?
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon

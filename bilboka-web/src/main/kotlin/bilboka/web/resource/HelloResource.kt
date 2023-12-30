@@ -1,4 +1,4 @@
-package bilboka.messenger.resource
+package bilboka.web.resource
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
