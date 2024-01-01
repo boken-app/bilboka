@@ -1,6 +1,6 @@
 package bilboka.web
 
-import bilboka.web.resource.HelloResource
+import bilboka.web.resource.VehicleResource
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(HelloResource::class)
+@WebMvcTest(VehicleResource::class)
 @ContextConfiguration(classes = [VehicleResourceTest.TestConfig::class])
 class VehicleResourceTest {
 

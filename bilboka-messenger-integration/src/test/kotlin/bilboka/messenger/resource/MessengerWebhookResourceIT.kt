@@ -43,12 +43,10 @@ import javax.crypto.spec.SecretKeySpec
 @ContextConfiguration(classes = [MessengerWebhookResourceIT.MessengerIntegrationConfig::class])
 internal class MessengerWebhookResourceIT {
 
-    // TODO Muligens lage skille på test og IT
-
     @MockkBean
     lateinit var messengerSendAPIConsumer: MessengerSendAPIConsumer
 
-    @MockkBean // TODO Kan gi mening med en integrasjonstest som ikke mocker denne
+    @MockkBean
     lateinit var messageBot: MessageBot
 
     @SpykBean

@@ -26,6 +26,9 @@ dependencies {
 
 	implementation("org.postgresql:postgresql:42.5.4")
 	implementation("org.flywaydb:flyway-core")
+
+	testImplementation("com.ninja-squad:springmockk:3.0.1")
+	testImplementation("io.mockk:mockk:1.10.6")
 }
 
 application {

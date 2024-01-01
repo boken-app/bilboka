@@ -13,6 +13,7 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .csrf { csrf -> csrf.ignoringAntMatchers("/webhook") } // Disable CSRF protection for /webhook
             .authorizeRequests { authorize ->
                 authorize
                     .antMatchers("/").permitAll() // Permit all requests to the root URL
