@@ -107,10 +107,14 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastOdometer(): Int? {
+        return lastOdometerEntry()?.odometer
+    }
+
+    fun lastOdometerEntry(): BookEntry? {
         return transaction {
             datedEntries()
                 .filter { it.odometer != null }
-                .maxByOrNull { it.dateTime!! }?.odometer
+                .maxByOrNull { it.dateTime!! }
         }
     }
 

@@ -49,7 +49,8 @@ internal class VehicleInfo(
                     "Tankvolum: ${vehicle.tankVolume?.let { "$it liter" } ?: "(ukjent)"} \n" +
                     "Drivstofftype: ${vehicle.fuelType ?: "(ukjent)"} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    "Sist registrert km-stand: ${vehicle.lastOdometer() ?: "-"} \n" +
+                    vehicle.lastOdometerEntry()
+                        ?.let { "Sist registrert km-stand: ${it.odometer ?: "-"} (${it.dateTime.formatAsDate()})\n" } +
                     "Kjørt siste år: ${getDistanceLastYear(vehicle)}"
         )
         conversation.replyWithOptions(
