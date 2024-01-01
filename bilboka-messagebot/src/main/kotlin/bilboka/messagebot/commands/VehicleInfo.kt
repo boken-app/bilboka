@@ -42,8 +42,11 @@ internal class VehicleInfo(
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ukjent)"} \n" +
                     "Siste forbruk: ${
-                        vehicle.lastConsumptionEstimate()?.litersPer10Km()
-                            ?.let { "${it.format()} liter per mil" } ?: "(mangler data)"
+                        vehicle.lastConsumptionEstimate()
+                            ?.let {
+                                "${it.litersPer10Km().format()} liter per mil " +
+                                        "(siste ${vehicle.odometerUnit?.convertToKilometers(it.estimatedAt.odometer!! - it.estimatedFrom.odometer!!)} km)"
+                            } ?: "(mangler data)"
                     } \n" +
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Tankvolum: ${vehicle.tankVolume?.let { "$it liter" } ?: "(ukjent)"} \n" +
