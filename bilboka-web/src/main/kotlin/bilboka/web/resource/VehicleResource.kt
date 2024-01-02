@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("vehicles")
@@ -34,7 +35,10 @@ class VehicleResource(
             odometerUnit = "km",
             fuelType = "BENSIN",
             tankVolume = 50,
-        ),
+            regStatus = "REGISTRERT",
+            lastOdometer = 234567,
+
+            ),
         "2" to VehicleResponse(
             id = "2",
             name = "Testbil 2",
@@ -42,6 +46,16 @@ class VehicleResource(
             odometerUnit = "mi",
             fuelType = "DIESEL",
             tankVolume = 70,
+            regStatus = "AVREGISTRERT",
+            lastOdometer = 123456,
+            understellsnummer = "12345678901234567",
+            sistePKK = LocalDate.of(2020, 1, 1),
+            fristPKK = LocalDate.of(2021, 1, 1),
+            regBevaringsverdig = true,
+            egenvekt = 2000,
+            nyttelast = 1000,
+            hengervektMBrems = 2000,
+            lengde = 500,
         ),
         "3" to VehicleResponse(
             id = "3",
@@ -50,6 +64,15 @@ class VehicleResource(
             odometerUnit = "km",
             fuelType = "DIESEL",
             tankVolume = 65,
+            regStatus = "REGISTRERT",
+            understellsnummer = "12345678901234567",
+            sistePKK = LocalDate.of(2020, 1, 1),
+            fristPKK = LocalDate.of(2021, 1, 1),
+            regBevaringsverdig = true,
+            egenvekt = 2000,
+            nyttelast = 1000,
+            hengervektMBrems = 2000,
+            lengde = 500,
         ),
     )
 
