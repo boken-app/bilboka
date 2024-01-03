@@ -10,6 +10,8 @@ data class VehicleResponse(
     val fuelType: String?,
     val tankVolume: Int? = null,
     val lastOdometer: Int? = null,
+    val lastOdometerKilometers: Int? = null,
+    val entriesCount: Int,
     val understellsnummer: String? = null,
     val regStatus: String,
     val sistePKK: LocalDate? = null,

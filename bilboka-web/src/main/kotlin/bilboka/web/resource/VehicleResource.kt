@@ -37,8 +37,8 @@ class VehicleResource(
             tankVolume = 50,
             regStatus = "REGISTRERT",
             lastOdometer = 234567,
-
-            ),
+            entriesCount = 0
+        ),
         "2" to VehicleResponse(
             id = "2",
             name = "Testbil 2",
@@ -56,6 +56,7 @@ class VehicleResource(
             nyttelast = 1000,
             hengervektMBrems = 2000,
             lengde = 500,
+            entriesCount = 10
         ),
         "3" to VehicleResponse(
             id = "3",
@@ -73,6 +74,7 @@ class VehicleResource(
             nyttelast = 1000,
             hengervektMBrems = 2000,
             lengde = 500,
+            entriesCount = 34
         ),
     )
 
