@@ -11,6 +11,8 @@ data class VehicleResponse(
     val tankVolume: Int? = null,
     val lastOdometer: Int? = null,
     val lastOdometerKilometers: Int? = null,
+    val lastYearlyDifference: BilbokaDataPoint? = null,
+    val averageFuelConsumption: BilbokaDataPoint? = null,
     val entriesCount: Int,
     val understellsnummer: String? = null,
     val regStatus: String,

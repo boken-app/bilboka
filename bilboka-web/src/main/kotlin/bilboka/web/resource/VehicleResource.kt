@@ -1,5 +1,7 @@
 package bilboka.web.resource
 
+import bilboka.client.BilbokaDataPoint
+import bilboka.client.BookEntryDto
 import bilboka.client.VehicleResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -56,7 +58,50 @@ class VehicleResource(
             nyttelast = 1000,
             hengervektMBrems = 2000,
             lengde = 500,
-            entriesCount = 10
+            entriesCount = 10,
+            lastYearlyDifference = BilbokaDataPoint(
+                dateTime = LocalDate.of(2020, 1, 1).atStartOfDay(),
+                sourceEntryFirst = BookEntryDto(
+                    id = "1",
+                    type = "FUEL",
+                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay().toString(),
+                    odometer = 123456,
+                    odometerKilometers = 123456,
+                    amount = 50.0,
+                    costNOK = 500.0,
+                ),
+                sourceEntryLast = BookEntryDto(
+                    id = "1",
+                    type = "FUEL",
+                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay().toString(),
+                    odometer = 123656,
+                    odometerKilometers = 123456,
+                    amount = 50.0,
+                    costNOK = 500.0,
+                )
+            ),
+            averageFuelConsumption = BilbokaDataPoint(
+                dateTime = LocalDate.of(2020, 1, 1).atStartOfDay(),
+                sourceEntryFirst = BookEntryDto(
+                    id = "1",
+                    type = "FUEL",
+                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay().toString(),
+                    odometer = 123456,
+                    odometerKilometers = 123456,
+                    amount = 50.0,
+                    costNOK = 500.0,
+                ),
+                sourceEntryLast = BookEntryDto(
+                    id = "1",
+                    type = "FUEL",
+                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay().toString(),
+                    odometer = 123656,
+                    odometerKilometers = 123456,
+                    amount = 50.0,
+                    costNOK = 500.0,
+                ),
+                estimatedConsumptionLitersPer10Km = 1.5,
+            )
         ),
         "3" to VehicleResponse(
             id = "3",
