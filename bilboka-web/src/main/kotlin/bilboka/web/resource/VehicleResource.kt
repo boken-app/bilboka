@@ -4,6 +4,7 @@ import bilboka.client.BilbokaDataPoint
 import bilboka.client.BookEntryDto
 import bilboka.client.VehicleResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,6 +15,15 @@ import java.time.LocalDate
 @RequestMapping("vehicles")
 class VehicleResource(
 ) {
+
+    @GetMapping()
+    fun vehicles(): ResponseEntity<List<VehicleResponse>> {
+        if (SecurityContextHolder.getContext().authentication.principal != "TestUser") {
+            return ResponseEntity.notFound().build()
+        }
+
+        return ResponseEntity.ok(emptyList()) // TODO
+    }
 
     @GetMapping("sample")
     fun sample(): ResponseEntity<List<VehicleResponse>> {
