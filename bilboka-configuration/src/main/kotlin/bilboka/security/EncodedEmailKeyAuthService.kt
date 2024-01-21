@@ -15,12 +15,12 @@ import javax.crypto.Cipher
 import javax.servlet.http.HttpServletRequest
 
 @Service
-class AuthenticationService(
+class EncodedEmailKeyAuthService(
     private val userService: UserService
 ) {
     companion object {
         const val AUTH_TOKEN_HEADER = "X-API-KEY"
-        private val log: Logger = LoggerFactory.getLogger(AuthenticationService::class.java)
+        private val log: Logger = LoggerFactory.getLogger(EncodedEmailKeyAuthService::class.java)
     }
 
     @Value("\${bilboka.web.privateKey}")
@@ -69,6 +69,6 @@ class AuthenticationService(
     }
 
     fun getUserByEmail(email: String?): String? {
-        return email?.let { userService.findUserByRegistration("web", it)?.username }
+        return email?.let { userService.findUserByRegistration("web_email", it)?.username }
     }
 }

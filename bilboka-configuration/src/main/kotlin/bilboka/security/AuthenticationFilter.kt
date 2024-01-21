@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class AuthenticationFilter : OncePerRequestFilter() {
     @Autowired
-    lateinit var authenticationService: AuthenticationService
+    lateinit var encodedEmailKeyAuthService: EncodedEmailKeyAuthService
 
     companion object {
         val log: Logger = org.slf4j.LoggerFactory.getLogger(AuthenticationFilter::class.java)
@@ -25,7 +25,7 @@ class AuthenticationFilter : OncePerRequestFilter() {
         filterChain: FilterChain
     ) {
         try {
-            authenticationService.getAuthentication(request).let {
+            encodedEmailKeyAuthService.getAuthentication(request).let {
                 SecurityContextHolder.getContext().authentication = it
             }
             filterChain.doFilter(request, httpResponse)
