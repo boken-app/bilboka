@@ -1,6 +1,12 @@
 package bilboka.web
 
+import bilboka.core.user.UserService
+import bilboka.core.user.domain.User
 import bilboka.web.resource.VehicleResource
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,7 +15,6 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -20,21 +25,30 @@ import java.security.spec.X509EncodedKeySpec
 import java.util.*
 import javax.crypto.Cipher
 
+
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(VehicleResource::class)
 @ContextConfiguration(classes = [VehicleResourceTest.TestConfig::class])
-@TestPropertySource(
-    properties = [
-        "bilboka.web.apiToken=bilbokaWebTestApiToken"
-    ]
-)
 class SecurityIntegrationTest {
+
+    private val existingUser = "some.test@mail.com"
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @MockkBean
+    private lateinit var userService: UserService
+
+    @BeforeEach
+    fun setUpUser() {
+        every { userService.findUserByRegistration(any(), any()) } returns null
+        every { userService.findUserByRegistration(any(), existingUser) } returns mockk<User> {
+            every { username } returns "TestUser"
+        }
+    }
+
     @Test
-    fun `test get vehicle unauthorized`() {
+    fun `test get vehicle no key`() {
         mockMvc.perform(
             get("/vehicles/4")
                 .accept(MediaType.APPLICATION_JSON)
@@ -46,7 +60,7 @@ class SecurityIntegrationTest {
     fun `test get vehicle authorized`() {
         mockMvc.perform(
             get("/vehicles/4")
-                .header("X-API-KEY", encodeEmail("some.test@mail.com"))
+                .header("X-API-KEY", encodeEmail(existingUser))
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -56,7 +70,7 @@ class SecurityIntegrationTest {
     fun `test get vehicles authorized`() {
         mockMvc.perform(
             get("/vehicles")
-                .header("X-API-KEY", encodeEmail("some.test@mail.com"))
+                .header("X-API-KEY", encodeEmail(existingUser))
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -66,7 +80,7 @@ class SecurityIntegrationTest {
     fun `test get vehicles authorized then unauthorized`() {
         mockMvc.perform(
             get("/vehicles")
-                .header("X-API-KEY", encodeEmail("some.test@mail.com"))
+                .header("X-API-KEY", encodeEmail(existingUser))
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -79,10 +93,10 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    fun `test get vehicle user not existing`() {
+    fun `test get vehicle some random key`() {
         mockMvc.perform(
             get("/vehicles")
-                .header("X-API-KEY", encodeEmail("other.test@mail.com"))
+                .header("X-API-KEY", encodeEmail("gfdsghjdbdsg_nonsense"))
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isUnauthorized)

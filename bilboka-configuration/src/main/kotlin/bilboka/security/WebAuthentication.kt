@@ -1,5 +1,6 @@
 package bilboka.security
 
+import bilboka.core.user.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -14,7 +15,9 @@ import javax.crypto.Cipher
 import javax.servlet.http.HttpServletRequest
 
 @Service
-class AuthenticationService {
+class AuthenticationService(
+    private val userService: UserService
+) {
     companion object {
         const val AUTH_TOKEN_HEADER = "X-API-KEY"
         private val log: Logger = LoggerFactory.getLogger(AuthenticationService::class.java)
@@ -65,9 +68,7 @@ class AuthenticationService {
         else null
     }
 
-    private fun getUserByEmail(email: String?): String? {
-        return if (email == "some.test@mail.com") // TODO implementer henting fra usersevice
-            "TestUser"
-        else null
+    fun getUserByEmail(email: String?): String? {
+        return email?.let { userService.findUserByRegistration("web", it)?.username }
     }
 }
