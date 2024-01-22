@@ -3,6 +3,7 @@ package bilboka.security
 import bilboka.core.user.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.stereotype.Service
@@ -22,7 +23,9 @@ class EncodedEmailKeyAuthService(
         private val log: Logger = LoggerFactory.getLogger(EncodedEmailKeyAuthService::class.java)
     }
 
-    val privateKey = System.getenv("WEB_PRIVATE_KEY") ?: ""
+    @Value("\${bilboka.web.privateKey:key}")
+    lateinit var privateKeyProp: String
+    private val privateKeyEnv = System.getenv("WEB_PRIVATE_KEY")
 
     fun getAuthentication(request: HttpServletRequest): ApiKeyAuthentication {
         val token = request.getHeader(AUTH_TOKEN_HEADER)
@@ -48,7 +51,7 @@ class EncodedEmailKeyAuthService(
     }
 
     fun privateKey(): PrivateKey {
-        val privateKeyPEM = privateKey
+        val privateKeyPEM = (privateKeyEnv ?: privateKeyProp)
             .replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
             .replace("\\s".toRegex(), "")
