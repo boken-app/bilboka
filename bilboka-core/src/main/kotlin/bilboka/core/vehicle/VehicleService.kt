@@ -33,6 +33,12 @@ class VehicleService(
         }
     }
 
+    fun getVehicles(): List<Vehicle> {
+        return transaction {
+            Vehicle.all().toList()
+        }
+    }
+
     fun getVehicle(vehicleName: String): Vehicle {
         return transaction {
             findVehicle(vehicleName)
@@ -40,6 +46,12 @@ class VehicleService(
                     "Fant ikke bil $vehicleName",
                     vehicleName
                 )
+        }
+    }
+
+    fun getVehicleById(id: Int): Vehicle {
+        return transaction {
+            Vehicle[id]
         }
     }
 

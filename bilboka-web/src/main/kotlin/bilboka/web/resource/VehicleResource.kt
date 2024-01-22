@@ -3,8 +3,12 @@ package bilboka.web.resource
 import bilboka.client.BilbokaDataPoint
 import bilboka.client.BookEntryDto
 import bilboka.client.VehicleResponse
+import bilboka.core.vehicle.VehicleMissingDataException
+import bilboka.core.vehicle.VehicleService
+import bilboka.core.vehicle.domain.Vehicle
+import bilboka.integration.autosys.consumer.KjoretoydataFeiletException
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,15 +18,47 @@ import java.time.LocalDate
 @RestController
 @RequestMapping("vehicles")
 class VehicleResource(
+    val vehicleService: VehicleService,
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(VehicleResource::class.java)
+    }
 
     @GetMapping()
     fun vehicles(): ResponseEntity<List<VehicleResponse>> {
-        if (SecurityContextHolder.getContext().authentication.principal != "TestUser") {
-            return ResponseEntity.notFound().build()
+        return vehicleService.getVehicles().map {
+            it.toResponse()
+        }.let {
+            ResponseEntity.ok(it)
         }
+    }
 
-        return ResponseEntity.ok(emptyList()) // TODO
+    @GetMapping("{id}")
+    fun vehicleById(
+        @PathVariable id: String
+    ): ResponseEntity<VehicleResponse> {
+        return vehicleService.getVehicleById(id.toInt())
+            .run { toResponse() }
+            .let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
+    }
+
+    private fun Vehicle.toResponse(): VehicleResponse {
+        val autosysKjoretoydata = kjoretoydataIfFound(this)
+        return VehicleResponse(
+            id = id.value.toString(),
+            name = name,
+            tegnkombinasjon = tegnkombinasjonNormalisert,
+            odometerUnit = odometerUnit?.name,
+            fuelType = fuelType?.name,
+            tankVolume = tankVolume,
+            regStatus = autosysKjoretoydata?.registrering?.registreringsstatus?.kodeVerdi ?: "UKJENT",
+            understellsnummer = autosysKjoretoydata?.kjoretoyId?.understellsnummer,
+            sistePKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.sistGodkjent,
+            fristPKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.kontrollfrist,
+            lastOdometer = lastOdometer(),
+            entriesCount = bookEntries.count().toInt()
+        )
     }
 
     @GetMapping("sample")
@@ -37,6 +73,16 @@ class VehicleResource(
         return vehiclesSample()[id]?.let {
             ResponseEntity.ok(it)
         } ?: ResponseEntity.notFound().build()
+    }
+
+    private fun kjoretoydataIfFound(it: Vehicle) = try {
+        vehicleService.getAutosysKjoretoydata(it.name)
+    } catch (e: KjoretoydataFeiletException) {
+        logger.warn("Autosys-oppslag feilet ved henting av kjøretøy ${it.name}: ${e.message}", e)
+        null
+    } catch (e: VehicleMissingDataException) {
+        logger.info(e.message, e)
+        null
     }
 
     private fun vehiclesSample() = mapOf(
