@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 @ExtendWith(MockKExtension::class)
-class VehicleResourceTest {
+class VehicleResourceTest : H2Test() { // TODO burde ikke trenge H2 her.
 
     private lateinit var mockMvc: MockMvc
 
