@@ -1,5 +1,6 @@
 package bilboka.web
 
+import bilboka.H2Test
 import bilboka.core.user.UserService
 import bilboka.core.user.domain.User
 import bilboka.web.resource.VehicleResource
@@ -29,7 +30,7 @@ import javax.crypto.Cipher
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(VehicleResource::class)
 @ContextConfiguration(classes = [VehicleResourceTest.TestConfig::class])
-class SecurityIntegrationTest {
+class SecurityIntegrationTest : H2Test() {
 
     private val existingUser = "some.test@mail.com"
 
