@@ -8,6 +8,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.integration.autosys.consumer.KjoretoydataFeiletException
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,8 +28,10 @@ class VehicleResource(
 
     @GetMapping()
     fun vehicles(): ResponseEntity<List<VehicleResponse>> {
-        return vehicleService.getVehicles().map {
-            it.toResponse()
+        return transaction {
+            vehicleService.getVehicles().map {
+                it.toResponse()
+            }
         }.let {
             ResponseEntity.ok(it)
         }
@@ -39,10 +42,12 @@ class VehicleResource(
         @PathVariable id: String
     ): ResponseEntity<VehicleResponse> {
         return try {
-            vehicleService.getVehicleById(id.toInt())
-                .run { toResponse() }
-                .let { ResponseEntity.ok(it) }
-                ?: ResponseEntity.notFound().build()
+            transaction {
+                vehicleService.getVehicleById(id.toInt())
+                    .run { toResponse() }
+                    .let { ResponseEntity.ok(it) }
+                    ?: ResponseEntity.notFound().build()
+            }
         } catch (e: EntityNotFoundException) {
             ResponseEntity.notFound().build()
         }
