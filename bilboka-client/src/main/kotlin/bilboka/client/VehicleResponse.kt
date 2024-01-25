@@ -15,7 +15,7 @@ data class VehicleResponse(
     val averageFuelConsumption: BilbokaDataPoint? = null,
     val entriesCount: Int,
     val understellsnummer: String? = null,
-    val regStatus: String,
+    val regStatus: String? = null,
     val sistePKK: LocalDate? = null,
     val fristPKK: LocalDate? = null,
     val regBevaringsverdig: Boolean = false,

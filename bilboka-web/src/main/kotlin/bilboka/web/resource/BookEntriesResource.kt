@@ -35,7 +35,7 @@ class BookEntriesResource(
         return BookEntryDto(
             id = id,
             type = type,
-            dateTime = LocalDateTime.of(2020, 1, 1, 0, 0, 0).plusDays(Random.nextLong(0, 30)).toString(),
+            dateTime = LocalDateTime.of(2020, 1, 1, 0, 0, 0).plusDays(Random.nextLong(0, 30)),
             odometer = odometer + Random.nextInt(0, 1000),
             odometerKilometers = odometer + Random.nextInt(0, 1000),
             amount = Random.nextDouble(20.0, 60.0),

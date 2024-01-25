@@ -3,9 +3,9 @@ package bilboka.messagebot.commands
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
-import bilboka.integration.autosys.dto.Godkjenning
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.integration.autosys.dto.Registreringsstatus
+import bilboka.integration.autosys.dto.hasBevaringsverdig
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
@@ -67,10 +67,6 @@ private fun Number.kg(): String {
 
 private fun Int.formatFromMm(): String {
     return "${(this / 1000.0).format()} m"
-}
-
-private fun Godkjenning.hasBevaringsverdig(): Boolean {
-    return tekniskGodkjenning.unntak.any { it.unntak?.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
 }
 
 private fun Boolean.toText(): String {

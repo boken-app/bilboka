@@ -7,6 +7,8 @@ import bilboka.core.vehicle.VehicleMissingDataException
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.integration.autosys.consumer.KjoretoydataFeiletException
+import bilboka.integration.autosys.dto.hasBevaringsverdig
+import bilboka.web.converter.EntryConverter.toDto
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -30,7 +32,7 @@ class VehicleResource(
     fun vehicles(): ResponseEntity<List<VehicleResponse>> {
         return transaction {
             vehicleService.getVehicles().map {
-                it.toResponse()
+                it.toSlimResponse()
             }
         }.let {
             ResponseEntity.ok(it)
@@ -44,7 +46,7 @@ class VehicleResource(
         return try {
             transaction {
                 vehicleService.getVehicleById(id.toInt())
-                    .run { toResponse() }
+                    .run { toRichResponse() }
                     .let { ResponseEntity.ok(it) }
                     ?: ResponseEntity.notFound().build()
             }
@@ -53,7 +55,20 @@ class VehicleResource(
         }
     }
 
-    private fun Vehicle.toResponse(): VehicleResponse {
+    private fun Vehicle.toSlimResponse(): VehicleResponse {
+        return VehicleResponse(
+            id = id.value.toString(),
+            name = name,
+            tegnkombinasjon = tegnkombinasjonNormalisert,
+            odometerUnit = odometerUnit?.name,
+            fuelType = fuelType?.name,
+            tankVolume = tankVolume,
+            lastOdometer = lastOdometer(),
+            entriesCount = bookEntries.count().toInt()
+        )
+    }
+
+    private fun Vehicle.toRichResponse(): VehicleResponse {
         val autosysKjoretoydata = kjoretoydataIfFound(this)
         return VehicleResponse(
             id = id.value.toString(),
@@ -66,7 +81,23 @@ class VehicleResource(
             understellsnummer = autosysKjoretoydata?.kjoretoyId?.understellsnummer,
             sistePKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.sistGodkjent,
             fristPKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.kontrollfrist,
+            egenvekt = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt,
+            nyttelast = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast,
+            hengervektMBrems = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems,
+            lengde = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde,
+            regBevaringsverdig = autosysKjoretoydata?.godkjenning?.hasBevaringsverdig() == true,
             lastOdometer = lastOdometer(),
+            lastOdometerKilometers = lastOdometer()?.let { odometerUnit?.convertToKilometers(it) },
+            averageFuelConsumption = lastConsumptionEstimate()?.let {
+                it.takeIf { it.estimatedAt.dateTime != null }?.run {
+                    BilbokaDataPoint(
+                        dateTime = estimatedAt.dateTime!!,
+                        sourceEntryFirst = estimatedFrom.toDto(odometerUnit),
+                        sourceEntryLast = estimatedAt.toDto(odometerUnit),
+                        estimatedConsumptionLitersPer10Km = lastConsumptionEstimate()?.litersPer10Km(),
+                    )
+                }
+            },
             entriesCount = bookEntries.count().toInt()
         )
     }
@@ -130,7 +161,7 @@ class VehicleResource(
                 sourceEntryFirst = BookEntryDto(
                     id = "1",
                     type = "FUEL",
-                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay().toString(),
+                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay(),
                     odometer = 123456,
                     odometerKilometers = 123456,
                     amount = 50.0,
@@ -139,7 +170,7 @@ class VehicleResource(
                 sourceEntryLast = BookEntryDto(
                     id = "1",
                     type = "FUEL",
-                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay().toString(),
+                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay(),
                     odometer = 123656,
                     odometerKilometers = 123456,
                     amount = 50.0,
@@ -151,7 +182,7 @@ class VehicleResource(
                 sourceEntryFirst = BookEntryDto(
                     id = "1",
                     type = "FUEL",
-                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay().toString(),
+                    dateTime = LocalDate.of(2020, 1, 1).atStartOfDay(),
                     odometer = 123456,
                     odometerKilometers = 123456,
                     amount = 50.0,
@@ -160,7 +191,7 @@ class VehicleResource(
                 sourceEntryLast = BookEntryDto(
                     id = "1",
                     type = "FUEL",
-                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay().toString(),
+                    dateTime = LocalDate.of(2021, 1, 1).atStartOfDay(),
                     odometer = 123656,
                     odometerKilometers = 123456,
                     amount = 50.0,

@@ -278,3 +278,7 @@ data class PeriodiskKjoretoyKontroll(
     val kontrollfrist: LocalDate? = null,
     val sistGodkjent: LocalDate? = null
 )
+
+fun Godkjenning.hasBevaringsverdig(): Boolean {
+    return tekniskGodkjenning.unntak.any { it.unntak?.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
+}
