@@ -35,7 +35,7 @@ class EncodedEmailKeyAuthService(
     }
 
     private fun decodeTokenToEmail(token: String): String? {
-        val cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding")
+        val cipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
             .apply { init(Cipher.DECRYPT_MODE, privateKey()) }
 
         val decodedBytes = Base64.getDecoder().decode(token)

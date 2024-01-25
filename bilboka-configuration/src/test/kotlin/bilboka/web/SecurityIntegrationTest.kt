@@ -104,7 +104,7 @@ class SecurityIntegrationTest : H2Test() {
     }
 
     private fun encodeEmail(email: String): String {
-        val cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding")
+        val cipher = Cipher.getInstance("RSA/ECB/OAEPPadding")
             .also { it.init(Cipher.ENCRYPT_MODE, publicTestKey.toPublicKey()) }
 
         val encryptedBytes = cipher.doFinal(email.toByteArray())
