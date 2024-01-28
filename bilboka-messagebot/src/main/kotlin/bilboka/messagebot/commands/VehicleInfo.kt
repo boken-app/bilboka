@@ -39,7 +39,6 @@ internal class VehicleInfo(
     ) {
         conversation.sendReply(
             "\uD83D\uDE97 \nBil-navn: ${vehicle.name} \n" +
-                    "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonVisning ?: "(ukjent)"} \n" +
                     "Siste forbruk: ${
                         vehicle.lastConsumptionEstimate()
@@ -51,9 +50,11 @@ internal class VehicleInfo(
                     "Distansemåleenhet: ${vehicle.odometerUnit} \n" +
                     "Tankvolum: ${vehicle.tankVolume?.let { "$it liter" } ?: "(ukjent)"} \n" +
                     "Drivstofftype: ${vehicle.fuelType ?: "(ukjent)"} \n" +
+                    "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
                     "Antall oppføringer: ${vehicle.bookEntries.count()} \n" +
-                    vehicle.lastOdometerEntry()
-                        ?.let { "Sist registrert km-stand: ${it.odometer ?: "-"} (${it.dateTime.formatAsDate()})\n" } +
+                    (vehicle.lastOdometerEntry()
+                        ?.let { "Sist registrert km-stand: ${it.odometer ?: "-"} (${it.dateTime.formatAsDate()})\n" }
+                        ?: " \n") +
                     "Kjørt siste år: ${getDistanceLastYear(vehicle)}"
         )
         conversation.replyWithOptions(
