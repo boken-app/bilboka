@@ -31,17 +31,14 @@ class VehicleResource(
     @GetMapping()
     fun vehicles(): ResponseEntity<List<VehicleResponse>> {
         return transaction {
-            vehicleService.getVehicles().map {
-                it.toSlimResponse()
-            }
-        }.let {
-            ResponseEntity.ok(it)
-        }
+            vehicleService.getVehicles()
+                .map { it.toSlimResponse() }
+        }.let { ResponseEntity.ok(it) }
     }
 
     @GetMapping("{id}")
     fun vehicleById(
-        @PathVariable id: String
+        @PathVariable id: String // TODO mulighet for å hente på kjennemerke
     ): ResponseEntity<VehicleResponse> {
         return try {
             transaction {
@@ -50,6 +47,8 @@ class VehicleResource(
                     .let { ResponseEntity.ok(it) }
                     ?: ResponseEntity.notFound().build()
             }
+        } catch (e: NumberFormatException) {
+            ResponseEntity.badRequest().build()
         } catch (e: EntityNotFoundException) {
             ResponseEntity.notFound().build()
         }

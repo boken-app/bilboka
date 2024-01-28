@@ -50,6 +50,12 @@ class VehicleResourceTest : H2Test() { // TODO burde ikke trenge H2 her.
     }
 
     @Test
+    fun `should return 400 if letters in id`() {
+        mockMvc.perform(get("/vehicles/something"))
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `should return vehicle when ID is valid`() {
         every { vehicleService.getVehicleById(1) } returns mockk(relaxed = true) {
             every { id } returns mockk(relaxed = true) {
