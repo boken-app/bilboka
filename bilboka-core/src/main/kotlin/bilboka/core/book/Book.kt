@@ -98,7 +98,7 @@ class Book(
 
     fun getMaintenanceReport(vehicle: Vehicle): ByteArray? {
         return reportIfNotEmpty(
-            header = "Vedlikeholdsrapport for ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            header = "Vedlikeholdsrapport for ${vehicle.name}${vehicle.tegnkombinasjonVisning?.let { " ($it)" } ?: ""}",
             entries = vehicle.bookEntries.filter { it.type != EntryType.FUEL }
         )
     }
@@ -109,7 +109,7 @@ class Book(
 
     private fun reportOfYear(vehicle: Vehicle, year: Year): ByteArray? {
         return reportIfNotEmpty(
-            header = "Rapport for $year, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            header = "Rapport for $year, ${vehicle.name}${vehicle.tegnkombinasjonVisning?.let { " ($it)" } ?: ""}",
             entries = vehicle.bookEntries.between(year.atDay(1), year.plusYears(1).atDay(1))
         )
     }
@@ -119,10 +119,10 @@ class Book(
         val last10k = vehicle.lastOdometer()?.minus(10000)?.let { vehicle.bookEntries.since(it) } ?: listOf()
         return if (lastYear.size > last10k.size)
             reportIfNotEmpty(
-                header = "Rapport for siste år, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+                header = "Rapport for siste år, ${vehicle.name}${vehicle.tegnkombinasjonVisning?.let { " ($it)" } ?: ""}",
                 entries = lastYear
             ) else reportIfNotEmpty(
-            header = "Rapport for siste 10 000 km, ${vehicle.name}${vehicle.tegnkombinasjonNormalisert?.let { " ($it)" } ?: ""}",
+            header = "Rapport for siste 10 000 km, ${vehicle.name}${vehicle.tegnkombinasjonVisning?.let { " ($it)" } ?: ""}",
             entries = last10k
         )
     }

@@ -40,7 +40,7 @@ internal class VehicleInfo(
         conversation.sendReply(
             "\uD83D\uDE97 \nBil-navn: ${vehicle.name} \n" +
                     "Alternative navn: ${vehicle.nicknames.joinToString(", ")} \n" +
-                    "Registreringsnummer: ${vehicle.tegnkombinasjonNormalisert ?: "(ukjent)"} \n" +
+                    "Registreringsnummer: ${vehicle.tegnkombinasjonVisning ?: "(ukjent)"} \n" +
                     "Siste forbruk: ${
                         vehicle.lastConsumptionEstimate()
                             ?.let {

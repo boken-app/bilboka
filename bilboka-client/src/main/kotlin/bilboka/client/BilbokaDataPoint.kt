@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 data class BilbokaDataPoint(
     val dateTime: LocalDateTime,
+    val vehicleId: String? = null,
     val odometer: Int? = null,
     val odometerKilometers: Int? = null,
     val amount: Double? = null,

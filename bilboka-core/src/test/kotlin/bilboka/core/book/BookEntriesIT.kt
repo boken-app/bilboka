@@ -28,7 +28,7 @@ internal class BookEntriesIT : H2Test() {
             testVehicle = Vehicle.new {
                 name = "testbil"
                 fuelType = FuelType.BENSIN
-                tegnkombinasjonNormalisert = "AB1234"
+                tegnkombinasjonVisning = "AB 1234"
                 odometerUnit = OdometerUnit.KILOMETERS
             }
             testBookEntry = BookEntry.new {

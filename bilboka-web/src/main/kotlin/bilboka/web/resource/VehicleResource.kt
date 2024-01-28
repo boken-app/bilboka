@@ -59,7 +59,9 @@ class VehicleResource(
         return VehicleResponse(
             id = id.value.toString(),
             name = name,
-            tegnkombinasjon = tegnkombinasjonNormalisert,
+            tegnkombinasjon = tegnkombinasjonNormalisert(),
+            tegnkombinasjonVisning = tegnkombinasjonVisning,
+            tegnkombinasjonNormalisert = tegnkombinasjonNormalisert(),
             odometerUnit = odometerUnit?.name,
             fuelType = fuelType?.name,
             tankVolume = tankVolume,
@@ -73,7 +75,9 @@ class VehicleResource(
         return VehicleResponse(
             id = id.value.toString(),
             name = name,
-            tegnkombinasjon = tegnkombinasjonNormalisert,
+            tegnkombinasjon = tegnkombinasjonNormalisert(),
+            tegnkombinasjonVisning = tegnkombinasjonVisning,
+            tegnkombinasjonNormalisert = tegnkombinasjonNormalisert(),
             odometerUnit = odometerUnit?.name,
             fuelType = fuelType?.name,
             tankVolume = tankVolume,
@@ -130,7 +134,8 @@ class VehicleResource(
         "1" to VehicleResponse(
             id = "1",
             name = "Testbil 1",
-            tegnkombinasjon = "AB12367",
+            tegnkombinasjonVisning = "AB 12367",
+            tegnkombinasjonNormalisert = "AB12367",
             odometerUnit = "km",
             fuelType = "BENSIN",
             tankVolume = 50,
@@ -141,7 +146,8 @@ class VehicleResource(
         "2" to VehicleResponse(
             id = "2",
             name = "Testbil 2",
-            tegnkombinasjon = "AB12345",
+            tegnkombinasjonVisning = "AB 12345",
+            tegnkombinasjonNormalisert = "AB12345",
             odometerUnit = "mi",
             fuelType = "DIESEL",
             tankVolume = 70,
@@ -203,7 +209,9 @@ class VehicleResource(
         "3" to VehicleResponse(
             id = "3",
             name = "Testbil 3",
+            tegnkombinasjonNormalisert = "AB12389",
             tegnkombinasjon = "AB12389",
+            tegnkombinasjonVisning = "AB 12389",
             odometerUnit = "km",
             fuelType = "DIESEL",
             tankVolume = 65,

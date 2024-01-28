@@ -5,7 +5,10 @@ import java.time.LocalDate
 data class VehicleResponse(
     val id: String,
     val name: String,
-    val tegnkombinasjon: String?,
+    @Deprecated("Use visning or normalisert instead")
+    val tegnkombinasjon: String? = null,
+    val tegnkombinasjonNormalisert: String? = null,
+    val tegnkombinasjonVisning: String?,
     val odometerUnit: String?,
     val fuelType: String?,
     val tankVolume: Int? = null,

@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 object Vehicles : IntIdTable() {
     val name = varchar("name", 50).uniqueIndex()
     val nicknames = text("nicknames").default("")
-    val tegnkombinasjonNormalisert = varchar("tegnkombinasjon_normalisert", 15).nullable()
+    val tegnkombinasjonVisning = varchar("tegnkombinasjon_visning", 15).nullable()
     val odometerUnit = enumerationByName("odo_unit", 20, OdometerUnit::class).nullable()
     val fuelType = enumerationByName("fuel_type", 15, FuelType::class).nullable()
     val tankVolume = integer("tank_volume").nullable()
@@ -36,12 +36,16 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         { a -> a.joinToString(SEPARATOR) },
         { str -> str.split(SEPARATOR).toSet() }
     )
-    var tegnkombinasjonNormalisert by Vehicles.tegnkombinasjonNormalisert
+    var tegnkombinasjonVisning by Vehicles.tegnkombinasjonVisning
     var odometerUnit by Vehicles.odometerUnit
     var fuelType by Vehicles.fuelType
     var tankVolume by Vehicles.tankVolume
     val bookEntries by BookEntry referrersOn BookEntries.vehicle
     val creationTimestamp by Vehicles.creationTimestamp
+
+    fun tegnkombinasjonNormalisert(): String? {
+        return tegnkombinasjonVisning?.normaliserTegnkombinasjon()
+    }
 
     fun addFuel(
         odometer: Int?,
@@ -162,7 +166,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun hasTegnkombinasjon(tegnkombinasjon: String): Boolean {
-        return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert
+        return tegnkombinasjon.normaliserTegnkombinasjon() == tegnkombinasjonNormalisert()
     }
 
     fun enterComment(

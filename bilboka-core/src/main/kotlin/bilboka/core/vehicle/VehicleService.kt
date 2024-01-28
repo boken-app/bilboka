@@ -3,7 +3,6 @@ package bilboka.core.vehicle
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.core.vehicle.domain.OdometerUnit
 import bilboka.core.vehicle.domain.Vehicle
-import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
 import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import bilboka.integration.autosys.dto.Kjoretoydata
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -26,7 +25,7 @@ class VehicleService(
                 this.name = name.lowercase()
                 this.nicknames = nicknames
                 this.fuelType = fuelType
-                this.tegnkombinasjonNormalisert = tegnkombinasjon?.normaliserTegnkombinasjon()
+                this.tegnkombinasjonVisning = tegnkombinasjon
                 this.odometerUnit = OdometerUnit.KILOMETERS
                 this.tankVolume = tankVol
             }
@@ -66,7 +65,7 @@ class VehicleService(
     fun getAutosysKjoretoydata(vehicleName: String): Kjoretoydata {
         return getVehicle(vehicleName).run {
             akfDatautleveringConsumer.hentKjoretoydata(
-                this.tegnkombinasjonNormalisert
+                this.tegnkombinasjonNormalisert()
                     ?: throw VehicleMissingDataException("Mangler registreringsnummer for oppslag mot autosys")
             ).kjoretoydataListe.first()
         }
