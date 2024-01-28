@@ -68,6 +68,34 @@ class SecurityIntegrationTest : H2Test() {
     }
 
     @Test
+    fun `test get datapoints no key`() {
+        mockMvc.perform(
+            get("/vehicles/4/datapoints")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+    }
+
+    @Test
+    fun `test get entries no key`() {
+        mockMvc.perform(
+            get("/vehicles/4/entries")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+    }
+
+    @Test
+    fun `test get entries authorized`() {
+        mockMvc.perform(
+            get("/vehicles/4/entries")
+                .header("X-API-KEY", encodeEmail(existingUser))
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
     fun `test get vehicles authorized`() {
         mockMvc.perform(
             get("/vehicles")

@@ -2,6 +2,9 @@ package bilboka.web.resource
 
 import bilboka.client.BilbokaDataPoint
 import bilboka.client.BookEntryDto
+import bilboka.core.vehicle.VehicleService
+import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -13,7 +16,21 @@ import kotlin.random.Random
 @RestController
 @RequestMapping("vehicles/{id}/datapoints")
 class DataPointsResource(
+    val vehicleService: VehicleService
 ) {
+    @GetMapping()
+    fun datapoints(@PathVariable id: String): ResponseEntity<List<BilbokaDataPoint>> {
+        return try {
+            transaction {
+                vehicleService.getVehicleById(id.toInt()).let {
+                    ResponseEntity.ok(emptyList()) // TODO lage datapoints
+                }
+            }
+        } catch (e: EntityNotFoundException) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     @GetMapping("sample")
     fun sample(@PathVariable id: String): ResponseEntity<List<BilbokaDataPoint>> {
         val dataSample = dataSample()
