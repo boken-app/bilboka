@@ -2,6 +2,7 @@ package bilboka.security
 
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -29,6 +30,9 @@ class AuthenticationFilter : OncePerRequestFilter() {
                 SecurityContextHolder.getContext().authentication = it
             }
             filterChain.doFilter(request, httpResponse)
+        } catch (e: AccessDeniedException) {
+            log.error("Access denied", e)
+            throw e
         } catch (e: BadCredentialsException) {
             log.error("Authentication failed", e)
             filterChain.doFilter(request, httpResponse)

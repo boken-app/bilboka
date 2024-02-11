@@ -4,6 +4,7 @@ import bilboka.core.user.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.stereotype.Service
@@ -29,8 +30,10 @@ class EncodedEmailKeyAuthService(
 
     fun getAuthentication(request: HttpServletRequest): ApiKeyAuthentication {
         val token = request.getHeader(AUTH_TOKEN_HEADER)
-        val user = token?.let { getUserByEmail(decodeTokenToEmail(it)) }
-            ?: throw BadCredentialsException("Invalid API key")
+        val decodedEmail = token?.let { decodeTokenToEmail(it) }
+            ?: throw BadCredentialsException("Invalid or missing API key")
+        val user = getUserByEmail(decodedEmail)
+            ?: throw AccessDeniedException("User $decodedEmail has no access")
         return ApiKeyAuthentication(user, AuthorityUtils.NO_AUTHORITIES)
     }
 
