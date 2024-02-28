@@ -80,6 +80,8 @@ class VehicleResource(
             odometerUnit = odometerUnit?.name,
             fuelType = fuelType?.name,
             tankVolume = tankVolume,
+            merke = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merke?.first()?.merke,
+            modell = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.handelsbetegnelse?.first(),
             regStatus = autosysKjoretoydata?.registrering?.registreringsstatus?.kodeVerdi ?: "UKJENT",
             understellsnummer = autosysKjoretoydata?.kjoretoyId?.understellsnummer,
             sistePKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.sistGodkjent,

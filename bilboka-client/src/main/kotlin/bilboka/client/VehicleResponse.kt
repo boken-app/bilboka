@@ -9,6 +9,8 @@ data class VehicleResponse(
     val tegnkombinasjon: String? = null,
     val tegnkombinasjonNormalisert: String? = null,
     val tegnkombinasjonVisning: String?,
+    val merke: String? = null,
+    val modell: String? = null,
     val odometerUnit: String?,
     val fuelType: String?,
     val tankVolume: Int? = null,
