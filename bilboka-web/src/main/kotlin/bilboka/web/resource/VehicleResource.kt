@@ -3,6 +3,7 @@ package bilboka.web.resource
 import bilboka.client.BilbokaDataPoint
 import bilboka.client.BookEntryDto
 import bilboka.client.VehicleResponse
+import bilboka.core.book.entryClosestTo
 import bilboka.core.vehicle.VehicleMissingDataException
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
@@ -103,7 +104,18 @@ class VehicleResource(
                     )
                 }
             },
-            entriesCount = bookEntries.count().toInt()
+            entriesCount = bookEntries.count().toInt(),
+            lastYearlyDifference = lastEntry()?.let { lastEntry ->
+                val yearBefore = bookEntries.toList().entryClosestTo(lastEntry.dateTime!!) { it.odometer != null }
+
+                yearBefore?.let {
+                    BilbokaDataPoint(
+                        dateTime = it.dateTime!!,
+                        sourceEntryFirst = yearBefore.toDto(odometerUnit),
+                        sourceEntryLast = it.toDto(odometerUnit)
+                    )
+                }
+            }
         )
     }
 
