@@ -111,9 +111,9 @@ class VehicleResource(
 
                 yearBefore?.let {
                     BilbokaDataPoint(
-                        dateTime = it.dateTime!!,
-                        sourceEntryFirst = yearBefore.toDto(odometerUnit),
-                        sourceEntryLast = it.toDto(odometerUnit)
+                        dateTime = lastEntry.dateTime!!,
+                        sourceEntryFirst = it.toDto(odometerUnit),
+                        sourceEntryLast = lastEntry.toDto(odometerUnit)
                     )
                 }
             }
