@@ -106,7 +106,8 @@ class VehicleResource(
             },
             entriesCount = bookEntries.count().toInt(),
             lastYearlyDifference = lastEntry()?.let { lastEntry ->
-                val yearBefore = bookEntries.toList().entryClosestTo(lastEntry.dateTime!!) { it.odometer != null }
+                val yearBefore = bookEntries.toList()
+                    .entryClosestTo(lastEntry.dateTime!!.minusYears(1)) { it.odometer != null }
 
                 yearBefore?.let {
                     BilbokaDataPoint(
