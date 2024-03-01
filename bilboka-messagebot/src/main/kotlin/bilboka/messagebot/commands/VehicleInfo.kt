@@ -9,7 +9,6 @@ import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
 import bilboka.messagebot.formatAsDate
-import java.time.LocalDateTime.now
 
 internal class VehicleInfo(
     private val vehicleService: VehicleService,
@@ -64,20 +63,23 @@ internal class VehicleInfo(
     }
 
     private fun getDistanceLastYear(vehicle: Vehicle): String {
-        return vehicle.bookEntries.toList()
-            .entryClosestTo(now().minusYears(1)) { it.odometer != null }
-            ?.let {
-                val diff = vehicle.lastOdometer()?.minus(it.odometer!!)
-                if (vehicle.odometerUnit == null) {
-                    "(mangler enhet)"
-                } else if (diff == null) {
-                    "(mangler data)"
-                } else {
-                    "${(vehicle.odometerUnit!!.convertToKilometers(diff))} km " +
-                            (if (vehicle.odometerUnit != KILOMETERS) "/ $diff ${vehicle.odometerUnit} " else "") +
-                            "(siden ${it.dateTime.formatAsDate()})"
-                }
-            } ?: "(mangler data)"
-    }
+        val lastOdometerEntry = vehicle.lastOdometerEntry()
+        val yearBeforeEntry = lastOdometerEntry?.run {
+            dateTime?.run {
+                vehicle.bookEntries.toList()
+                    .entryClosestTo(minusYears(1)) { it.odometer != null }
+            }
+        }
 
+        return yearBeforeEntry?.let {
+            val diff = lastOdometerEntry.odometer!!.minus(it.odometer!!)
+            if (vehicle.odometerUnit == null) {
+                "(mangler enhet)"
+            } else {
+                "${(vehicle.odometerUnit!!.convertToKilometers(diff))} km " +
+                        (if (vehicle.odometerUnit != KILOMETERS) "/ $diff ${vehicle.odometerUnit} " else "") +
+                        "(siden ${it.dateTime.formatAsDate()})"
+            }
+        } ?: "(mangler data)"
+    }
 }
