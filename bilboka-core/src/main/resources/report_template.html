@@ -1,7 +1,54 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        @page {
+            size: A4 landscape;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 0 20px;
+            padding: 0;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            background-color: #f4f4f4;
+        }
+
+        th {
+            background-color: #69aed2;
+            color: white;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        h3 {
+            text-align: center;
+            color: #575757;
+            font-family: 'Arial', sans-serif;
+        }
+    </style>
+</head>
 <body>
-<h3 style="text-align: center; color: blue">
-    <span th:text="${header}"></span>
+<h3 style="text-align: center">
+    <span th:text="${header}">Header Text</span>
 </h3>
 <table>
     <tr>
@@ -26,7 +73,7 @@
         <td th:if="${entry.type.toString() == 'BASIC'}">-</td>
         <td th:text="*{entry.amount}?: '-'">2.41</td>
         <td th:text="*{entry.costNOK}?: '-'">2.41</td>
-        <td th:text="${entry.isFullTank}? 'Ja' : ''">yes</td>
+        <td th:text="${entry.isFullTank}? 'Ja' : 'Nei'">Nei</td>
         <td th:text="${entry.comment}">Kommentar</td>
     </tr>
 </table>
