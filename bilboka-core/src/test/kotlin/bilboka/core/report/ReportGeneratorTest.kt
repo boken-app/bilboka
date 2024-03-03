@@ -8,8 +8,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import kotlin.random.Random.Default.nextInt
 
@@ -18,8 +18,8 @@ internal class ReportGeneratorTest {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
-        val CREATE_FILE = false
-        val LOCATION = "bilboka_test\\testrapport.pdf"
+        const val CREATE_FILE = false
+        const val FILE_PREFIX = "testrapport"
     }
 
     @Test
@@ -75,11 +75,12 @@ internal class ReportGeneratorTest {
 
     private fun saveFile(report: ByteArray) {
         if (CREATE_FILE) {
-            val filename = System.getProperty("user.home") + File.separator.toString() + LOCATION
-            FileOutputStream(filename).use {
-                it.write(report)
-                logger.warn("Generert testfil: $filename")
-            }
+            val filename = Paths.get("build/tmp/test", "report_test")
+            Files.createDirectories(filename)
+
+            Files.createTempFile(filename, FILE_PREFIX, ".pdf")
+                .let { Files.write(it, report) }
+                .also { logger.warn("Generert testfil: $it") }
         }
     }
 }
