@@ -60,6 +60,7 @@ internal class ReportGeneratorTest {
                     every { type } returns EntryType.EVENT
                     every { amount } returns null
                     every { event } returns EventType.EU_KONTROLL_OK
+                    every { isFullTank } returns null
                     every { comment } returns "Jauda"
                 }.also { add(it) }
             }

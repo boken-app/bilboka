@@ -61,19 +61,12 @@
         <th>Kommentar</th>
     </tr>
     <tr th:each="entry : ${entries}">
-        <td th:if="${entry.datetime != null}" th:text="${entry.datetime.toLocalDate()}">01.01.2011</td>
-        <td th:if="${entry.datetime == null}">(ukjent)</td>
-        <td th:text="*{entry.odometer}?: '(ukjent)'">2346</td>
-        <td th:text="${entry.type}"
-            th:if="${entry.type.toString() != 'MAINTENANCE' && entry.type.toString() != 'BASIC' && entry.type.toString() != 'EVENT'}">
-            TYPE
-        </td>
-        <td th:text="${entry.maintenanceItem.item}" th:if="${entry.type.toString() == 'MAINTENANCE'}">MAINT</td>
-        <td th:text="${entry.event}" th:if="${entry.type.toString() == 'EVENT'}">Event</td>
-        <td th:if="${entry.type.toString() == 'BASIC'}">-</td>
-        <td th:text="*{entry.amount}?: '-'">2.41</td>
-        <td th:text="*{entry.costNOK}?: '-'">2.41</td>
-        <td th:text="${entry.isFullTank}? 'Ja' : 'Nei'">Nei</td>
+        <td th:text="${entry.date}">01.01.2011</td>
+        <td th:text="${entry.odometer}">2346</td>
+        <td th:text="${entry.type}">TYPE</td>
+        <td th:text="${entry.liters}">2.41</td>
+        <td th:text="${entry.costNOK}">2.41</td>
+        <td th:text="${entry.isFullTank}">Nei</td>
         <td th:text="${entry.comment}">Kommentar</td>
     </tr>
 </table>
