@@ -4,8 +4,17 @@
     <style>
         @page {
             size: A4 landscape;
-        }
+            margin-bottom: 60px;
 
+            @bottom-right {
+                font-family: Arial, sans-serif;
+                content: "Side " counter(page) " av " counter(pages);
+            }
+            @bottom-left {
+                font-family: 'Arial', sans-serif;
+                content: "Generert fra Bilboka";
+            }
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0 0 20px;
