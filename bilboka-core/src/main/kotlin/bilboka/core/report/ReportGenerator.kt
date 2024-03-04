@@ -11,7 +11,6 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import org.xhtmlrenderer.pdf.ITextRenderer
 import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.*
 import kotlin.text.Charsets.UTF_8
 
 
@@ -25,6 +24,7 @@ class ReportGenerator {
         return generatePdfFromHtml(parseThymeleafTemplate(Context().apply {
             setVariable("header", header)
             setVariable("entries", entries.sort().map { it.toReportEntry() })
+            setVariable("logo", "classpath:logo/logo.png")
         }))
     }
 
@@ -51,7 +51,6 @@ class ReportGenerator {
             return it.toByteArray()
         }
     }
-
 }
 
 fun BookEntry.toReportEntry(): ReportEntry {
