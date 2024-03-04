@@ -15,51 +15,82 @@
                 content: "Generert fra Bilboka";
             }
         }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 0 0 20px;
+            margin: 0;
             padding: 0;
         }
 
-        table {
+        .header-table {
             width: 90%;
-            margin: 20px auto;
+            margin: 0 auto 10px;
+        }
+
+        .header-text-cell {
+            text-align: left;
+            vertical-align: middle; /* Aligns text vertically in the middle */
+        }
+
+        .header-logo-cell {
+            text-align: right;
+        }
+
+        .main-table {
+            width: 90%;
+            margin: 0 auto;
             border-collapse: collapse;
         }
 
-        th, td {
+        .main-table td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
             background-color: #f4f4f4;
         }
 
-        th {
+        .main-table th {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
             background-color: #69aed2;
             color: white;
         }
 
-        tr {
+        .main-table tr {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        tr:hover {
+        .main-table tr:hover {
             background-color: #f5f5f5;
         }
 
-        h3 {
-            text-align: center;
-            color: #575757;
-            font-family: 'Arial', sans-serif;
+        img.header-logo {
+            width: auto; /* Adjust based on your logo's size */
+            height: 70px; /* Adjust this to control the size of your logo */
+            max-width: 100%; /* Ensures that the logo is not bigger than its container */
         }
     </style>
 </head>
 <body>
-<h3 style="text-align: center">
-    <span th:text="${header}">Header Text</span>
-</h3>
-<table>
+
+<!-- Header Table -->
+<table class="header-table">
+    <tr>
+        <td class="header-text-cell">
+            <h3>
+                <span th:text="${header}">Header Text</span>
+            </h3>
+        </td>
+        <td class="header-logo-cell">
+            <img th:src="@{classpath:logo/logo.png}" alt="Logo" class="header-logo"/>
+        </td>
+    </tr>
+</table>
+
+<!-- Main Content Table -->
+<table class="main-table">
     <tr>
         <th>Dato</th>
         <th>Kilometerstand</th>

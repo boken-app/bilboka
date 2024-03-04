@@ -11,6 +11,9 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import org.xhtmlrenderer.pdf.ITextRenderer
 import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter.ofPattern
+import java.util.*
+import kotlin.text.Charsets.UTF_8
+
 
 @Service
 class ReportGenerator {
@@ -30,6 +33,7 @@ class ReportGenerator {
         ClassLoaderTemplateResolver().apply {
             suffix = ".html"
             templateMode = TemplateMode.HTML
+            characterEncoding = UTF_8.name()
         }.let {
             templateEngine.setTemplateResolver(it)
         }
