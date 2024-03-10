@@ -35,10 +35,10 @@ class MessageBot {
 
     private val commandRegistry by lazy {
         setOf(
-            FuelEntryAdder(book, vehicleService, userService),
-            LastEntryGetter(book, vehicleService, userService),
             MaintenanceItems(book, userService),
             MaintenanceAdder(book, vehicleService, userService),
+            FuelEntryAdder(book, vehicleService, userService),
+            LastEntryGetter(book, vehicleService, userService),
             FuelPriceStatistics(book, userService),
             SmallTalk(),
             Helper(),
@@ -81,7 +81,7 @@ class MessageBot {
 
         commandRegistry.forEach {
             if (conversation.claimedBy(it) ||
-                (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID))
+                (noMatches && !conversation.hasClaim() && it.isMatch(message) && it.byValidUser(conversation.senderID))
             ) {
                 logger.debug("Matchet chatregel: ${it.javaClass.name}")
                 if (it !is UndoLast) {

@@ -293,6 +293,38 @@ class MessageBotMaintenanceIT : AbstractMessageBotIT() {
     }
 
     @Test
+    fun maintainanceItemOrCommentCanContainMatchForOtherChatRule() {
+        processMessagaAndAssertReply(
+            message = "vedlikehold service dieselvarmer xc70 45697",
+            reply = { it.contains("Legge til 'service dieselvarmer' som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
+            reply = { it.contains("Lagt til kommentar") and it.contains("dieselvarmer") },
+        )
+    }
+
+    @Test
+    fun maintainanceItemOrCommentCanContainMatchForOtherChatRule_1() {
+        processMessagaAndAssertReply(
+            message = "vedlikehold xc 70",
+            reply = { it.contains("Kilometerstand? \uD83D\uDD22") },
+        )
+        processMessagaAndAssertReply(
+            message = "45697",
+            reply = { it.contains("Hva slags vedlikehold?") },
+        )
+        processMessagaAndAssertReply(
+            message = "service dieselvarmer",
+            reply = { it.contains("Legge til 'service dieselvarmer' som et vedlikeholdspunkt?") },
+        )
+        processMessagaAndAssertReply(
+            message = "nei",
+            reply = { it.contains("Lagt til kommentar") and it.contains("dieselvarmer") },
+        )
+    }
+
+    @Test
     fun canNotHaveUnknownCar() {
         processMessagaAndAssertReply(
             message = "bytte ratt 876534",
