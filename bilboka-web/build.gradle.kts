@@ -9,10 +9,6 @@ plugins {
 group = "bilboka"
 version = "0.0.1-SNAPSHOT"
 
-//java {
-//    sourceCompatibility = JavaVersion.VERSION_17
-//}
-
 dependencies {
     implementation(project(":bilboka-core"))
     implementation(project(":bilboka-client"))
@@ -24,7 +20,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
-    testImplementation("org.mockito:mockito-core:3.3.3") // TODO trenger vi mockito?
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
     testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("com.squareup.okhttp3:mockwebserver")
