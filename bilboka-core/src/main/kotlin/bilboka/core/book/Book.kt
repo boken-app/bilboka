@@ -54,6 +54,7 @@ class Book(
         odoReading?.validateAsOdometer()
         amount?.validateAsAmount()
         costNOK?.validateAsCost()
+        amount?.let { costNOK?.div(it) }?.validateAsPricePerLiter()
         vehicle.lastEntry()?.checkChronologyAgainst(dateTime, odoReading)
     }
 
@@ -155,6 +156,12 @@ fun Double.validateAsAmount() {
 fun Double.validateAsCost() {
     if (this > 10000) {
         throw BookEntryException("Usannsynlig verdi for kostnad.")
+    }
+}
+
+fun Double.validateAsPricePerLiter() {
+    if (this > 100 || this < 1) {
+        throw BookEntryException("Usannsynlig verdi for pris.")
     }
 }
 
