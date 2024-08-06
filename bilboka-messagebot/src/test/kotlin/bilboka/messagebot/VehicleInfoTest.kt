@@ -41,16 +41,16 @@ class VehicleInfoTest : AbstractMessageBotTest() {
 
     @Test
     fun getInfoDekkogfelg_callsForInfo() {
-        every { vehicleService.getAutosysKjoretoydata(any()) } returns Kjoretoydata()
+        every { vehicleService.getAutosysKjoretoydataByTegnkombinasjon(any()) } returns Kjoretoydata()
 
-        messagebot.processMessage("autosys-dekkogfelg testbil", registeredSenderID)
+        messagebot.processMessage("autosys-dekkogfelg KT65881", registeredSenderID)
 
         verify {
             botMessenger.sendMessage(
                 message = match { msg -> msg.contains("Dekk- og felgdata fra Autosys") },
                 registeredSenderID
             )
-            vehicleService.getAutosysKjoretoydata("testbil")
+            vehicleService.getAutosysKjoretoydataByTegnkombinasjon("KT65881")
         }
     }
 }

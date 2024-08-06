@@ -2,18 +2,25 @@ package bilboka.messagebot.commands
 
 import bilboka.core.book.entryClosestTo
 import bilboka.core.user.UserService
+import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.OdometerUnit.KILOMETERS
 import bilboka.core.vehicle.domain.Vehicle
+import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
+import bilboka.integration.autosys.consumer.KjoretoydataFeiletException
+import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
 import bilboka.messagebot.formatAsDate
+import org.slf4j.LoggerFactory
 
 internal class VehicleInfo(
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     private val matcher = Regex(
         "(inf|info|kjøretøyinfo)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
         RegexOption.IGNORE_CASE
@@ -27,8 +34,32 @@ internal class VehicleInfo(
         val values = matcher.find(message)!!.groupValues
         val vehicleName = values[2]
 
-        vehicleService.getVehicle(vehicleName).apply {
-            replyWithInfo(this, conversation)
+        try {
+            vehicleService.getVehicle(vehicleName).apply {
+                replyWithInfo(this, conversation)
+            }
+        } catch (notFound: VehicleNotFoundException) {
+            try {
+                logger.info("Kjenner ikke til kjøretøy. Prøver Autosys-oppslag på $vehicleName")
+                vehicleService.getAutosysKjoretoydataByTegnkombinasjon(vehicleName).apply {
+                    replyWithAutosysInfo(this, conversation)
+                }
+            } catch (e: KjoretoydataFeiletException) {
+                logger.warn("Autosys-oppslag feilet: ${e.message}", e)
+                throw notFound
+            }
+        }
+    }
+
+    private fun replyWithAutosysInfo(kjoretoydata: Kjoretoydata, conversation: Conversation) {
+        conversation.sendReply(
+            "Ukjent bil i Bilboka. \n${kjoretoydata.print()}"
+        )
+        kjoretoydata.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
+            conversation.replyWithOptions(
+                "Enda mer?",
+                "autosys-dekkogfelg $it" to "Dekk- og felgdata ⚫"
+            )
         }
     }
 

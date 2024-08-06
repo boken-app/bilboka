@@ -22,9 +22,9 @@ internal class VehicleInfoDekkOgFelg(
 
     override fun execute(conversation: Conversation, message: String) {
         val values = matcher.find(message)!!.groupValues
-        val vehicleName = values[2]
+        val tegnkombinasjon = values[2]
 
-        vehicleService.getAutosysKjoretoydata(vehicleName).apply {
+        vehicleService.getAutosysKjoretoydataByTegnkombinasjon(tegnkombinasjon).apply {
             replyWithInfo(this, conversation)
         }
     }
