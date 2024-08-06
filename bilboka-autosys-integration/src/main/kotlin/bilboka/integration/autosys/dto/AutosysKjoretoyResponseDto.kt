@@ -284,5 +284,5 @@ fun Godkjenning.hasBevaringsverdig(): Boolean {
 }
 
 fun Generelt.merkeOgHandelsbetegnelse(): String {
-    return "${merke.joinToString()} ${handelsbetegnelse.joinToString()}"
+    return "${merke.joinToString { it.merke ?: "" }} ${handelsbetegnelse.joinToString()}"
 }

@@ -29,6 +29,7 @@ class AkfDatautleveringConsumer {
                 .header("SVV-Authorization", "Apikey ${apiKey}")
                 .build()
         ).execute().use { response ->
+            logger.info("Mottok respons isSuccessful=${response.isSuccessful} fra Autosys. Kode=${response.code()}")
             if (response.isSuccessful) {
                 logger.info("Hentet kjøretøydata for $kjennemerke")
                 return response.body()?.string()
