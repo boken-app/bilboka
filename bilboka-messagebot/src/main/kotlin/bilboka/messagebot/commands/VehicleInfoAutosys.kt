@@ -6,6 +6,7 @@ import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.integration.autosys.dto.Registreringsstatus
 import bilboka.integration.autosys.dto.hasBevaringsverdig
+import bilboka.integration.autosys.dto.merkeOgHandelsbetegnelse
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
@@ -84,6 +85,7 @@ private fun LocalDate.formattedDeadlineWithEmoji(): String {
 
 fun Kjoretoydata.print(): String {
     return "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
+            "${godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merkeOgHandelsbetegnelse() ?: "(ukjent type)"} \n" +
             "Kjennemerke: ${kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
             "Unr.: ${kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
             "Reg.status: ${registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
