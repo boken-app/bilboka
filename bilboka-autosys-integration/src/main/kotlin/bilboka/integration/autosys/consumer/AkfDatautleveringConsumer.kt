@@ -29,8 +29,10 @@ class AkfDatautleveringConsumer {
                 .header("SVV-Authorization", "Apikey ${apiKey}")
                 .build()
         ).execute().use { response ->
-            logger.info("Mottok respons isSuccessful=${response.isSuccessful} fra Autosys. Kode=${response.code()}")
             if (response.isSuccessful) {
+                if (response.code() == 204) {
+                    throw KjoretoydataIngenTreffException("Ingen treff i Autosys på $kjennemerke")
+                }
                 logger.info("Hentet kjøretøydata for $kjennemerke")
                 return response.body()?.string()
                     ?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
@@ -59,3 +61,4 @@ class AkfDatautleveringConsumer {
 }
 
 class KjoretoydataFeiletException(message: String? = null) : RuntimeException(message)
+class KjoretoydataIngenTreffException(message: String? = null) : RuntimeException(message)

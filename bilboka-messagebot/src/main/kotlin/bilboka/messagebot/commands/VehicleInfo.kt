@@ -7,7 +7,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.OdometerUnit.KILOMETERS
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
-import bilboka.integration.autosys.consumer.KjoretoydataFeiletException
+import bilboka.integration.autosys.consumer.KjoretoydataIngenTreffException
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
@@ -44,8 +44,8 @@ internal class VehicleInfo(
                 vehicleService.getAutosysKjoretoydataByTegnkombinasjon(vehicleName).apply {
                     replyWithAutosysInfo(this, conversation)
                 }
-            } catch (e: KjoretoydataFeiletException) {
-                logger.warn("Autosys-oppslag feilet: ${e.message}", e)
+            } catch (e: KjoretoydataIngenTreffException) {
+                logger.warn("Ingen treff fra Autosys: ${e.message}", e)
                 throw notFound
             }
         }
