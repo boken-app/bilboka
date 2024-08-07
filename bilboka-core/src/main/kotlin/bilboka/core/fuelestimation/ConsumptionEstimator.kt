@@ -26,6 +26,32 @@ object ConsumptionEstimator {
         return estimateAt(sortedEntries, odoUnit)
     }
 
+    fun estimateBetween(
+        entries: Collection<BookEntry>,
+        firstOdo: Int,
+        lastOdo: Int,
+        odoUnit: OdometerUnit? = null
+    ): ConsumptionEstimationResult? {
+        val sortedEntries = SortedTraversableEntries(entries)
+        sortedEntries.atFirstAfter(lastOdo) {
+            it.isFullTank == true && it.odometer != null
+        }
+        return estimateAt(sortedEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
+    }
+
+    fun estimateBetween(
+        entries: Collection<BookEntry>,
+        firstTime: LocalDateTime,
+        lastTime: LocalDateTime,
+        odoUnit: OdometerUnit? = null
+    ): ConsumptionEstimationResult? {
+        val sortedEntries = SortedTraversableEntries(entries)
+        sortedEntries.atFirstAfter(lastTime) {
+            it.isFullTank == true && it.odometer != null
+        }
+        return estimateAt(sortedEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
+    }
+
     fun estimateAt(
         entries: Collection<BookEntry>,
         dateTime: LocalDateTime,
@@ -40,7 +66,8 @@ object ConsumptionEstimator {
 
     fun estimateAt(
         selectedEntry: SortedTraversableEntries,
-        odoUnit: OdometerUnit? = null
+        odoUnit: OdometerUnit? = null,
+        estimateWhile: (entry: BookEntry) -> Boolean = { false }
     ): ConsumptionEstimationResult? {
         var totalAmountFilled = 0.0
         var estimateFrom: BookEntry? = null
@@ -51,7 +78,7 @@ object ConsumptionEstimator {
                 if (isFullTank == true && odometer != null) {
                     if (estimateTo == null) {
                         estimateTo = this
-                    } else {
+                    } else if (!estimateWhile(this)) { // Continue estimation further back if still true
                         estimateFrom = this
                     }
                 }
