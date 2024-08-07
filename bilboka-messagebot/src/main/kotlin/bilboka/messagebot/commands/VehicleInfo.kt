@@ -71,8 +71,8 @@ internal class VehicleInfo(
         conversation.sendReply(
             "\uD83D\uDE97 \nBil-navn: ${vehicle.name} \n" +
                     "Registreringsnummer: ${vehicle.tegnkombinasjonVisning ?: "(ukjent)"} \n" +
-                    "Siste forbruk: ${
-                        vehicle.lastConsumptionEstimate()
+                    "Forbruk: ${
+                        vehicle.consumptionLastKm(500)
                             ?.let {
                                 "${it.litersPer10Km().format()} liter per mil " +
                                         "(siste ${vehicle.odometerUnit?.convertToKilometers(it.estimatedAt.odometer!! - it.estimatedFrom.odometer!!)} km)"

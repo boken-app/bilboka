@@ -147,6 +147,25 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         return ConsumptionEstimator.lastEstimate(bookEntries.toList(), odometerUnit)
     }
 
+    fun consumptionLastKm(kilometers: Int): ConsumptionEstimationResult? {
+        return lastOdometer()
+            ?.let { odometerUnit?.convertToKilometers(it) }
+            ?.let { lastKilometer ->
+                ConsumptionEstimator.estimateBetween(
+                    bookEntries.toList(),
+                    lastKilometer.minus(kilometers).let { odometerUnit!!.convertFromKilometers(it) },
+                    lastKilometer.let { odometerUnit!!.convertFromKilometers(it) },
+                    odometerUnit
+                )
+            }
+    }
+
+    fun consumptionSince(time: LocalDateTime): ConsumptionEstimationResult? {
+        return lastEntry()?.dateTime?.let {
+            ConsumptionEstimator.estimateBetween(bookEntries.toList(), time, it, odometerUnit)
+        }
+    }
+
     fun tankEstimate(currentOdo: Int): TankEstimateResult? {
         return tankVolume?.run { TankEstimator.estimate(bookEntries.toList(), this.toDouble(), currentOdo) }
     }
