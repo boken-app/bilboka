@@ -43,13 +43,14 @@ internal class VehicleInfoAutosys(
         data.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
             conversation.replyWithOptions(
                 "Enda mer?",
-                "autosys-dekkogfelg $it" to "Dekk- og felgdata ⚫"
+                "autosys-dekkogfelg $it" to "Dekk- og felgdata \uD83D\uDEDE",
+                "autosys-dimensjon-og-vekt $it" to "Dimensjon og vekter ⚖"
             )
         }
     }
 }
 
-fun Kjoretoydata.print(): String {
+internal fun Kjoretoydata.print(): String {
     return "\uD83D\uDE97 Kjøretøydata fra Autosys: \n" +
             "${godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merkeOgHandelsbetegnelse() ?: "(ukjent type)"} \n" +
             "Kjennemerke: ${kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
@@ -65,11 +66,11 @@ fun Kjoretoydata.print(): String {
             "PKK-frist: ${periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
 }
 
-private fun Number.kg(): String {
+internal fun Number.kg(): String {
     return "$this kg"
 }
 
-private fun Int.formatFromMm(): String {
+internal fun Int.formatFromMm(): String {
     return "${(this / 1000.0).format()} m"
 }
 

@@ -45,6 +45,7 @@ class MessageBot {
             VehicleInfo(vehicleService, userService),
             VehicleInfoAutosys(vehicleService, userService),
             VehicleInfoDekkOgFelg(vehicleService, userService),
+            VehicleInfoDimensjoner(vehicleService, userService),
             TankEstimate(vehicleService, userService),
             ReportGetter(book, vehicleService, userService),
             UserInfo(),

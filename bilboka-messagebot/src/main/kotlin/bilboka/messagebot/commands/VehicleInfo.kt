@@ -58,7 +58,8 @@ internal class VehicleInfo(
         kjoretoydata.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
             conversation.replyWithOptions(
                 "Enda mer?",
-                "autosys-dekkogfelg $it" to "Dekk- og felgdata ⚫"
+                "autosys-dekkogfelg $it" to "Dekk- og felgdata \uD83D\uDEDE",
+                "autosys-dimensjon-og-vekt $it" to "Dimensjon og vekter ⚖"
             )
         }
     }
