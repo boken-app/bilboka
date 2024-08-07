@@ -50,14 +50,14 @@ internal class VehicleInfoDimensjoner(
 fun TekniskeData.writeDimensjonerOgVekter(): String {
     return "Lengde: ${dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
             "Bredde: ${dimensjoner?.bredde?.formatFromMm() ?: "(ukjent)"} \n" +
-            "Sitteplasser foran: ${persontall?.sitteplasserForan ?: "(ukjent)"}" +
-            "Sitteplasser totalt: ${persontall?.sitteplasserTotalt ?: "(ukjent)"}" +
-            "Egenvekt: ${vekter?.egenvekt?.kg() ?: "(ukjent)"}" +
-            "Nyttelast: ${vekter?.nyttelast?.kg() ?: "(ukjent)"}" +
-            "Tillatt totalvekt: ${vekter?.tillattTotalvekt?.kg() ?: "(ukjent)"}" +
-            "Tillatt taklast: ${vekter?.tillattTaklast?.kg() ?: "(ukjent)"}" +
-            "Tillatt vogntogvekt: ${vekter?.tillattVogntogvekt?.kg() ?: "(ukjent)"}" +
-            "Tillatt hengervekt m/ brems: ${vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"}" +
-            "Tillatt hengervekt u/ brems: ${vekter?.tillattTilhengervektUtenBrems?.kg() ?: "(ukjent)"}" +
-            "Tillatt vertikal koplinglast: ${vekter?.tillattVertikalKoplingslast?.kg() ?: "(ukjent)"}"
+            "Sitteplasser totalt: ${persontall?.sitteplasserTotalt ?: "(ukjent)"} \n" +
+            "Sitteplasser foran: ${persontall?.sitteplasserForan ?: "(ukjent)"} \n" +
+            "Egenvekt: ${vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
+            "Nyttelast: ${vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt totalvekt: ${vekter?.tillattTotalvekt?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt vogntogvekt: ${vekter?.tillattVogntogvekt?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt hengervekt m/ brems: ${vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt hengervekt u/ brems: ${vekter?.tillattTilhengervektUtenBrems?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt taklast: ${vekter?.tillattTaklast?.kg() ?: "(ukjent)"} \n" +
+            "Tillatt vertikal koplinglast: ${vekter?.tillattVertikalKoplingslast?.kg() ?: "(ukjent)"} \n"
 }

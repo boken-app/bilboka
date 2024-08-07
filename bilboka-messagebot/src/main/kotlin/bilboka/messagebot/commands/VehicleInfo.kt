@@ -59,7 +59,7 @@ internal class VehicleInfo(
             conversation.replyWithOptions(
                 "Enda mer?",
                 "autosys-dekkogfelg $it" to "Dekk- og felgdata \uD83D\uDEDE",
-                "autosys-dimensjon-og-vekt $it" to "Dimensjon og vekter ⚖"
+                "autosys-dimensjon-og-vekt $it" to "Dimensjon og vekt ⚖"
             )
         }
     }
