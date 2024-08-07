@@ -3,6 +3,7 @@ package bilboka.core.fuelestimation
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.sort
 import bilboka.core.vehicle.domain.OdometerUnit
+import java.time.LocalDateTime
 import java.time.Period
 
 // TODO Lage total-estimator som returnerer samling med estimater fra tidenes morgen
@@ -21,6 +22,18 @@ object ConsumptionEstimator {
         val sortedEntries = SortedTraversableEntries(entries)
         sortedEntries.atFirstAfter(odo) {
             it.isFullTank == true && it.odometer != null
+        }
+        return estimateAt(sortedEntries, odoUnit)
+    }
+
+    fun estimateAt(
+        entries: Collection<BookEntry>,
+        dateTime: LocalDateTime,
+        odoUnit: OdometerUnit? = null
+    ): ConsumptionEstimationResult? {
+        val sortedEntries = SortedTraversableEntries(entries)
+        sortedEntries.atFirstAfter(dateTime) {
+            it.isFullTank == true && it.dateTime != null
         }
         return estimateAt(sortedEntries, odoUnit)
     }
@@ -93,6 +106,18 @@ class SortedTraversableEntries(
         while (hasNext()) {
             next()
             if ((current().odometer ?: odo) >= odo && condition(current())) {
+                return current()
+            }
+        }
+        next()
+        return null
+    }
+
+    fun atFirstAfter(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+        atStart()
+        while (hasNext()) {
+            next()
+            if ((current().dateTime ?: dateTime) >= dateTime && condition(current())) {
                 return current()
             }
         }

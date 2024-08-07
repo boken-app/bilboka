@@ -9,6 +9,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset.offset
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.LocalTime
 
 class ConsumptionEstimatorTest {
 
@@ -312,6 +314,97 @@ class ConsumptionEstimatorTest {
                 ConsumptionEstimator.estimateAt(
                     entries,
                     900
+                )?.amountPerDistanceUnit
+            ).isNull()
+        }
+    }
+
+    @Nested
+    inner class EstimateAtTime {
+        val entries = listOf(
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { dateTime } returns LocalDate.of(2020, 1, 1).atTime(LocalTime.NOON)
+                every { odometer } returns 1000
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { dateTime } returns LocalDate.of(2020, 2, 1).atTime(LocalTime.NOON)
+                every { odometer } returns 1100
+                every { amount } returns 90.0
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.MAINTENANCE
+                every { dateTime } returns LocalDate.of(2020, 2, 10).atTime(LocalTime.NOON)
+                every { odometer } returns 1100
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { dateTime } returns LocalDate.of(2020, 3, 10).atTime(LocalTime.NOON)
+                every { odometer } returns 1200
+                every { amount } returns 200.0
+                every { isFullTank } returns true
+            },
+        )
+
+        @Test
+        fun estimateAtLastOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2020, 3, 10).atTime(LocalTime.NOON)
+                )?.amountPerDistanceUnit
+            ).isEqualTo(2.0)
+        }
+
+        @Test
+        fun estimateBeforeLastOne_isSameAsLastOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2020, 2, 2).atTime(LocalTime.NOON)
+                )?.amountPerDistanceUnit
+            ).isEqualTo(2.0)
+        }
+
+        @Test
+        fun estimateAtMiddleOne_isOtherEstimate() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2020, 2, 1).atTime(LocalTime.NOON)
+                )?.amountPerDistanceUnit
+            ).isEqualTo(0.9)
+        }
+
+        @Test
+        fun estimateBeforeMiddleOne_isSameAsMiddleOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2020, 1, 15).atTime(LocalTime.NOON)
+                )?.amountPerDistanceUnit
+            ).isEqualTo(0.9)
+        }
+
+        @Test
+        fun estimateAfterLastOne_isUnknown() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2020, 5, 1).atTime(LocalTime.NOON)
+                )?.amountPerDistanceUnit
+            ).isNull()
+        }
+
+        @Test
+        fun estimateBeforeFirstOne_isUnknown() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    LocalDate.of(2019, 2, 1).atTime(LocalTime.NOON)
                 )?.amountPerDistanceUnit
             ).isNull()
         }
