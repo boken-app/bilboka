@@ -49,6 +49,22 @@ internal class VehicleInfoAutosys(
     }
 }
 
+fun Kjoretoydata.print(): String {
+    return "\uD83D\uDE97 Kjøretøydata fra Autosys: \n" +
+            "${godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merkeOgHandelsbetegnelse() ?: "(ukjent type)"} \n" +
+            "Kjennemerke: ${kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
+            "Unr.: ${kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
+            "Reg.status: ${registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
+            "Første reg. Norge: ${forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
+            "Egenvekt: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
+            "Nyttelast: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
+            "Hengervekt (m/brems): ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
+            "Lengde: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
+            "Reg. bevaringsverdig: ${godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
+            "Sist godkj. PKK: ${periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
+            "PKK-frist: ${periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
+}
+
 private fun Number.kg(): String {
     return "$this kg"
 }
@@ -81,20 +97,4 @@ private fun LocalDate.formattedDeadlineWithEmoji(): String {
             else -> "\uD83D\uDE2D" // Sad emoji (deadline has passed)
         }
     }"
-}
-
-fun Kjoretoydata.print(): String {
-    return "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
-            "${godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merkeOgHandelsbetegnelse() ?: "(ukjent type)"} \n" +
-            "Kjennemerke: ${kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
-            "Unr.: ${kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
-            "Reg.status: ${registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
-            "Første reg. Norge: ${forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
-            "Egenvekt: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
-            "Nyttelast: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
-            "Hengervekt (m/brems): ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
-            "Lengde: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
-            "Reg. bevaringsverdig: ${godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
-            "Sist godkj. PKK: ${periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
-            "PKK-frist: ${periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
 }
