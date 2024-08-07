@@ -34,7 +34,7 @@ internal class VehicleInfoDekkOgFelg(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "\uD83D\uDE97 Dekk- og felgdata fra Autosys for " +
+            "\uD83D\uDEDE Dekk- og felgdata fra Autosys for " +
                     "${
                         data.kjoretoyId?.kjennemerke ?: data.kjoretoyId?.understellsnummer ?: "(ukjent)"
                     } \n" +

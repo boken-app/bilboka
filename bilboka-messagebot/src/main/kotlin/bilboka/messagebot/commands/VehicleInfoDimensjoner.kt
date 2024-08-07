@@ -34,7 +34,7 @@ internal class VehicleInfoDimensjoner(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "\uD83D\uDE97 Dimensjoner og vekter for " +
+            "⚖ Dimensjoner og vekter for " +
                     "${
                         data.kjoretoyId?.kjennemerke ?: data.kjoretoyId?.understellsnummer ?: "(ukjent)"
                     } \n" +
