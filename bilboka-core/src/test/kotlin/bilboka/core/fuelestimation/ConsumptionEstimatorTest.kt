@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class ConsumptionEstimatorTest {
 
     @Nested
-    inner class Estimation {
+    inner class LastEstimate {
 
         @Test
         fun noEstimateWhenNoAmounts() {
@@ -227,6 +227,93 @@ class ConsumptionEstimatorTest {
                     )
                 )?.amountPerDistanceUnit
             ).isEqualTo(1.0)
+        }
+    }
+
+    @Nested
+    inner class EstimateAtOdo {
+        val entries = listOf(
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1000
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1100
+                every { amount } returns 90.0
+                every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.MAINTENANCE
+                every { odometer } returns 1100
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.FUEL
+                every { odometer } returns 1200
+                every { amount } returns 200.0
+                every { isFullTank } returns true
+            },
+        )
+
+        @Test
+        fun estimateAtLastOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    1200
+                )?.amountPerDistanceUnit
+            ).isEqualTo(2.0)
+        }
+
+        @Test
+        fun estimateBeforeLastOne_isSameAsLastOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    1150
+                )?.amountPerDistanceUnit
+            ).isEqualTo(2.0)
+        }
+
+        @Test
+        fun estimateAtMiddleOne_isOtherEstimate() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    1100
+                )?.amountPerDistanceUnit
+            ).isEqualTo(0.9)
+        }
+
+        @Test
+        fun estimateBeforeMiddleOne_isSameAsMiddleOne() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    1001
+                )?.amountPerDistanceUnit
+            ).isEqualTo(0.9)
+        }
+
+        @Test
+        fun estimateAfterLastOne_isUnknown() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    1250
+                )?.amountPerDistanceUnit
+            ).isNull()
+        }
+
+        @Test
+        fun estimateBeforeFirstOne_isUnknown() {
+            assertThat(
+                ConsumptionEstimator.estimateAt(
+                    entries,
+                    900
+                )?.amountPerDistanceUnit
+            ).isNull()
         }
     }
 
