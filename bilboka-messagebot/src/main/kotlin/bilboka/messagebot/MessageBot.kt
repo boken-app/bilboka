@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.ImpossibleBilbokaActionException
+import bilboka.core.TripService
 import bilboka.core.book.Book
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleNotFoundException
@@ -31,6 +32,9 @@ class MessageBot {
     private lateinit var userService: UserService
 
     @Autowired
+    private lateinit var tripService: TripService
+
+    @Autowired
     private lateinit var book: Book
 
     private val commandRegistry by lazy {
@@ -51,6 +55,7 @@ class MessageBot {
             UserInfo(),
             RegisterUser(userService),
             UndoLast(userService),
+            TripStarter(vehicleService, tripService, userService)
         )
     }
 

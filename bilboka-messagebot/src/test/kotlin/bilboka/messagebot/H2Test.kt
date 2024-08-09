@@ -2,6 +2,7 @@ package bilboka.messagebot
 
 import bilboka.core.book.domain.BookEntries
 import bilboka.core.book.domain.MaintenanceItems
+import bilboka.core.trips.domain.Trips
 import bilboka.core.user.domain.RegistrationKeys
 import bilboka.core.user.domain.UserRegistrations
 import bilboka.core.user.domain.Users
@@ -19,7 +20,15 @@ abstract class H2Test {
     fun setupDatabase() {
         val db = Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         transaction(db) {
-            SchemaUtils.create(BookEntries, Vehicles, Users, UserRegistrations, RegistrationKeys, MaintenanceItems)
+            SchemaUtils.create(
+                BookEntries,
+                Vehicles,
+                Users,
+                UserRegistrations,
+                RegistrationKeys,
+                MaintenanceItems,
+                Trips
+            )
             commit()
         }
     }
@@ -28,6 +37,7 @@ abstract class H2Test {
     fun wipeDatabase() {
         transaction {
             BookEntries.deleteAll()
+            Trips.deleteAll()
             Vehicles.deleteAll()
             UserRegistrations.deleteAll()
             RegistrationKeys.deleteAll()

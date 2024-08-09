@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.TripService
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntries
 import bilboka.core.report.ReportGenerator
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component
 import java.util.function.Predicate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, AkfDatautleveringConsumer::class, UserService::class, ReportGenerator::class, AutosysProperties::class])
+@SpringBootTest(classes = [MessageBot::class, TestMessenger::class, Book::class, VehicleService::class, AkfDatautleveringConsumer::class, UserService::class, ReportGenerator::class, AutosysProperties::class, TripService::class])
 abstract class AbstractMessageBotIT : H2Test() {
 
     @Autowired
