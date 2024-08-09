@@ -88,6 +88,7 @@ class Book(
 
     fun noteTripStart(trip: Trip): BookEntry {
         return transaction {
+            trip.vehicle.bookEntries.validateChronologyOf(trip.dateTimeStart, trip.odometerStart)
             BookEntry.new {
                 dateTime = trip.dateTimeStart
                 odometer = trip.odometerStart
@@ -103,9 +104,12 @@ class Book(
 
     fun noteTripEnd(trip: Trip, endedBy: User?): BookEntry {
         return transaction {
+            val endTime = trip.dateTimeEnd ?: throw BookEntryException("Mangler avslutningstidspunkt for tur")
+            val endOdo = trip.odometerEnd ?: throw BookEntryException("Mangler avslutnings-kilometer for tur")
+            trip.vehicle.bookEntries.validateChronologyOf(endTime, endOdo)
             BookEntry.new {
-                dateTime = trip.dateTimeEnd
-                odometer = trip.odometerEnd
+                dateTime = endTime
+                odometer = endOdo
                 vehicle = trip.vehicle
                 type = EntryType.EVENT
                 event = EventType.TRIP_END
@@ -245,4 +249,16 @@ private fun SizedIterable<BookEntry>.firstEntryAfter(date: LocalDateTime): BookE
 private fun SizedIterable<BookEntry>.firstEntryAfter(odo: Int): BookEntry? {
     sorted().forEach { if (it.odometer?.run { this > odo } == true) return it }
     return null
+}
+
+private fun SizedIterable<BookEntry>.validateChronologyOf(
+    dateTimeStart: LocalDateTime,
+    odometerStart: Int
+) {
+    toList().entryClosestTo(dateTimeStart)
+        ?.run {
+            if ((dateTime?.compareTo(dateTimeStart) != odometer?.compareTo(odometerStart))) {
+                throw BookEntryChronologyException("Tid og kilometerstand passer ikke i rekkefølge med eksisterende data")
+            }
+        }
 }

@@ -15,11 +15,11 @@ import java.time.Instant
 import java.time.LocalDateTime
 
 object Trips : IntIdTable() {
-    val dateTimeStart = datetime("datetime_start").nullable()
+    val dateTimeStart = datetime("datetime_start")
     val dateTimeEnd = datetime("datetime_end").nullable()
-    val tripName = varchar("trip_name", 255).nullable()
+    val tripName = varchar("trip_name", 255)
     val vehicle = reference("vehicle", Vehicles)
-    val odometerStart = integer("odometer_start").nullable()
+    val odometerStart = integer("odometer_start")
     val odometerEnd = integer("odometer_end").nullable()
     val comment = varchar("comment", 255).nullable()
     val enteredBy = reference("entered_by", Users).nullable()
