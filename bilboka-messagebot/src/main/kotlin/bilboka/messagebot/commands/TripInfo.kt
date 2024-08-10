@@ -39,7 +39,7 @@ internal class TripInfo(
 private fun Conversation.replyWithTripInfo(vehicle: Vehicle, activeTrip: Trip?) {
     activeTrip?.run {
         sendReply(
-            "Aktiv tur '${activeTrip.tripName}' for $vehicle startet ved " +
+            "Aktiv tur '${activeTrip.tripName}' for ${vehicle.name} startet ved " +
                     "${activeTrip.odometerStart} ${vehicle.odometerUnit?.displayValue ?: ""}, " +
                     "${activeTrip.dateTimeStart.formatAsDate()}."
         )
