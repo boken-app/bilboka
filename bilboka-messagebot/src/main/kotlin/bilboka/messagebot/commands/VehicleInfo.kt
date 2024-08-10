@@ -53,7 +53,7 @@ internal class VehicleInfo(
 
     private fun replyWithAutosysInfo(kjoretoydata: Kjoretoydata, conversation: Conversation) {
         conversation.sendReply(
-            "¯\\_(ツ)_/¯ Ukjent bil i Bilboka \n\n${kjoretoydata.print()}"
+            "Ukjent bil i Bilboka ¯\\_(ツ)_/¯ \n\n${kjoretoydata.print()}"
         )
         kjoretoydata.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
             conversation.replyWithOptions(

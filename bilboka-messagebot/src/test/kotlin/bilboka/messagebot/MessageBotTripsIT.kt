@@ -14,12 +14,16 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
             message = "Gøy tur",
             reply = { it.contains("Tur 'Gøy tur' startet for xc 70 ved 45677") },
         )
+        processMessagaAndAssertReply(
+            message = "aktiv tur xc70",
+            reply = { it.contains("Gøy tur") },
+        )
     }
 
     @Test
     fun startTripAfterOtherEvent() {
         processMessagaAndAssertReply(
-            message = "tank xc70 20l 200kr 45678",
+            message = "tank blå testbil 20l 200kr 45678",
             reply = { it.contains("Registrert tanking") },
         )
         processMessagaAndAssertReply(
@@ -27,12 +31,12 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
             reply = { it.contains("\uD83D\uDC4D") },
         )
         processMessagaAndAssertReply(
-            message = "start tur xc70 45700",
+            message = "start tur blå testbil 45700",
             reply = { it.contains("Navn på turen?") },
         )
         processMessagaAndAssertReply(
             message = "Gøy tur",
-            reply = { it.contains("Tur 'Gøy tur' startet for xc 70 ved 45700") },
+            reply = { it.contains("Tur 'Gøy tur' startet for blå testbil ved 45700") },
         )
     }
 
@@ -43,7 +47,7 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
             reply = { it.contains("Hvilken bil?") },
         )
         processMessagaAndAssertReply(
-            message = "xc 70",
+            message = "en testbil",
             reply = { it.contains("Kilometerstand?") },
         )
         processMessagaAndAssertReply(
@@ -52,7 +56,7 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "En annen tur",
-            reply = { it.contains("Tur 'En annen tur' startet for xc 70 ved 45677") },
+            reply = { it.contains("Tur 'En annen tur' startet for en testbil ved 45677") },
         )
     }
 

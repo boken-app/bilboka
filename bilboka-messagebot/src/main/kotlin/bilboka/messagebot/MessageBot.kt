@@ -55,7 +55,8 @@ class MessageBot {
             UserInfo(),
             RegisterUser(userService),
             UndoLast(userService),
-            TripStarter(vehicleService, tripService, userService)
+            TripStarter(vehicleService, tripService, userService),
+            TripInfo(vehicleService, tripService, userService)
         )
     }
 
