@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 class MessageBotTripsIT : AbstractMessageBotIT() {
 
     @Test
-    fun canStartTrip() {
+    fun canStartAndEndTrip() {
         processMessagaAndAssertReply(
             message = "start tur xc70 45677",
             reply = { it.contains("Navn på turen?") },
@@ -17,6 +17,10 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
         processMessagaAndAssertReply(
             message = "aktiv tur xc70",
             reply = { it.contains("Gøy tur") },
+        )
+        processMessagaAndAssertReply(
+            message = "avslutt tur xc70 45777",
+            reply = { it.contains("Kjørt 100 km") },
         )
     }
 

@@ -45,6 +45,12 @@ class TripService(
     }
 
     fun getActiveTrip(vehicle: Vehicle): Trip? {
-        return transaction { Trip.all().singleOrNull { it.vehicle.id == vehicle.id && it.isActive() } }
+        return transaction {
+            Trip.all().filter { it.vehicle.id == vehicle.id && it.isActive() }
+                .apply { if (size > 1) throw MultipleTripsException() }
+                .singleOrNull()
+        }
     }
 }
+
+class MultipleTripsException() : RuntimeException("Det finnes flere aktive turer")

@@ -8,15 +8,12 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.formatAsDate
-import org.slf4j.LoggerFactory
 
 internal class TripInfo(
     private val vehicleService: VehicleService,
     private val tripService: TripService,
     userService: UserService
 ) : CarBookCommand(userService) {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     private val turinfoMatcher = Regex(
         "(aktiv tur)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
         RegexOption.IGNORE_CASE
