@@ -206,6 +206,14 @@ fun Int.validateAsOdometer() {
     }
 }
 
+private fun SizedIterable<BookEntry>.validateChronologyOf(
+    dateTime: LocalDateTime,
+    odometer: Int
+) {
+    toList().entryClosestTo(dateTime)
+        ?.checkChronologyAgainst(dateTime, odometer)
+}
+
 private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {
     if (odoReading != null && this.odometer != null
         && this.dateTime?.compareTo(dateTime ?: LocalDateTime.now())?.sign != this.odometer?.compareTo(odoReading)?.sign
@@ -249,16 +257,4 @@ private fun SizedIterable<BookEntry>.firstEntryAfter(date: LocalDateTime): BookE
 private fun SizedIterable<BookEntry>.firstEntryAfter(odo: Int): BookEntry? {
     sorted().forEach { if (it.odometer?.run { this > odo } == true) return it }
     return null
-}
-
-private fun SizedIterable<BookEntry>.validateChronologyOf(
-    dateTimeStart: LocalDateTime,
-    odometerStart: Int
-) {
-    toList().entryClosestTo(dateTimeStart)
-        ?.run {
-            if ((dateTime?.compareTo(dateTimeStart) != odometer?.compareTo(odometerStart))) {
-                throw BookEntryChronologyException("Tid og kilometerstand passer ikke i rekkefølge med eksisterende data")
-            }
-        }
 }
