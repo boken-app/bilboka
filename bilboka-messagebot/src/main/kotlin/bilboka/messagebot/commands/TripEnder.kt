@@ -43,9 +43,15 @@ internal class TripEnder(
 
     private fun Conversation.replyWithTripStats(vehicle: Vehicle, endedTrip: Trip?) {
         endedTrip?.apply {
+            val odoDiff = odometerEnd!! - odometerStart
+            val kilometers = vehicle.odometerUnit?.convertToKilometers(odoDiff) ?: odoDiff
             sendReply(
                 "Avsluttet tur '$tripName'. " +
-                        "Kjørt ${vehicle.odometerUnit?.convertToKilometers(odometerEnd!! - odometerStart)} km"
+                        "Kjørt $kilometers km og brukt ca. ${
+                            vehicle.consumptionLastKm(kilometers)?.amountPerDistanceUnit?.times(
+                                odoDiff.toDouble()
+                            ) ?: "(ukjent)"
+                        } liter drivstoff"
             )
         } ?: sendReply("Ingen tur å avslutte for ${vehicle.name}")
     }
