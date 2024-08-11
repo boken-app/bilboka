@@ -7,6 +7,8 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.Vehicle
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.*
+import bilboka.messagebot.format
+import bilboka.messagebot.formatShort
 
 internal class TripEnder(
     private val vehicleService: VehicleService,
@@ -49,8 +51,8 @@ internal class TripEnder(
             sendReply(
                 "🏁 Avsluttet tur '$tripName'. " +
                         "Kjørt $kilometers km og brukt ca. ${
-                            consumption?.amountPerDistanceUnit?.times(odoDiff.toDouble()) ?: "(ukjent)"
-                        } liter drivstoff (${consumption?.litersPer10Km() ?: "(ukjent)"} l/mil)"
+                            consumption?.amountPerDistanceUnit?.times(odoDiff.toDouble())?.formatShort() ?: "(ukjent)"
+                        } liter drivstoff (${consumption?.litersPer10Km()?.format() ?: "(ukjent)"} l/mil)"
             )
         } ?: sendReply("Ingen tur å avslutte for ${vehicle.name}")
     }
