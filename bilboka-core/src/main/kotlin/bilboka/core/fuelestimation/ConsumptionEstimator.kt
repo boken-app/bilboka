@@ -20,7 +20,7 @@ object ConsumptionEstimator {
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
         val sortedEntries = SortedTraversableEntries(entries)
-        sortedEntries.atFirstAfter(odo) {
+        sortedEntries.atFirstAfterOrLastBefore(odo) {
             it.isFullTank == true && it.odometer != null
         }
         return estimateAt(sortedEntries, odoUnit)
@@ -33,7 +33,7 @@ object ConsumptionEstimator {
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
         val sortedEntries = SortedTraversableEntries(entries)
-        sortedEntries.atFirstAfter(lastOdo) {
+        sortedEntries.atFirstAfterOrLastBefore(lastOdo) {
             it.isFullTank == true && it.odometer != null
         }
         return estimateAt(sortedEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
@@ -46,7 +46,7 @@ object ConsumptionEstimator {
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
         val sortedEntries = SortedTraversableEntries(entries)
-        sortedEntries.atFirstAfter(lastTime) {
+        sortedEntries.atFirstAfterOrLastBefore(lastTime) {
             it.isFullTank == true && it.odometer != null
         }
         return estimateAt(sortedEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
@@ -58,7 +58,7 @@ object ConsumptionEstimator {
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
         val sortedEntries = SortedTraversableEntries(entries)
-        sortedEntries.atFirstAfter(dateTime) {
+        sortedEntries.atFirstAfterOrLastBefore(dateTime) {
             it.isFullTank == true && it.dateTime != null
         }
         return estimateAt(sortedEntries, odoUnit)
@@ -128,6 +128,14 @@ class SortedTraversableEntries(
         return sortedContent.contains(element)
     }
 
+    fun atFirstAfterOrLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+        return atFirstAfter(odo, condition) ?: atLastBefore(odo, condition)
+    }
+
+    fun atFirstAfterOrLastBefore(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+        return atFirstAfter(dateTime, condition) ?: atLastBefore(dateTime, condition)
+    }
+
     fun atFirstAfter(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
         atStart()
         while (hasNext()) {
@@ -149,6 +157,30 @@ class SortedTraversableEntries(
             }
         }
         next()
+        return null
+    }
+
+    fun atLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+        atEnd()
+        while (hasPrevious()) {
+            previous()
+            if ((current().odometer ?: odo) <= odo && condition(current())) {
+                return current()
+            }
+        }
+        previous()
+        return null
+    }
+
+    fun atLastBefore(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+        atEnd()
+        while (hasPrevious()) {
+            previous()
+            if ((current().dateTime ?: dateTime) <= dateTime && condition(current())) {
+                return current()
+            }
+        }
+        previous()
         return null
     }
 

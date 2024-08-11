@@ -299,13 +299,13 @@ class ConsumptionEstimatorTest {
         }
 
         @Test
-        fun estimateAfterLastOne_isUnknown() {
+        fun estimateAfterLastOne_isSameAsLast() {
             assertThat(
                 ConsumptionEstimator.estimateAt(
                     entries,
                     1250
                 )?.amountPerDistanceUnit
-            ).isNull()
+            ).isEqualTo(2.0)
         }
 
         @Test
@@ -390,13 +390,13 @@ class ConsumptionEstimatorTest {
         }
 
         @Test
-        fun estimateAfterLastOne_isUnknown() {
+        fun estimateAfterLastOne_isSameAsLast() {
             assertThat(
                 ConsumptionEstimator.estimateAt(
                     entries,
                     LocalDate.of(2020, 5, 1).atTime(NOON)
                 )?.amountPerDistanceUnit
-            ).isNull()
+            ).isEqualTo(2.0)
         }
 
         @Test
@@ -437,6 +437,11 @@ class ConsumptionEstimatorTest {
                 every { odometer } returns 1200
                 every { amount } returns 200.0
                 every { isFullTank } returns true
+            },
+            bookEntryWhere {
+                every { type } returns EntryType.EVENT
+                every { dateTime } returns LocalDate.of(2020, 3, 20).atTime(NOON)
+                every { odometer } returns 1300
             },
         )
 
@@ -506,6 +511,16 @@ class ConsumptionEstimatorTest {
             ).isEqualTo(0.9)
         }
 
+        @Test
+        fun estimateAtOtherEventAfterLastFuel_staysLikeLast() {
+            assertThat(
+                ConsumptionEstimator.estimateBetween(
+                    entries,
+                    LocalDate.of(2020, 2, 10).atTime(NOON),
+                    LocalDate.of(2020, 3, 20).atTime(NOON)
+                )?.amountPerDistanceUnit
+            ).isEqualTo(2.0)
+        }
     }
 
     @Nested
