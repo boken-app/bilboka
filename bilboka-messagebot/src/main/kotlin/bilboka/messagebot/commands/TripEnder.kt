@@ -13,7 +13,7 @@ internal class TripEnder(
     private val tripService: TripService,
     userService: UserService
 ) : CarBookCommand(userService) {
-    private val endTripMatcher = Regex("avslutt tur", RegexOption.IGNORE_CASE)
+    private val endTripMatcher = Regex("(avslutt tur|stopp tur)", RegexOption.IGNORE_CASE)
 
     override fun isMatch(message: String): Boolean {
         return endTripMatcher.containsMatchIn(message)
@@ -47,7 +47,7 @@ internal class TripEnder(
             val kilometers = vehicle.odometerUnit?.convertToKilometers(odoDiff) ?: odoDiff
             val consumption = vehicle.consumptionLastKm(kilometers)
             sendReply(
-                "Avsluttet tur '$tripName'. " +
+                "🏁 Avsluttet tur '$tripName'. " +
                         "Kjørt $kilometers km og brukt ca. ${
                             consumption?.amountPerDistanceUnit?.times(odoDiff.toDouble()) ?: "(ukjent)"
                         } liter drivstoff (${consumption?.litersPer10Km() ?: "(ukjent)"} l/mil)"

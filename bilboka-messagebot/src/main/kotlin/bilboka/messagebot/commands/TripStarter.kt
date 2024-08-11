@@ -38,7 +38,8 @@ internal class TripStarter(
             val vehicle = state.vehicle.content as Vehicle
             val odometer = state.odometer.content as Int
             tripService.startTrip(vehicle, tripName, odometer, conversation.user)
-            conversation.sendReply("Tur '$tripName' startet for ${vehicle.name} ved $odometer")
+            conversation.sendReply("🛣️ Tur '$tripName' startet for ${vehicle.name} ved $odometer")
+            conversation.sendReply("Sjekk aktiv tur ved å skrive 'Aktiv tur [bil]'")
             //    conversation.sendReply("Avslutt turen igjen ved å skrive 'Avslutt tur [bil] [kilometerstand]'")
         } else {
             state.complete()?.apply {
