@@ -45,13 +45,12 @@ internal class TripEnder(
         endedTrip?.apply {
             val odoDiff = odometerEnd!! - odometerStart
             val kilometers = vehicle.odometerUnit?.convertToKilometers(odoDiff) ?: odoDiff
+            val consumption = vehicle.consumptionLastKm(kilometers)
             sendReply(
                 "Avsluttet tur '$tripName'. " +
                         "Kjørt $kilometers km og brukt ca. ${
-                            vehicle.consumptionLastKm(kilometers)?.amountPerDistanceUnit?.times(
-                                odoDiff.toDouble()
-                            ) ?: "(ukjent)"
-                        } liter drivstoff"
+                            consumption?.amountPerDistanceUnit?.times(odoDiff.toDouble()) ?: "(ukjent)"
+                        } liter drivstoff (${consumption?.litersPer10Km() ?: "(ukjent)"} l/mil)"
             )
         } ?: sendReply("Ingen tur å avslutte for ${vehicle.name}")
     }
