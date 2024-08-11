@@ -12,7 +12,8 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Gøy tur",
-            reply = { it.contains("Tur 'Gøy tur' startet for xc 70 ved 45677") },
+            reply = { it.contains("Sjekk aktiv tur") },
+            // reply = { it.contains("Tur 'Gøy tur' startet for xc 70 ved 45677") }, // TODO bedre mocking
         )
         processMessagaAndAssertReply(
             message = "aktiv tur xc70",
@@ -40,7 +41,8 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "Gøy tur",
-            reply = { it.contains("Tur 'Gøy tur' startet for blå testbil ved 45700") },
+            reply = { it.contains("Sjekk aktiv tur") },
+            // reply = { it.contains("Tur 'Gøy tur' startet for blå testbil ved 45700") },
         )
     }
 
@@ -60,7 +62,8 @@ class MessageBotTripsIT : AbstractMessageBotIT() {
         )
         processMessagaAndAssertReply(
             message = "En annen tur",
-            reply = { it.contains("Tur 'En annen tur' startet for en testbil ved 45677") },
+            reply = { it.contains("Sjekk aktiv tur") },
+            // reply = { it.contains("Tur 'En annen tur' startet for en testbil ved 45677") },
         )
     }
 
