@@ -71,6 +71,10 @@ internal class Conversation(
         return claim?.claimedBy == by
     }
 
+    fun hasClaim(): Boolean {
+        return claim != null
+    }
+
     fun unclaim() {
         this.claim = null
     }

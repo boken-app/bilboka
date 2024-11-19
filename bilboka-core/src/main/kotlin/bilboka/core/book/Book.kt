@@ -2,6 +2,7 @@ package bilboka.core.book
 
 import bilboka.core.book.domain.*
 import bilboka.core.report.ReportGenerator
+import bilboka.core.trips.domain.Trip
 import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
@@ -54,6 +55,7 @@ class Book(
         odoReading?.validateAsOdometer()
         amount?.validateAsAmount()
         costNOK?.validateAsCost()
+        amount?.let { costNOK?.div(it) }?.validateAsPricePerLiter()
         vehicle.lastEntry()?.checkChronologyAgainst(dateTime, odoReading)
     }
 
@@ -81,6 +83,40 @@ class Book(
                 .take(n)
                 .map { Pair(it.dateTime!!.toLocalDate(), it.pricePerLiter() as Double) }
                 .toList()
+        }
+    }
+
+    fun noteTripStart(trip: Trip): BookEntry {
+        return transaction {
+            trip.vehicle.bookEntries.validateChronologyOf(trip.dateTimeStart, trip.odometerStart)
+            BookEntry.new {
+                dateTime = trip.dateTimeStart
+                odometer = trip.odometerStart
+                vehicle = trip.vehicle
+                type = EntryType.EVENT
+                event = EventType.TRIP_START
+                comment = "Startet tur '${trip.tripName}'"
+                source = "INTERNAL"
+                enteredBy = trip.enteredBy
+            }
+        }
+    }
+
+    fun noteTripEnd(trip: Trip, endedBy: User?): BookEntry {
+        return transaction {
+            val endTime = trip.dateTimeEnd ?: throw BookEntryException("Mangler avslutningstidspunkt for tur")
+            val endOdo = trip.odometerEnd ?: throw BookEntryException("Mangler avslutnings-kilometer for tur")
+            trip.vehicle.bookEntries.validateChronologyOf(endTime, endOdo)
+            BookEntry.new {
+                dateTime = endTime
+                odometer = endOdo
+                vehicle = trip.vehicle
+                type = EntryType.EVENT
+                event = EventType.TRIP_END
+                comment = "Avsluttet tur '${trip.tripName}'"
+                source = "INTERNAL"
+                enteredBy = endedBy
+            }
         }
     }
 
@@ -158,10 +194,24 @@ fun Double.validateAsCost() {
     }
 }
 
+fun Double.validateAsPricePerLiter() {
+    if (this > 100 || this < 1) {
+        throw BookEntryException("Usannsynlig verdi for pris.")
+    }
+}
+
 fun Int.validateAsOdometer() {
     if (this > 10000000) {
         throw BookEntryException("Usannsynlig verdi for kilometerstand.")
     }
+}
+
+private fun SizedIterable<BookEntry>.validateChronologyOf(
+    dateTime: LocalDateTime,
+    odometer: Int
+) {
+    toList().entryClosestTo(dateTime)
+        ?.checkChronologyAgainst(dateTime, odometer)
 }
 
 private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {

@@ -20,4 +20,8 @@ enum class OdometerUnit(val displayValue: String) {
     fun convertToKilometers(odo: Int): Int {
         return conversionToKilometers().times(odo).roundToInt()
     }
+
+    fun convertFromKilometers(kilometers: Int): Int {
+        return kilometers.div(conversionToKilometers()).roundToInt()
+    }
 }

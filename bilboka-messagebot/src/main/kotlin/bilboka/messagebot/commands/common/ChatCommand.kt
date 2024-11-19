@@ -15,7 +15,7 @@ internal abstract class DataCollectingChatState<T> : ChatState() {
     abstract fun complete(): DataCollectingChatState<T>?
 
     fun recordProvidedData(message: String, valueMapper: T.() -> Any?) {
-        collectedData.filter { it.value.wasJustQueried }.toList().first().apply {
+        collectedData.filter { it.value.wasJustQueried }.toList().firstOrNull()?.apply {
             this.second.wasJustQueried = false
             if (message.saysUnknown() && this.second.mayBeUnknown) {
                 this.second.isUnknown = true

@@ -1,6 +1,7 @@
 package bilboka.messagebot
 
 import bilboka.core.ImpossibleBilbokaActionException
+import bilboka.core.TripService
 import bilboka.core.book.Book
 import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleNotFoundException
@@ -31,25 +32,32 @@ class MessageBot {
     private lateinit var userService: UserService
 
     @Autowired
+    private lateinit var tripService: TripService
+
+    @Autowired
     private lateinit var book: Book
 
     private val commandRegistry by lazy {
         setOf(
-            FuelEntryAdder(book, vehicleService, userService),
-            LastEntryGetter(book, vehicleService, userService),
             MaintenanceItems(book, userService),
             MaintenanceAdder(book, vehicleService, userService),
+            FuelEntryAdder(book, vehicleService, userService),
+            LastEntryGetter(book, vehicleService, userService),
             FuelPriceStatistics(book, userService),
             SmallTalk(),
             Helper(),
             VehicleInfo(vehicleService, userService),
             VehicleInfoAutosys(vehicleService, userService),
             VehicleInfoDekkOgFelg(vehicleService, userService),
+            VehicleInfoDimensjoner(vehicleService, userService),
             TankEstimate(vehicleService, userService),
             ReportGetter(book, vehicleService, userService),
             UserInfo(),
             RegisterUser(userService),
             UndoLast(userService),
+            TripStarter(vehicleService, tripService, userService),
+            TripInfo(vehicleService, tripService, userService),
+            TripEnder(vehicleService, tripService, userService)
         )
     }
 
@@ -81,7 +89,7 @@ class MessageBot {
 
         commandRegistry.forEach {
             if (conversation.claimedBy(it) ||
-                (noMatches && it.isMatch(message) && it.byValidUser(conversation.senderID))
+                (noMatches && !conversation.hasClaim() && it.isMatch(message) && it.byValidUser(conversation.senderID))
             ) {
                 logger.debug("Matchet chatregel: ${it.javaClass.name}")
                 if (it !is UndoLast) {

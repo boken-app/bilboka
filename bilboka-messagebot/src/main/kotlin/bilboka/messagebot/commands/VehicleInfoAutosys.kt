@@ -6,6 +6,7 @@ import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
 import bilboka.integration.autosys.dto.Kjoretoydata
 import bilboka.integration.autosys.dto.Registreringsstatus
 import bilboka.integration.autosys.dto.hasBevaringsverdig
+import bilboka.integration.autosys.dto.merkeOgHandelsbetegnelse
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
 import bilboka.messagebot.format
@@ -38,34 +39,38 @@ internal class VehicleInfoAutosys(
         data: Kjoretoydata,
         conversation: Conversation
     ) {
-        conversation.sendReply(
-            "\uD83D\uDE97 Kjøretøydata fra Autosys \n" +
-                    "Kjennemerke: ${data.kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
-                    "Unr.: ${data.kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
-                    "Reg.status: ${data.registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
-                    "Første reg. Norge: ${data.forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
-                    "Egenvekt: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
-                    "Nyttelast: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
-                    "Hengervekt (m/brems): ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
-                    "Lengde: ${data.godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
-                    "Reg. bevaringsverdig: ${data.godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
-                    "Sist godkj. PKK: ${data.periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
-                    "PKK-frist: ${data.periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
-        )
+        conversation.sendReply(data.print())
         data.kjoretoyId?.kjennemerke?.normaliserTegnkombinasjon()?.also {
             conversation.replyWithOptions(
                 "Enda mer?",
-                "autosys-dekkogfelg $it" to "Dekk- og felgdata ⚫"
+                "autosys-dekkogfelg $it" to "Dekk- og felgdata \uD83D\uDEDE",
+                "autosys-dimensjon-og-vekt $it" to "Dimensjon og vekt ⚖"
             )
         }
     }
 }
 
-private fun Number.kg(): String {
+internal fun Kjoretoydata.print(): String {
+    return "\uD83D\uDE97 Kjøretøydata fra Autosys: \n" +
+            "${godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.merkeOgHandelsbetegnelse() ?: "(ukjent type)"} \n" +
+            "Kjennemerke: ${kjoretoyId?.kjennemerke ?: "(ukjent)"} \n" +
+            "Unr.: ${kjoretoyId?.understellsnummer ?: "(ukjent)"} \n" +
+            "Reg.status: ${registrering?.registreringsstatus?.toText() ?: "(ukjent)"} \n" +
+            "Første reg. Norge: ${forstegangsregistrering?.registrertForstegangNorgeDato?.format() ?: "(ukjent)"} \n" +
+            "Egenvekt: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt?.kg() ?: "(ukjent)"} \n" +
+            "Nyttelast: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast?.kg() ?: "(ukjent)"} \n" +
+            "Hengervekt (m/brems): ${godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.tillattTilhengervektMedBrems?.kg() ?: "(ukjent)"} \n" +
+            "Lengde: ${godkjenning?.tekniskGodkjenning?.tekniskeData?.dimensjoner?.lengde?.formatFromMm() ?: "(ukjent)"} \n" +
+            "Reg. bevaringsverdig: ${godkjenning?.hasBevaringsverdig()?.toText() ?: "(ukjent)"} \n" +
+            "Sist godkj. PKK: ${periodiskKjoretoyKontroll?.sistGodkjent?.format() ?: "(ukjent)"} \n" +
+            "PKK-frist: ${periodiskKjoretoyKontroll?.kontrollfrist?.formattedDeadlineWithEmoji() ?: "(ukjent)"} \n"
+}
+
+internal fun Number.kg(): String {
     return "$this kg"
 }
 
-private fun Int.formatFromMm(): String {
+internal fun Int.formatFromMm(): String {
     return "${(this / 1000.0).format()} m"
 }
 

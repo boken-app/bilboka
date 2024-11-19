@@ -282,3 +282,7 @@ data class PeriodiskKjoretoyKontroll(
 fun Godkjenning.hasBevaringsverdig(): Boolean {
     return tekniskGodkjenning.unntak.any { it.unntak?.kodeVerdi == "BEVARINGSVERDIG_MED_BRUKSBEGRENSNING" }
 }
+
+fun Generelt.merkeOgHandelsbetegnelse(): String {
+    return "${merke.joinToString { it.merke ?: "" }} ${handelsbetegnelse.joinToString()}"
+}

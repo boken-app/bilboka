@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.TripService
 import bilboka.core.book.Book
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.EntryType
@@ -37,6 +38,9 @@ abstract class AbstractMessageBotTest {
 
     @MockK
     lateinit var userService: UserService
+
+    @MockK
+    lateinit var tripService: TripService
 
     @InjectMockKs
     lateinit var messagebot: MessageBot

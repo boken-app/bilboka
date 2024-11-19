@@ -22,9 +22,9 @@ internal class VehicleInfoDekkOgFelg(
 
     override fun execute(conversation: Conversation, message: String) {
         val values = matcher.find(message)!!.groupValues
-        val vehicleName = values[2]
+        val tegnkombinasjon = values[2]
 
-        vehicleService.getAutosysKjoretoydata(vehicleName).apply {
+        vehicleService.getAutosysKjoretoydataByTegnkombinasjon(tegnkombinasjon).apply {
             replyWithInfo(this, conversation)
         }
     }
@@ -34,7 +34,7 @@ internal class VehicleInfoDekkOgFelg(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "\uD83D\uDE97 Dekk- og felgdata fra Autosys for " +
+            "\uD83D\uDEDE Dekk- og felgdata fra Autosys for " +
                     "${
                         data.kjoretoyId?.kjennemerke ?: data.kjoretoyId?.understellsnummer ?: "(ukjent)"
                     } \n" +

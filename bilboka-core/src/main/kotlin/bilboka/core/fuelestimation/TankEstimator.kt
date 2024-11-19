@@ -21,11 +21,13 @@ object TankEstimator {
             ?.let { currentOdo - it }
             ?.also { if (it < 0) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
             ?.let { drivenSinceLastConfirmedFull ->
+                val consumptionSinceLastConfirmedFull =
+                    lastEstimate.amountPerDistanceUnit * drivenSinceLastConfirmedFull
                 makeResult(
                     litersFromFull = litersFromFull,
                     tankVolume = tankVolume,
                     consumptionPerDistance = lastEstimate.amountPerDistanceUnit,
-                    accuracy = 1 - (drivenSinceLastConfirmedFull / (tankVolume + drivenSinceLastConfirmedFull))
+                    accuracy = 1 - (consumptionSinceLastConfirmedFull / (tankVolume + consumptionSinceLastConfirmedFull))
                 )
             }
     }

@@ -30,6 +30,9 @@ class AkfDatautleveringConsumer {
                 .build()
         ).execute().use { response ->
             if (response.isSuccessful) {
+                if (response.code() == 204) {
+                    throw KjoretoydataIngenTreffException("Ingen treff i Autosys på $kjennemerke")
+                }
                 logger.info("Hentet kjøretøydata for $kjennemerke")
                 return response.body()?.string()
                     ?.let { mapper.readValue(it, AutosysKjoretoyResponseDto::class.java) }
@@ -58,3 +61,4 @@ class AkfDatautleveringConsumer {
 }
 
 class KjoretoydataFeiletException(message: String? = null) : RuntimeException(message)
+class KjoretoydataIngenTreffException(message: String? = null) : RuntimeException(message)
