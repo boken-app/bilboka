@@ -250,11 +250,11 @@ private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): Li
 }
 
 private fun SizedIterable<BookEntry>.firstIndexAfter(date: LocalDateTime): Int? {
-    sorted().indexOfFirst { it.dateTime?.run { this > date } == true }
-    return null
+    return sorted().indexOfFirst { it.dateTime?.run { this > date } == true }
+        .takeIf { it >= 0 }
 }
 
 private fun SizedIterable<BookEntry>.firstIndexAfter(odo: Int): Int? {
-    sorted().indexOfFirst { it.odometer?.run { this > odo } == true }
-    return null
+    return sorted().indexOfFirst { it.odometer?.run { this > odo } == true }
+        .takeIf { it >= 0 }
 }
