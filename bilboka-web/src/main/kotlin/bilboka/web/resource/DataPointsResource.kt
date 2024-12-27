@@ -105,7 +105,7 @@ class DataPointsResource(
         this.bookEntries.toList().sort().forEach {
             if (it.dateTime != null && it.odometer != null) {
                 entriesUntilCurrent.add(it)
-                val estimationResult = ConsumptionEstimator.lastEstimate(entriesUntilCurrent, this.odometerUnit)
+                val estimationResult = ConsumptionEstimator(entriesUntilCurrent).lastEstimate(this.odometerUnit)
 
                 datapoints.add(
                     BilbokaDataPoint(
