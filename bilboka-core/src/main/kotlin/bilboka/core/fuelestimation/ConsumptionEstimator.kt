@@ -13,7 +13,7 @@ class ConsumptionEstimator(
     val sortedEntries = SortedTraversableEntries(entries)
 
     fun lastEstimate(odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
-        return estimateAt(sortedEntries.atLast(), odoUnit)
+        return estimateOf(sortedEntries.atLast(), odoUnit)
     }
 
     fun estimateAt(
@@ -23,7 +23,7 @@ class ConsumptionEstimator(
         sortedEntries.atFirstAfterOrLastBefore(odo) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateAt(sortedEntries, odoUnit)
+        return estimateOf(sortedEntries, odoUnit)
     }
 
     fun estimateBetween(
@@ -34,7 +34,7 @@ class ConsumptionEstimator(
         sortedEntries.atFirstAfterOrLastBefore(lastOdo) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateAt(sortedEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
+        return estimateOf(sortedEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
     }
 
     fun estimateBetween(
@@ -45,7 +45,7 @@ class ConsumptionEstimator(
         sortedEntries.atFirstAfterOrLastBefore(lastTime) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateAt(sortedEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
+        return estimateOf(sortedEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
     }
 
     fun estimateAt(
@@ -55,10 +55,10 @@ class ConsumptionEstimator(
         sortedEntries.atFirstAfterOrLastBefore(dateTime) {
             it.isFullTank == true && it.dateTime != null
         }
-        return estimateAt(sortedEntries, odoUnit)
+        return estimateOf(sortedEntries, odoUnit)
     }
 
-    fun estimateAt(
+    fun estimateOf(
         selectedEntry: SortedTraversableEntries,
         odoUnit: OdometerUnit? = null,
         estimateWhile: (entry: BookEntry) -> Boolean = { false }
