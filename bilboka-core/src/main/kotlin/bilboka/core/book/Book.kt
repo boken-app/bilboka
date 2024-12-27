@@ -227,34 +227,34 @@ fun String.toMaintenanceItem(): String {
 }
 
 private fun SizedIterable<BookEntry>.since(date: LocalDate): List<BookEntry> {
-    return firstEntryAfter(date.atStartOfDay())
-        ?.let { firstEntry -> filter { it >= firstEntry } } ?: emptyList()
+    return firstIndexAfter(date.atStartOfDay())
+        ?.let { filterIndexed { index, _ -> index >= it } } ?: emptyList()
 }
 
 private fun SizedIterable<BookEntry>.since(odo: Int): List<BookEntry> {
-    return firstEntryAfter(odo)
-        ?.let { firstEntry -> filter { it >= firstEntry } } ?: emptyList()
+    return firstIndexAfter(odo)
+        ?.let { filterIndexed { index, _ -> index >= it } } ?: emptyList()
 }
 
 private fun SizedIterable<BookEntry>.between(from: LocalDate, to: LocalDate): List<BookEntry> {
-    val firstEntryIncluded = firstEntryAfter(from.atStartOfDay())
-    val firstEntryNotIncluded = firstEntryAfter(to.atStartOfDay())
+    val firstEntryIncluded = firstIndexAfter(from.atStartOfDay())
+    val firstEntryNotIncluded = firstIndexAfter(to.atStartOfDay())
 
     return if (firstEntryIncluded == null) {
         emptyList()
     } else if (firstEntryNotIncluded == null) {
-        filter { it >= firstEntryIncluded }
+        filterIndexed { index, _ -> index >= firstEntryIncluded }
     } else {
-        filter { it >= firstEntryIncluded && it < firstEntryNotIncluded }
+        filterIndexed { index, _ -> index >= firstEntryIncluded && index < firstEntryNotIncluded }
     }
 }
 
-private fun SizedIterable<BookEntry>.firstEntryAfter(date: LocalDateTime): BookEntry? {
-    sorted().forEach { if (it.dateTime?.run { this > date } == true) return it }
-    return null
+private fun SizedIterable<BookEntry>.firstIndexAfter(date: LocalDateTime): Int? {
+    return sorted().indexOfFirst { it.dateTime?.run { this > date } == true }
+        .takeIf { it >= 0 }
 }
 
-private fun SizedIterable<BookEntry>.firstEntryAfter(odo: Int): BookEntry? {
-    sorted().forEach { if (it.odometer?.run { this > odo } == true) return it }
-    return null
+private fun SizedIterable<BookEntry>.firstIndexAfter(odo: Int): Int? {
+    return sorted().indexOfFirst { it.odometer?.run { this > odo } == true }
+        .takeIf { it >= 0 }
 }
