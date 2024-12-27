@@ -8,7 +8,7 @@ import bilboka.core.book.domain.sort
 object TankEstimator {
 
     fun estimate(entries: Collection<BookEntry>, tankVolume: Double, currentOdo: Int): TankEstimateResult? {
-        val lastEstimate = ConsumptionEstimator.lastEstimate(entries) ?: return null
+        val lastEstimate = ConsumptionEstimator(entries).lastEstimate() ?: return null
 
         val sortedEntries = entries.sort()
         val lastFull = sortedEntries.lastOrNull { it.isFullTank == true && it.odometer != null }

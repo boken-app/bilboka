@@ -7,19 +7,19 @@ import java.time.LocalDateTime
 import java.time.Period
 
 // TODO Lage total-estimator som returnerer samling med estimater fra tidenes morgen
-object ConsumptionEstimator {
+class ConsumptionEstimator(
+    val entries: Collection<BookEntry>
+) {
+    val sortedEntries = SortedTraversableEntries(entries)
 
-    fun lastEstimate(entries: Collection<BookEntry>, odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
-        val sortedEntries = SortedTraversableEntries(entries)
+    fun lastEstimate(odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
         return estimateAt(sortedEntries.atLast(), odoUnit)
     }
 
     fun estimateAt(
-        entries: Collection<BookEntry>,
         odo: Int,
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
-        val sortedEntries = SortedTraversableEntries(entries)
         sortedEntries.atFirstAfterOrLastBefore(odo) {
             it.isFullTank == true && it.odometer != null
         }
@@ -27,12 +27,10 @@ object ConsumptionEstimator {
     }
 
     fun estimateBetween(
-        entries: Collection<BookEntry>,
         firstOdo: Int,
         lastOdo: Int,
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
-        val sortedEntries = SortedTraversableEntries(entries)
         sortedEntries.atFirstAfterOrLastBefore(lastOdo) {
             it.isFullTank == true && it.odometer != null
         }
@@ -40,12 +38,10 @@ object ConsumptionEstimator {
     }
 
     fun estimateBetween(
-        entries: Collection<BookEntry>,
         firstTime: LocalDateTime,
         lastTime: LocalDateTime,
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
-        val sortedEntries = SortedTraversableEntries(entries)
         sortedEntries.atFirstAfterOrLastBefore(lastTime) {
             it.isFullTank == true && it.odometer != null
         }
@@ -53,11 +49,9 @@ object ConsumptionEstimator {
     }
 
     fun estimateAt(
-        entries: Collection<BookEntry>,
         dateTime: LocalDateTime,
         odoUnit: OdometerUnit? = null
     ): ConsumptionEstimationResult? {
-        val sortedEntries = SortedTraversableEntries(entries)
         sortedEntries.atFirstAfterOrLastBefore(dateTime) {
             it.isFullTank == true && it.dateTime != null
         }

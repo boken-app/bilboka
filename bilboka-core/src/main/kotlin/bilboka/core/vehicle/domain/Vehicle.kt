@@ -144,15 +144,14 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastConsumptionEstimate(): ConsumptionEstimationResult? {
-        return ConsumptionEstimator.lastEstimate(bookEntries.toList(), odometerUnit)
+        return ConsumptionEstimator(bookEntries.toList()).lastEstimate(odometerUnit)
     }
 
     fun consumptionLastKm(kilometers: Int): ConsumptionEstimationResult? {
         return lastOdometer()
             ?.let { odometerUnit?.convertToKilometers(it) }
             ?.let { lastKilometer ->
-                ConsumptionEstimator.estimateBetween(
-                    bookEntries.toList(),
+                ConsumptionEstimator(bookEntries.toList()).estimateBetween(
                     lastKilometer.minus(kilometers).let { odometerUnit!!.convertFromKilometers(it) },
                     lastKilometer.let { odometerUnit!!.convertFromKilometers(it) },
                     odometerUnit
@@ -162,7 +161,7 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
 
     fun consumptionSince(time: LocalDateTime): ConsumptionEstimationResult? {
         return lastEntry()?.dateTime?.let {
-            ConsumptionEstimator.estimateBetween(bookEntries.toList(), time, it, odometerUnit)
+            ConsumptionEstimator(bookEntries.toList()).estimateBetween(time, it, odometerUnit)
         }
     }
 
