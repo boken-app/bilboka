@@ -78,7 +78,6 @@ internal class TripEnder(
         )
         val vehicle = collectedData[TripStartDataTypes.VEHICLE]!!
         val odometer = collectedData[TripStartDataTypes.ODOMETER]!!
-        var askedForTripName: Boolean = false
 
         override fun complete(): State? {
             if (vehicle.isMissing() || odometer.isMissing()) {
