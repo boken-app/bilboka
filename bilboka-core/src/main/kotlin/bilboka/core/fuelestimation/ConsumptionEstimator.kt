@@ -4,71 +4,128 @@ import bilboka.core.book.domain.BookEntry
 import bilboka.core.book.domain.sort
 import bilboka.core.vehicle.domain.OdometerUnit
 import java.time.LocalDateTime
-import java.time.Period
 
 // TODO Lage total-estimator som returnerer samling med estimater fra tidenes morgen
 class ConsumptionEstimator(
-    val entries: Collection<BookEntry>
+    entries: Collection<BookEntry>
 ) {
-    val sortedEntries = SortedTraversableEntries(entries)
+    private val sortedEntries = SortedEntries(entries)
 
-    fun lastEstimate(odoUnit: OdometerUnit? = null): ConsumptionEstimationResult? {
-        return estimateOf(sortedEntries.atLast(), odoUnit)
+    fun lastEstimate(odoUnit: OdometerUnit? = null): ConsumptionPointEstimationResult? {
+        return estimateOf(TraversableEntries(sortedEntries).atLast(), odoUnit)
     }
 
     fun estimateAt(
         odo: Int,
         odoUnit: OdometerUnit? = null
-    ): ConsumptionEstimationResult? {
-        sortedEntries.atFirstAfterOrLastBefore(odo) {
+    ): ConsumptionPointEstimationResult? {
+        val traversableEntries = TraversableEntries(sortedEntries)
+        traversableEntries.atFirstAfterOrLastBefore(odo) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateOf(sortedEntries, odoUnit)
+        return estimateOf(traversableEntries, odoUnit)
     }
 
-    fun estimateBetween(
+    fun closestSpotEstimateBetween(
         firstOdo: Int,
         lastOdo: Int,
         odoUnit: OdometerUnit? = null
-    ): ConsumptionEstimationResult? {
-        sortedEntries.atFirstAfterOrLastBefore(lastOdo) {
+    ): ConsumptionPointEstimationResult? {
+        val traversableEntries = TraversableEntries(sortedEntries)
+        traversableEntries.atFirstAfterOrLastBefore(lastOdo) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateOf(sortedEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
+        return estimateOf(traversableEntries, odoUnit) { (it.odometer ?: firstOdo) > firstOdo }
     }
 
-    fun estimateBetween(
+    fun continousEstimateBetween(
+        firstOdo: Int,
+        lastOdo: Int,
+        odoUnit: OdometerUnit? = null
+    ): ContinousEstimationResult? {
+        return estimateRange(firstOdo, lastOdo, odoUnit)
+            .takeIf { it.isNotEmpty() }
+            ?.let {
+                ContinousEstimationResult(
+                    odoStart = firstOdo,
+                    odoEnd = lastOdo,
+                    amountEstimate = it.sumOf { res -> res.amountEstimate }
+                        .plus(estimateExtrapolationBackwards(firstOdo, it.first()))
+                        .plus(estimateExtrapolationForwards(lastOdo, it.last())),
+                    costEstimate = null,
+                    odometerUnit = it.first().odometerUnit
+                )
+            }
+    }
+
+    fun estimateRange(
+        firstOdo: Int,
+        lastOdo: Int,
+        odoUnit: OdometerUnit? = null
+    ): List<ConsumptionPointEstimationResult> {
+        val traversableEntries = sortedEntries
+            .filter { it.isFullTank == true && it.odometer != null }
+            .let { TraversableEntries(it) }
+            .apply { atFirstAfterOrLastBefore(lastOdo) }
+
+        val estimateRange = mutableListOf<ConsumptionPointEstimationResult>()
+
+        while (traversableEntries.hasCurrent()
+            && traversableEntries.current().odometer?.takeIf { it >= firstOdo } != null
+        ) {
+            estimateOf(traversableEntries, odoUnit)?.let { estimateRange.add(it) }
+            traversableEntries.previous()
+        }
+
+        return estimateRange.reversed()
+    }
+
+    private fun estimateExtrapolationBackwards(extOdo: Int, estimation: ConsumptionPointEstimationResult): Double {
+        val leftDiff = estimation.estimatedFrom.odometer!! - extOdo
+        return estimation.amountPerDistance() * leftDiff
+    }
+
+    private fun estimateExtrapolationForwards(extOdo: Int, estimation: ConsumptionPointEstimationResult): Double {
+        val rightDiff = extOdo - estimation.estimatedAt.odometer!!
+        return estimation.amountPerDistance() * rightDiff
+    }
+
+
+    fun closestSpotEstimateBetween(
         firstTime: LocalDateTime,
         lastTime: LocalDateTime,
         odoUnit: OdometerUnit? = null
-    ): ConsumptionEstimationResult? {
-        sortedEntries.atFirstAfterOrLastBefore(lastTime) {
+    ): ConsumptionPointEstimationResult? {
+        val traversableEntries = TraversableEntries(sortedEntries)
+        traversableEntries.atFirstAfterOrLastBefore(lastTime) {
             it.isFullTank == true && it.odometer != null
         }
-        return estimateOf(sortedEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
+        return estimateOf(traversableEntries, odoUnit) { (it.dateTime ?: firstTime) > firstTime }
     }
 
     fun estimateAt(
         dateTime: LocalDateTime,
         odoUnit: OdometerUnit? = null
-    ): ConsumptionEstimationResult? {
-        sortedEntries.atFirstAfterOrLastBefore(dateTime) {
+    ): ConsumptionPointEstimationResult? {
+        val traversableEntries = TraversableEntries(sortedEntries)
+        traversableEntries.atFirstAfterOrLastBefore(dateTime) {
             it.isFullTank == true && it.dateTime != null
         }
-        return estimateOf(sortedEntries, odoUnit)
+        return estimateOf(traversableEntries, odoUnit)
     }
 
-    fun estimateOf(
-        selectedEntry: SortedTraversableEntries,
+    private fun estimateOf(
+        selectedEntry: TraversableEntries,
         odoUnit: OdometerUnit? = null,
         estimateWhile: (entry: BookEntry) -> Boolean = { false }
-    ): ConsumptionEstimationResult? {
+    ): ConsumptionPointEstimationResult? {
         var totalAmountFilled = 0.0
         var estimateFrom: BookEntry? = null
         var estimateTo: BookEntry? = null
+        val traversable = TraversableEntries.of(selectedEntry)
 
-        while (selectedEntry.hasCurrent() && estimateFrom == null) {
-            selectedEntry.current().apply {
+        while (traversable.hasCurrent() && estimateFrom == null) {
+            traversable.current().apply {
                 if (isFullTank == true && odometer != null) {
                     if (estimateTo == null) {
                         estimateTo = this
@@ -81,12 +138,12 @@ class ConsumptionEstimator(
                     totalAmountFilled += amount ?: 0.0
                 }
             }
-            selectedEntry.previous()
+            traversable.previous()
         }
 
         if (estimateFrom != null) {
-            return ConsumptionEstimationResult(
-                amountPerDistanceUnit = totalAmountFilled / (estimateTo?.odometer!! - estimateFrom?.odometer!!),
+            return ConsumptionPointEstimationResult(
+                amountEstimate = totalAmountFilled,
                 estimatedAt = estimateTo!!,
                 estimatedFrom = estimateFrom!!,
                 odometerUnit = odoUnit
@@ -97,11 +154,24 @@ class ConsumptionEstimator(
     }
 }
 
-class SortedTraversableEntries(
+class SortedEntries(
     source: Collection<BookEntry>
+) : ArrayList<BookEntry>(source.sort())
+
+class TraversableEntries(
+    private val sortedContent: SortedEntries
 ) : Collection<BookEntry> {
-    private val sortedContent = source.sort()
     private var cursor = -1
+
+    constructor(unsortedContent: Collection<BookEntry>) : this(SortedEntries(unsortedContent))
+
+    companion object {
+        fun of(other: TraversableEntries): TraversableEntries {
+            return TraversableEntries(other.sortedContent).apply {
+                cursor = other.cursor
+            }
+        }
+    }
 
     override val size: Int
         get() = sortedContent.size
@@ -122,15 +192,18 @@ class SortedTraversableEntries(
         return sortedContent.contains(element)
     }
 
-    fun atFirstAfterOrLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atFirstAfterOrLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean = { true }): BookEntry? {
         return atFirstAfter(odo, condition) ?: atLastBefore(odo, condition)
     }
 
-    fun atFirstAfterOrLastBefore(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atFirstAfterOrLastBefore(
+        dateTime: LocalDateTime,
+        condition: (entry: BookEntry) -> Boolean = { true }
+    ): BookEntry? {
         return atFirstAfter(dateTime, condition) ?: atLastBefore(dateTime, condition)
     }
 
-    fun atFirstAfter(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atFirstAfter(odo: Int, condition: (entry: BookEntry) -> Boolean = { true }): BookEntry? {
         atStart()
         while (hasNext()) {
             next()
@@ -142,7 +215,7 @@ class SortedTraversableEntries(
         return null
     }
 
-    fun atFirstAfter(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atFirstAfter(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean = { true }): BookEntry? {
         atStart()
         while (hasNext()) {
             next()
@@ -154,7 +227,7 @@ class SortedTraversableEntries(
         return null
     }
 
-    fun atLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atLastBefore(odo: Int, condition: (entry: BookEntry) -> Boolean = { true }): BookEntry? {
         atEnd()
         while (hasPrevious()) {
             previous()
@@ -166,7 +239,7 @@ class SortedTraversableEntries(
         return null
     }
 
-    fun atLastBefore(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean): BookEntry? {
+    fun atLastBefore(dateTime: LocalDateTime, condition: (entry: BookEntry) -> Boolean = { true }): BookEntry? {
         atEnd()
         while (hasPrevious()) {
             previous()
@@ -199,45 +272,23 @@ class SortedTraversableEntries(
 
     fun hasPrevious() = cursor > 0
     fun hasNext() = cursor < sortedContent.lastIndex
-    fun atLast(): SortedTraversableEntries {
+    fun atLast(): TraversableEntries {
         cursor = sortedContent.lastIndex
         return this
     }
 
-    fun atFirst(): SortedTraversableEntries {
+    fun atFirst(): TraversableEntries {
         cursor = 0
         return this
     }
 
-    fun atEnd(): SortedTraversableEntries {
+    fun atEnd(): TraversableEntries {
         cursor = sortedContent.lastIndex + 1
         return this
     }
 
-    fun atStart(): SortedTraversableEntries {
+    fun atStart(): TraversableEntries {
         cursor = -1
         return this
-    }
-}
-
-data class ConsumptionEstimationResult(
-    val amountPerDistanceUnit: Double,
-    val estimatedAt: BookEntry,
-    val estimatedFrom: BookEntry,
-    val odometerUnit: OdometerUnit?
-) {
-    val estimationPeriod = estimatedFrom.dateTime?.let { from ->
-        estimatedAt.dateTime?.let { to ->
-            Period.between(
-                from.toLocalDate(),
-                to.toLocalDate()
-            )
-        }
-    }
-
-    fun litersPer10Km(): Double {
-        return odometerUnit?.run {
-            amountPerDistanceUnit * (10 / conversionToKilometers())
-        } ?: throw IllegalStateException("Mangler enhet for konvertering til kilometer")
     }
 }

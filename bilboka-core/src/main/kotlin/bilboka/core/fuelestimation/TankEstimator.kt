@@ -14,7 +14,7 @@ object TankEstimator {
         val lastFull = sortedEntries.lastOrNull { it.isFullTank == true && it.odometer != null }
 
         val litersFromFull = lastFull?.let {
-            entries.amountFromFullEstimatedFrom(it, lastEstimate.amountPerDistanceUnit, currentOdo, tankVolume)
+            entries.amountFromFullEstimatedFrom(it, lastEstimate.amountPerDistance(), currentOdo, tankVolume)
         } ?: 0.0
 
         return lastFull?.odometer
@@ -22,11 +22,11 @@ object TankEstimator {
             ?.also { if (it < 0) throw TankEstimationException("Estimatpunkt angitt til å være før siste full tank") }
             ?.let { drivenSinceLastConfirmedFull ->
                 val consumptionSinceLastConfirmedFull =
-                    lastEstimate.amountPerDistanceUnit * drivenSinceLastConfirmedFull
+                    lastEstimate.amountPerDistance() * drivenSinceLastConfirmedFull
                 makeResult(
                     litersFromFull = litersFromFull,
                     tankVolume = tankVolume,
-                    consumptionPerDistance = lastEstimate.amountPerDistanceUnit,
+                    consumptionPerDistance = lastEstimate.amountPerDistance(),
                     accuracy = 1 - (consumptionSinceLastConfirmedFull / (tankVolume + consumptionSinceLastConfirmedFull))
                 )
             }

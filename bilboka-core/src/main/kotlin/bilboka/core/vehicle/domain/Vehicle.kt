@@ -2,8 +2,8 @@ package bilboka.core.vehicle.domain
 
 import bilboka.core.book.MaintenanceItemMissingException
 import bilboka.core.book.domain.*
-import bilboka.core.fuelestimation.ConsumptionEstimationResult
 import bilboka.core.fuelestimation.ConsumptionEstimator
+import bilboka.core.fuelestimation.ConsumptionPointEstimationResult
 import bilboka.core.fuelestimation.TankEstimateResult
 import bilboka.core.fuelestimation.TankEstimator
 import bilboka.core.user.domain.User
@@ -143,15 +143,15 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
-    fun lastConsumptionEstimate(): ConsumptionEstimationResult? {
+    fun lastConsumptionEstimate(): ConsumptionPointEstimationResult? {
         return ConsumptionEstimator(bookEntries.toList()).lastEstimate(odometerUnit)
     }
 
-    fun consumptionLastKm(kilometers: Int): ConsumptionEstimationResult? {
+    fun consumptionLastKm(kilometers: Int): ConsumptionPointEstimationResult? {
         return lastOdometer()
             ?.let { odometerUnit?.convertToKilometers(it) }
             ?.let { lastKilometer ->
-                ConsumptionEstimator(bookEntries.toList()).estimateBetween(
+                ConsumptionEstimator(bookEntries.toList()).closestSpotEstimateBetween(
                     lastKilometer.minus(kilometers).let { odometerUnit!!.convertFromKilometers(it) },
                     lastKilometer.let { odometerUnit!!.convertFromKilometers(it) },
                     odometerUnit
@@ -159,9 +159,9 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
             }
     }
 
-    fun consumptionSince(time: LocalDateTime): ConsumptionEstimationResult? {
+    fun consumptionSince(time: LocalDateTime): ConsumptionPointEstimationResult? {
         return lastEntry()?.dateTime?.let {
-            ConsumptionEstimator(bookEntries.toList()).estimateBetween(time, it, odometerUnit)
+            ConsumptionEstimator(bookEntries.toList()).closestSpotEstimateBetween(time, it, odometerUnit)
         }
     }
 
