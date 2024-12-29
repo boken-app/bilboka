@@ -2,10 +2,7 @@ package bilboka.core.vehicle.domain
 
 import bilboka.core.book.MaintenanceItemMissingException
 import bilboka.core.book.domain.*
-import bilboka.core.fuelestimation.ConsumptionEstimator
-import bilboka.core.fuelestimation.ConsumptionPointEstimationResult
-import bilboka.core.fuelestimation.TankEstimateResult
-import bilboka.core.fuelestimation.TankEstimator
+import bilboka.core.fuelestimation.*
 import bilboka.core.user.domain.User
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -157,6 +154,14 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
                     odometerUnit
                 )
             }
+    }
+
+    fun consumptionBetween(odoStart: Int, odoEnd: Int): ContinousEstimationResult? {
+        return ConsumptionEstimator(bookEntries.toList()).continousEstimateBetween(
+            firstOdo = odoStart,
+            lastOdo = odoEnd,
+            odoUnit = odometerUnit
+        )
     }
 
     fun consumptionSince(time: LocalDateTime): ConsumptionPointEstimationResult? {
