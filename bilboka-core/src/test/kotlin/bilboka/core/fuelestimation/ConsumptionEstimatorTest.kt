@@ -508,6 +508,38 @@ class ConsumptionEstimatorTest {
         }
 
         @Nested
+        inner class EstiamteRange {
+            @Test
+            fun rangeOfAll_shouldHaveTwoEstimates() {
+                val estimateRange = ConsumptionEstimator(entries).estimateRange(
+                    0,
+                    2000
+                )
+                assertThat(estimateRange).hasSize(2)
+                assertThat(estimateRange.first().amountPerDistance()).isEqualTo(0.9)
+                assertThat(estimateRange.last().amountPerDistance()).isEqualTo(2.0)
+            }
+
+            @Test
+            fun offRange_shouldHaveNoEstimates() {
+                val consumptionEstimator = ConsumptionEstimator(entries)
+
+                assertThat(
+                    consumptionEstimator.estimateRange(
+                        0,
+                        100
+                    )
+                ).hasSize(0)
+                assertThat(
+                    consumptionEstimator.estimateRange(
+                        2000,
+                        3000
+                    )
+                ).hasSize(0)
+            }
+        }
+
+        @Nested
         inner class ContinousEstimates {
             @Test
             fun estimateFirst_sameResultWhenContinous() {

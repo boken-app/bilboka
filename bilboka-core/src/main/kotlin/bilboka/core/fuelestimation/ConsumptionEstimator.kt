@@ -5,7 +5,6 @@ import bilboka.core.book.domain.sort
 import bilboka.core.vehicle.domain.OdometerUnit
 import java.time.LocalDateTime
 
-// TODO Lage total-estimator som returnerer samling med estimater fra tidenes morgen
 class ConsumptionEstimator(
     entries: Collection<BookEntry>
 ) {
