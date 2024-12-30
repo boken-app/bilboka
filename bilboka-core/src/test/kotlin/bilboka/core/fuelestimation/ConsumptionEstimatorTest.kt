@@ -412,6 +412,7 @@ class ConsumptionEstimatorTest {
                 every { dateTime } returns LocalDate.of(2020, 2, 1).atTime(NOON)
                 every { odometer } returns 1100
                 every { amount } returns 90.0
+                every { costNOK } returns 150.0
                 every { isFullTank } returns true
             },
             bookEntryWhere {
@@ -424,6 +425,7 @@ class ConsumptionEstimatorTest {
                 every { dateTime } returns LocalDate.of(2020, 3, 10).atTime(NOON)
                 every { odometer } returns 1200
                 every { amount } returns 200.0
+                every { costNOK } returns 600.0
                 every { isFullTank } returns true
             },
             bookEntryWhere {
@@ -453,6 +455,7 @@ class ConsumptionEstimatorTest {
                     1200
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(290.0)
+                assertThat(estimate?.costEstimate).isEqualTo(750.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(1.45)
             }
 
@@ -463,6 +466,7 @@ class ConsumptionEstimatorTest {
                     1100
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(90.0)
+                assertThat(estimate?.costEstimate).isEqualTo(150.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(0.9)
             }
 
@@ -548,7 +552,9 @@ class ConsumptionEstimatorTest {
                     1100
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(90.0)
+                assertThat(estimate?.costEstimate).isEqualTo(150.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(0.9)
+                assertThat(estimate?.costPerDistance()).isEqualTo(1.5)
             }
 
             @Test
@@ -558,7 +564,9 @@ class ConsumptionEstimatorTest {
                     1050
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(45.0)
+                assertThat(estimate?.costEstimate).isEqualTo(75.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(0.9)
+                assertThat(estimate?.costPerDistance()).isEqualTo(1.5)
             }
 
             @Test
@@ -578,6 +586,7 @@ class ConsumptionEstimatorTest {
                     1200
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(290.0)
+                assertThat(estimate?.costEstimate).isEqualTo(750.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(1.45)
             }
 

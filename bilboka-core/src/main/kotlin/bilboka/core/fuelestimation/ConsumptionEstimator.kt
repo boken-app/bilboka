@@ -49,9 +49,11 @@ class ConsumptionEstimator(
                     odoStart = firstOdo,
                     odoEnd = lastOdo,
                     amountEstimate = it.sumOf { res -> res.amountEstimate }
-                        .plus(estimateExtrapolationBackwards(firstOdo, it.first()))
-                        .plus(estimateExtrapolationForwards(lastOdo, it.last())),
-                    costEstimate = null,
+                        .plus(estimateExtrapolationBackwards(firstOdo, it.first()) { amountPerDistance() })
+                        .plus(estimateExtrapolationForwards(lastOdo, it.last()) { amountPerDistance() }),
+                    costEstimate = it.sumOf { res -> res.costEstimate ?: 0.0 }
+                        .plus(estimateExtrapolationBackwards(firstOdo, it.first()) { costPerDistance() ?: 0.0 })
+                        .plus(estimateExtrapolationForwards(lastOdo, it.last()) { costPerDistance() ?: 0.0 }),
                     odometerUnit = it.first().odometerUnit
                 )
             }
@@ -79,14 +81,22 @@ class ConsumptionEstimator(
         return estimateRange.reversed()
     }
 
-    private fun estimateExtrapolationBackwards(extOdo: Int, estimation: ConsumptionPointEstimationResult): Double {
+    private fun estimateExtrapolationBackwards(
+        extOdo: Int,
+        estimation: ConsumptionPointEstimationResult,
+        valuePerDistance: ConsumptionPointEstimationResult.() -> Double
+    ): Double {
         val leftDiff = estimation.estimatedFrom.odometer!! - extOdo
-        return estimation.amountPerDistance() * leftDiff
+        return estimation.valuePerDistance() * leftDiff
     }
 
-    private fun estimateExtrapolationForwards(extOdo: Int, estimation: ConsumptionPointEstimationResult): Double {
+    private fun estimateExtrapolationForwards(
+        extOdo: Int,
+        estimation: ConsumptionPointEstimationResult,
+        valuePerDistance: ConsumptionPointEstimationResult.() -> Double
+    ): Double {
         val rightDiff = extOdo - estimation.estimatedAt.odometer!!
-        return estimation.amountPerDistance() * rightDiff
+        return estimation.valuePerDistance() * rightDiff
     }
 
 
@@ -119,6 +129,7 @@ class ConsumptionEstimator(
         estimateWhile: (entry: BookEntry) -> Boolean = { false }
     ): ConsumptionPointEstimationResult? {
         var totalAmountFilled = 0.0
+        var totalCost = 0.0
         var estimateFrom: BookEntry? = null
         var estimateTo: BookEntry? = null
         val traversable = TraversableEntries.of(selectedEntry)
@@ -135,6 +146,9 @@ class ConsumptionEstimator(
 
                 if (amount != null && estimateFrom == null && estimateTo != null) {
                     totalAmountFilled += amount ?: 0.0
+                    if (costNOK != null) {
+                        totalCost += costNOK ?: 0.0
+                    }
                 }
             }
             traversable.previous()
@@ -143,6 +157,7 @@ class ConsumptionEstimator(
         if (estimateFrom != null) {
             return ConsumptionPointEstimationResult(
                 amountEstimate = totalAmountFilled,
+                costEstimate = totalCost,
                 estimatedAt = estimateTo!!,
                 estimatedFrom = estimateFrom!!,
                 odometerUnit = odoUnit

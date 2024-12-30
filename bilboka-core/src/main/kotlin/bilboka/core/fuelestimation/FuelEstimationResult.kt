@@ -7,10 +7,15 @@ import java.time.Period
 interface FuelEstimationResult {
     val odometerUnit: OdometerUnit?
     val amountEstimate: Double
+    val costEstimate: Double?
     fun estimationDistance(): Int
 
     fun amountPerDistance(): Double {
         return amountEstimate / estimationDistance()
+    }
+
+    fun costPerDistance(): Double? {
+        return costEstimate?.div(estimationDistance())
     }
 
     fun litersPer10Km(): Double {
@@ -24,6 +29,7 @@ data class ConsumptionPointEstimationResult(
     val estimatedAt: BookEntry,
     val estimatedFrom: BookEntry,
     override val amountEstimate: Double,
+    override val costEstimate: Double? = null,
     override val odometerUnit: OdometerUnit?
 ) : FuelEstimationResult {
     val estimationPeriod = estimatedFrom.dateTime?.let { from ->
@@ -43,7 +49,7 @@ data class ConsumptionPointEstimationResult(
 data class ContinousEstimationResult(
     val odoStart: Int,
     val odoEnd: Int,
-    val costEstimate: Double? = null,
+    override val costEstimate: Double? = null,
     override val amountEstimate: Double,
     override val odometerUnit: OdometerUnit?
 ) : FuelEstimationResult {
