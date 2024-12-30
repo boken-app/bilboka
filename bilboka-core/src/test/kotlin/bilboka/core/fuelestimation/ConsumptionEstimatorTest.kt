@@ -525,19 +525,25 @@ class ConsumptionEstimatorTest {
             }
 
             @Test
-            fun offRange_shouldHaveNoEstimates() {
+            fun afterRange_shouldUseLastEstimate() {
+                val consumptionEstimator = ConsumptionEstimator(entries)
+
+                val estimateRange = consumptionEstimator.estimateRange(
+                    2000,
+                    3000
+                )
+                assertThat(estimateRange).hasSize(1)
+                assertThat(estimateRange.first().amountPerDistance()).isEqualTo(2.0)
+            }
+
+            @Test
+            fun beforeRange_shouldHaveNoEstimates() {
                 val consumptionEstimator = ConsumptionEstimator(entries)
 
                 assertThat(
                     consumptionEstimator.estimateRange(
                         0,
                         100
-                    )
-                ).hasSize(0)
-                assertThat(
-                    consumptionEstimator.estimateRange(
-                        2000,
-                        3000
                     )
                 ).hasSize(0)
             }
