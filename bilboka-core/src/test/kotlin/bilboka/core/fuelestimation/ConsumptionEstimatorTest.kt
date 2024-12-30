@@ -576,7 +576,6 @@ class ConsumptionEstimatorTest {
                     1150
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(190.0)
-                //assertThat(estimate?.amountPerDistance()).isEqualTo(0.9)
             }
 
             @Test
@@ -607,6 +606,16 @@ class ConsumptionEstimatorTest {
                     1300
                 )
                 assertThat(estimate?.amountEstimate).isEqualTo(400.0)
+                assertThat(estimate?.amountPerDistance()).isEqualTo(2.0)
+            }
+
+            @Test
+            fun estimateOutsideOfLast_usesLastEstimate() {
+                val estimate = ConsumptionEstimator(entries).continousEstimateBetween(
+                    1300,
+                    1400
+                )
+                assertThat(estimate?.amountEstimate).isEqualTo(200.0)
                 assertThat(estimate?.amountPerDistance()).isEqualTo(2.0)
             }
 
