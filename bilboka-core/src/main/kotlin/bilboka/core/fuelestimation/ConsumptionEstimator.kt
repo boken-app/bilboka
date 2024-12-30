@@ -72,7 +72,7 @@ class ConsumptionEstimator(
         val estimateRange = mutableListOf<ConsumptionPointEstimationResult>()
 
         while (traversableEntries.hasCurrent()
-            && (traversableEntries.current().odometer?.takeIf { it >= firstOdo } != null) || estimateRange.isEmpty()
+            && (traversableEntries.current().odometer?.takeIf { it >= firstOdo } != null || estimateRange.isEmpty())
         ) {
             estimateOf(traversableEntries, odoUnit)?.let { estimateRange.add(it) }
             traversableEntries.previous()
