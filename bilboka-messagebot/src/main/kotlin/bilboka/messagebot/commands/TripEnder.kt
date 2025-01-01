@@ -53,7 +53,7 @@ internal class TripEnder(
                         "Kjørt $kilometers km og brukt ca. ${
                             consumption?.amountPerDistance()?.times(odoDiff.toDouble())?.formatShort() ?: "(ukjent)"
                         } liter drivstoff (${consumption?.litersPer10Km()?.format() ?: "(ukjent)"} l/mil) " +
-                        consumption?.costEstimate?.let { "Beregnet kostnad: $it kr" }
+                        consumption?.costEstimate?.let { "Beregnet kostnad: ${it.formatShort()} kr" }
             )
         } ?: sendReply("Ingen tur å avslutte for ${vehicle.name}")
     }
