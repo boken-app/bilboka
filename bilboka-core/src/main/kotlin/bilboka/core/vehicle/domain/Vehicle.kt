@@ -119,9 +119,11 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
-    fun lastEntry(type: EntryType): BookEntry? {
+    fun lastEntry(type: EntryType, extraFilter: ((BookEntry) -> Boolean)? = null): BookEntry? {
         return transaction {
-            datedEntries().filter { it.type == type }
+            datedEntries()
+                .filter { it.type == type }
+                .run { extraFilter?.let { filter(it) } ?: this }
                 .maxByOrNull { it.dateTime!! }
         }
     }

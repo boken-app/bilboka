@@ -2,6 +2,8 @@ package bilboka.core
 
 import bilboka.core.book.Book
 import bilboka.core.book.BookEntryChronologyException
+import bilboka.core.book.OdometerShouldNotBeDecreasingException
+import bilboka.core.book.OdometerWayTooLargeException
 import bilboka.core.book.domain.EntryType
 import bilboka.core.report.ReportGenerator
 import bilboka.core.vehicle.VehicleService
@@ -10,10 +12,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.integration.autosys.AutosysProperties
 import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -230,5 +229,104 @@ class CarBookIT : H2Test() {
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.isFullTank).isTrue
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(1298)
     }
+
+    @Nested
+    inner class AppendFuel {
+        @Test
+        fun appendFuelForXC70_succeeds() {
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                odoReading = 12100,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                odoReading = 12200,
+                amount = 17.4,
+                costNOK = 27.43,
+                source = "test"
+            )
+
+            val vehicle = vehicleService.getVehicle("xc70")
+            assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+            assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(12200)
+        }
+
+        @Test
+        fun appendFuelForXC70_succeedsAlsoWhenDataMissing() {
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                odoReading = null,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                odoReading = 12200,
+                amount = 17.4,
+                costNOK = 27.43,
+                source = "test"
+            )
+
+            val vehicle = vehicleService.getVehicle("xc70")
+            assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+            assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(12200)
+        }
+
+        @Test
+        fun appendFuelForXC70_canNotAppendBackwards() {
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                dateTime = LocalDateTime.now(),
+                odoReading = 12100,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+            assertThrows<OdometerShouldNotBeDecreasingException> {
+                book.appendFuelEntry(
+                    vehicleName = "XC70",
+                    dateTime = LocalDateTime.now().minusDays(1),
+                    odoReading = 12000,
+                    amount = 17.4,
+                    costNOK = 27.43,
+                    source = "test"
+                )
+            }
+
+            val vehicle = vehicleService.getVehicle("xc70")
+            assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+            assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(12100)
+        }
+
+        @Test
+        fun appendFuelForXC70_canNotAppendHugelyIncreasingOdometer() {
+            book.appendFuelEntry(
+                vehicleName = "XC70",
+                odoReading = 12100,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+            assertThrows<OdometerWayTooLargeException> {
+                book.appendFuelEntry(
+                    vehicleName = "XC70",
+                    odoReading = 120000,
+                    amount = 17.4,
+                    costNOK = 27.43,
+                    source = "test"
+                )
+            }
+
+            val vehicle = vehicleService.getVehicle("xc70")
+            assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+            assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(12100)
+        }
+    }
+
+
 
 }

@@ -1,8 +1,11 @@
 package bilboka.messagebot.commands
 
 import bilboka.core.book.Book
+import bilboka.core.book.OdometerShouldNotBeDecreasingException
+import bilboka.core.book.OdometerWayTooLargeException
 import bilboka.core.book.domain.BookEntry
 import bilboka.core.user.UserService
+import bilboka.core.user.domain.User
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.*
@@ -98,7 +101,7 @@ internal class FuelEntryAdder(
     ) {
         state.complete()?.run {
             finish(
-                conversation, state, book.addFuelForVehicle(
+                conversation, state, registerFuelEntry(
                     vehicleName = (this.vehicle.content as String),
                     enteredBy = conversation.withWhom(),
                     odoReading = this.odometer.content as Int?,
@@ -108,6 +111,46 @@ internal class FuelEntryAdder(
                 )
             )
         } ?: askForNext(conversation, state)
+    }
+
+    private fun registerFuelEntry(
+        vehicleName: String,
+        odoReading: Int?,
+        amount: Double?,
+        costNOK: Double?,
+        enteredBy: User,
+        source: String
+    ): BookEntry {
+        return try {
+            book.appendFuelEntry(
+                vehicleName = vehicleName,
+                enteredBy = enteredBy,
+                odoReading = odoReading,
+                amount = amount,
+                costNOK = costNOK,
+                source = source,
+            )
+        } catch (tooSmall: OdometerShouldNotBeDecreasingException) {
+            // Støtte for å kunne angi kilometerstand uten første siffer.
+            // Hvis kilometerstand er for liten, så legger vi til første siffer og prøver om det går.
+            val lastOdoString = tooSmall.lastOdometer.toString()
+            if (lastOdoString.length >= 6) {
+                try {
+                    book.appendFuelEntry(
+                        vehicleName = vehicleName,
+                        enteredBy = enteredBy,
+                        odoReading = odoReading?.appendFirstDigitFrom(lastOdoString),
+                        amount = amount,
+                        costNOK = costNOK,
+                        source = source,
+                    )
+                } catch (tooLarge: OdometerWayTooLargeException) {
+                    throw tooSmall
+                }
+            } else {
+                throw tooSmall
+            }
+        }
     }
 
     private fun finish(conversation: Conversation, state: State, addedFuel: BookEntry) {
@@ -173,6 +216,10 @@ internal class FuelEntryAdder(
             }
         }
     }
+}
+
+private fun Int.appendFirstDigitFrom(str: String): Int {
+    return "${str[0]}$this".toInt()
 }
 
 private fun String.convertToDouble(): Double {

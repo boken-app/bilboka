@@ -1,5 +1,6 @@
 package bilboka.messagebot
 
+import bilboka.core.book.OdometerShouldNotBeDecreasingException
 import bilboka.core.vehicle.VehicleNotFoundException
 import bilboka.core.vehicle.domain.FuelType
 import io.mockk.Called
@@ -16,7 +17,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             message = "Drivstoff testbil 34567 30l 300kr",
         )
         verify {
-            book.addFuelForVehicle(
+            book.appendFuelEntry(
                 vehicleName = "testbil",
                 enteredBy = registeredUser,
                 dateTime = any(),
@@ -36,7 +37,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             message = "fylt testbil 55556 30.2 L 302.0 Kr",
         )
         verify {
-            book.addFuelForVehicle(
+            book.appendFuelEntry(
                 vehicleName = "testbil",
                 enteredBy = registeredUser,
                 dateTime = any(),
@@ -56,7 +57,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             message = "fylt testbil 55556 302.0 Kr 30.2 L",
         )
         verify {
-            book.addFuelForVehicle(
+            book.appendFuelEntry(
                 vehicleName = "testbil",
                 enteredBy = registeredUser,
                 dateTime = any(),
@@ -76,7 +77,7 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
             message = "Hei drivstoff XC 70 1234 km 30,44 l 608,80 kr.. :D",
         )
         verify {
-            book.addFuelForVehicle(
+            book.appendFuelEntry(
                 vehicleName = "XC 70",
                 enteredBy = registeredUser,
                 dateTime = any(),
@@ -102,8 +103,8 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
     @Test
     fun sendAddFuelRequestForUnknownCar_answersCarUnknown() {
         every {
-            book.addFuelForVehicle(
-                any(),
+            book.appendFuelEntry(
+                any<String>(),
                 any(),
                 any(),
                 any(),
@@ -141,8 +142,48 @@ class FuelEntryAdderTest : AbstractMessageBotTest() {
         }
     }
 
+    @Test
+    fun sendAddFuelRequestWithShortOdo_willTryAgainWithExtraDigit() {
+        mockVehicle("testbil")
+
+        every {
+            book.appendFuelEntry(
+                any(),
+                any(),
+                odoReading = 34567,
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } throws OdometerShouldNotBeDecreasingException("Hei", 234500)
+
+        every { book.appendFuelEntry(any(), any(), odoReading = 234567, any(), any(), any(), any()) } returns fuelEntry(
+            vehicle = vehicle("Testbil", fuelType = FuelType.BENSIN),
+            odometer = 234567,
+            costNOK = 123.3,
+            amount = 123.32
+        )
+
+        messagebot.processMessage("Drivstoff testbil 34567 30l 300kr", registeredSenderID)
+
+        verify {
+            book.appendFuelEntry(
+                vehicleName = "testbil",
+                enteredBy = registeredUser,
+                dateTime = any(),
+                odoReading = 234567,
+                amount = 30.0,
+                costNOK = 300.0,
+                isFull = false,
+                source = match { it.isNotEmpty() }
+            )
+        }
+        verifySentMessage("✅ Registrert tanking av Testbil ved 234567 km: 123,32 liter for 123,3 kr, 1 kr/l ⛽")
+    }
+
     private fun testAddFuelRequest(message: String) {
-        every { book.addFuelForVehicle(any(), any(), any(), any(), any(), any(), any()) } returns fuelEntry(
+        every { book.appendFuelEntry(any(), any(), any(), any(), any(), any(), any()) } returns fuelEntry(
             vehicle = vehicle("Testbil", fuelType = FuelType.BENSIN),
             odometer = 34567,
             costNOK = 123.3,

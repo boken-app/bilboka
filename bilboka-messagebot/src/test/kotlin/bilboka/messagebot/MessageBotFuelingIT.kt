@@ -448,4 +448,43 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
         )
     }
 
+    @Test
+    fun sendAddFuelRequest_canSkipFirstOdoDigitWhenFiveDigitOdo() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 111000 30l 300kr",
+            reply = "✅ Registrert tanking av en testbil ved 111000 km: 30 liter for 300 kr, 10 kr/l ⛽"
+        )
+        skipFullTankQuestion()
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 11050 30l 300kr",
+            reply = "✅ Registrert tanking av en testbil ved 111050 km: 30 liter for 300 kr, 10 kr/l ⛽"
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequest_repliesTooLowWhenAppendedOdoBecomesTooLarge() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 111000 30l 300kr",
+            reply = { it.contains("✅ Registrert tanking") }
+
+        )
+        skipFullTankQuestion()
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 21110 30l 300kr",
+            reply = { it.contains("Kilometerstand er lavere enn forrige") }
+        )
+    }
+
+    @Test
+    fun sendAddFuelRequest_failsWhenSlightlyLower() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 11010 30l 300kr",
+            reply = { it.contains("✅ Registrert tanking") }
+        )
+        skipFullTankQuestion()
+        processMessagaAndAssertReply(
+            message = "Drivstoff en testbil 11000 30l 300kr",
+            reply = { it.contains("Kilometerstand er lavere enn forrige") }
+        )
+    }
 }

@@ -20,6 +20,45 @@ class Book(
     private val vehicleService: VehicleService,
     private val reportGenerator: ReportGenerator
 ) {
+    companion object {
+        private const val REASONABLE_ODOMETER_INCREASE = 5000
+    }
+
+    fun appendFuelEntry(
+        vehicleName: String,
+        dateTime: LocalDateTime? = LocalDateTime.now(),
+        odoReading: Int?,
+        amount: Double?,
+        costNOK: Double?,
+        enteredBy: User? = null,
+        source: String,
+        isFull: Boolean = false
+    ): BookEntry {
+        val vehicle = vehicleService.getVehicle(vehicleName)
+        val lastFuelEntry = vehicle.lastEntry(EntryType.FUEL) { it.odometer != null }
+        lastFuelEntry?.run {
+            if (odoReading != null && odoReading < odometer!!) {
+                throw OdometerShouldNotBeDecreasingException("Kilometerstand er lavere enn forrige", odometer!!)
+            }
+            if (dateTime != null && this.dateTime != null && dateTime < this.dateTime) {
+                throw TimeShouldNotGoBackwardsException("Tidspunkt er lavere enn forrige", this.dateTime!!)
+            }
+            if (odoReading != null && odoReading > odometer!!.plus(REASONABLE_ODOMETER_INCREASE)) {
+                throw OdometerWayTooLargeException("Unaturlig stor økning i kilometerstand. Er den feil?", odometer!!)
+            }
+        }
+
+        return addFuelForVehicle(
+            vehicle = vehicle,
+            enteredBy = enteredBy,
+            dateTime = dateTime,
+            odoReading = odoReading,
+            amount = amount,
+            costNOK = costNOK,
+            isFull = isFull,
+            source = source
+        )
+    }
 
     fun addFuelForVehicle(
         vehicleName: String,
@@ -32,7 +71,29 @@ class Book(
         isFull: Boolean = false
     ): BookEntry {
         val vehicle = vehicleService.getVehicle(vehicleName)
-        validateFuelRequest(vehicle, dateTime, odoReading, amount, costNOK)
+        return addFuelForVehicle(
+            vehicle = vehicle,
+            enteredBy = enteredBy,
+            dateTime = dateTime,
+            odoReading = odoReading,
+            amount = amount,
+            costNOK = costNOK,
+            isFull = isFull,
+            source = source
+        )
+    }
+
+    fun addFuelForVehicle(
+        vehicle: Vehicle,
+        dateTime: LocalDateTime? = LocalDateTime.now(),
+        odoReading: Int?,
+        amount: Double?,
+        costNOK: Double?,
+        enteredBy: User? = null,
+        source: String,
+        isFull: Boolean = false
+    ): BookEntry {
+        validateFuelEntry(vehicle, dateTime, odoReading, amount, costNOK)
         return vehicle.addFuel(
             enteredBy = enteredBy,
             dateTime = dateTime,
@@ -44,7 +105,7 @@ class Book(
         )
     }
 
-    private fun validateFuelRequest(
+    private fun validateFuelEntry(
         vehicle: Vehicle,
         dateTime: LocalDateTime?,
         odoReading: Int?,
@@ -258,3 +319,7 @@ private fun SizedIterable<BookEntry>.firstIndexAfter(odo: Int): Int? {
     return sorted().indexOfFirst { it.odometer?.run { this > odo } == true }
         .takeIf { it >= 0 }
 }
+
+class OdometerShouldNotBeDecreasingException(message: String, val lastOdometer: Int) : BookEntryException(message)
+class OdometerWayTooLargeException(message: String, val lastOdometer: Int) : BookEntryException(message)
+class TimeShouldNotGoBackwardsException(message: String, val lastTime: LocalDateTime) : BookEntryException(message)
