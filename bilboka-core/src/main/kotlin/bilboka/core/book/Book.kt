@@ -276,9 +276,12 @@ private fun SizedIterable<BookEntry>.validateChronologyOf(
 }
 
 private fun BookEntry.checkChronologyAgainst(dateTime: LocalDateTime?, odoReading: Int?) {
-    if (odoReading != null && this.odometer != null
-        && this.dateTime?.compareTo(dateTime ?: LocalDateTime.now())?.sign != this.odometer?.compareTo(odoReading)?.sign
-    ) {
+    if (odoReading == null || this.odometer == null) {
+        return
+    }
+    val odoComparison = this.odometer?.compareTo(odoReading)
+    val dateComparison = this.dateTime?.compareTo(dateTime ?: LocalDateTime.now())
+    if (odoComparison != 0 && dateComparison?.sign != odoComparison?.sign) {
         throw BookEntryChronologyException("Angitt kilometerstand er ikke i kronologisk rekkefølge med tidligere angitt.")
     }
 }

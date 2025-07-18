@@ -5,6 +5,7 @@ import bilboka.core.book.BookEntryChronologyException
 import bilboka.core.book.OdometerShouldNotBeDecreasingException
 import bilboka.core.book.OdometerWayTooLargeException
 import bilboka.core.book.domain.EntryType
+import bilboka.core.book.domain.EventType
 import bilboka.core.report.ReportGenerator
 import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
@@ -12,6 +13,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.integration.autosys.AutosysProperties
 import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@SpringBootTest(classes = [VehicleService::class, Book::class, ReportGenerator::class, AkfDatautleveringConsumer::class, AutosysProperties::class])
+@SpringBootTest(classes = [VehicleService::class, TripService::class, Book::class, ReportGenerator::class, AkfDatautleveringConsumer::class, AutosysProperties::class])
 @ExtendWith(SpringExtension::class)
 @TestPropertySource(
     properties = [
@@ -33,6 +35,9 @@ class CarBookIT : H2Test() {
 
     @Autowired
     lateinit var vehicleService: VehicleService
+
+    @Autowired
+    lateinit var tripService: TripService
 
     @Autowired
     lateinit var book: Book
@@ -170,6 +175,50 @@ class CarBookIT : H2Test() {
         assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.dateTime?.toLocalDate()).isEqualTo(LocalDate.now())
         assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(1234)
+    }
+
+    @Test
+    fun noteStartOfTrip_worksAlsoOnSameOdoAsLastFuel() {
+        transaction {
+            val fuelEntry = book.addFuelForVehicle(
+                vehicleName = "XC70",
+                odoReading = 1256,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+
+            tripService.startTrip(
+                fuelEntry.vehicle,
+                "just a trip",
+                fuelEntry.odometer!!,
+            )
+        }
+
+        val vehicle = vehicleService.getVehicle("xc70")
+        assertThat(vehicle.lastEntry(EntryType.FUEL)).isNotNull
+        assertThat(vehicle.lastEntry(EntryType.EVENT)?.event).isEqualTo(EventType.TRIP_START)
+    }
+
+    @Test
+    fun noteStartOfTrip_failsWhenNotChronologic() {
+        transaction {
+            val fuelEntry = book.addFuelForVehicle(
+                vehicleName = "XC70",
+                odoReading = 1257,
+                amount = 12.4,
+                costNOK = 22.43,
+                source = "test"
+            )
+
+            assertThrows<BookEntryChronologyException> {
+                tripService.startTrip(
+                    fuelEntry.vehicle,
+                    "just a trip",
+                    1255,
+                )
+            }
+        }
     }
 
     @Test
@@ -326,7 +375,6 @@ class CarBookIT : H2Test() {
             assertThat(vehicle.lastEntry(EntryType.FUEL)?.odometer).isEqualTo(12100)
         }
     }
-
 
 
 }
