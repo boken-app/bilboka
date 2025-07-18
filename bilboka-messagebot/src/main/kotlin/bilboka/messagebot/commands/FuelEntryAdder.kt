@@ -62,10 +62,10 @@ internal class FuelEntryAdder(
                     Regex("[\\wæøå]+[\\s-+?[\\wæøå]]+").find(message)
                         ?.let { vehicleService.getVehicle(it.value) }?.name
 
-                State.FuelDataType.ODOMETER -> message.toInt()
-                State.FuelDataType.AMOUNT -> message.convertToDouble()
-                State.FuelDataType.COST -> message.convertToDouble()
-                State.FuelDataType.COST_PER_AMOUNT -> message.convertToDouble()
+                State.FuelDataType.ODOMETER -> ODOMETER_REGEX.findGroup(message, 1)?.toInt()
+                State.FuelDataType.AMOUNT -> NUMBER_REGEX.findGroup(message, 1)?.convertToDouble()
+                State.FuelDataType.COST -> NUMBER_REGEX.findGroup(message, 1)?.convertToDouble()
+                State.FuelDataType.COST_PER_AMOUNT -> NUMBER_REGEX.findGroup(message, 1)?.convertToDouble()
             }
         }
     }
@@ -224,4 +224,8 @@ private fun Int.appendFirstDigitFrom(str: String): Int {
 
 private fun String.convertToDouble(): Double {
     return this.replace(',', '.').toDouble()
+}
+
+private fun String.extractNumeric(): String {
+    return ""
 }

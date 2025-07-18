@@ -134,7 +134,7 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             reply = "Kroner? \uD83D\uDCB8"
         )
         processMessagaAndAssertReply(
-            message = "300",
+            message = "300 kr",
             reply = "✅ Registrert tanking av en testbil ved 34567 km: 30 liter for 300 kr, 10 kr/l ⛽"
         )
     }
@@ -402,12 +402,24 @@ class MessageBotFuelingIT : AbstractMessageBotIT() {
             reply = "Kilometerstand? \uD83D\uDD22"
         )
         processMessagaAndAssertReply(
-            message = "234567",
+            message = "234567km",
             reply = "Pris per liter?"
         )
         processMessagaAndAssertReply(
             message = "16.7",
             reply = { it.contains("Registrert tanking av xc 70 ved 234567 km: 45,6 liter for 761,52 kr, 16,7 kr/l") }
+        )
+    }
+
+    @Test
+    fun stepWiseFuelAdding_notANumber_justAsksAgain() {
+        processMessagaAndAssertReply(
+            message = "Drivstoff XC 70 761,52 kr",
+            reply = "Antall liter?"
+        )
+        processMessagaAndAssertReply(
+            message = "blah",
+            reply = "Antall liter?"
         )
     }
 
