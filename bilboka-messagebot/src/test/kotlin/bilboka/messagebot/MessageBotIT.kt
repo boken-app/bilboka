@@ -112,6 +112,14 @@ class MessageBotIT : AbstractMessageBotIT() {
                         "Brukernavn: tester_user"
             )
         }
+
+        @Test
+        fun PKKinfo() {
+            processMessagaAndAssertReply(
+                message = "PKK xc70",
+                reply = "Ingen registrert PKK for xc 70"
+            )
+        }
     }
 
 }

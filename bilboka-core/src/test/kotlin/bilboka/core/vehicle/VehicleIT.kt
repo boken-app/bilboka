@@ -182,6 +182,19 @@ internal class VehicleIT : H2Test() {
         }
     }
 
+    @Nested
+    inner class PKK {
+        @Test
+        fun enterPKK() {
+            vehicle.setPKK(
+                123234,
+                source = "some-source"
+            )
+
+            assertThat(vehicle.lastPKK()).extracting { it?.odometer }.isEqualTo(123234)
+        }
+    }
+
     private fun getVehicle(): Vehicle {
         return transaction { Vehicle[vehicle.id] }
     }

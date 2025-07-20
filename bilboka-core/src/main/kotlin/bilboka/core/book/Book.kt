@@ -105,7 +105,7 @@ class Book(
         )
     }
 
-    private fun validateFuelEntry(
+    private fun validateFuelEntry( // TODO mye av dette bør være generisk validering på alle entries
         vehicle: Vehicle,
         dateTime: LocalDateTime?,
         odoReading: Int?,

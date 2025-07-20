@@ -57,7 +57,8 @@ class MessageBot {
             UndoLast(userService),
             TripStarter(vehicleService, tripService, userService),
             TripInfo(vehicleService, tripService, userService),
-            TripEnder(vehicleService, tripService, userService)
+            TripEnder(vehicleService, tripService, userService),
+            PKKChecker(vehicleService, userService),
         )
     }
 

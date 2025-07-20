@@ -119,6 +119,30 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
+    fun lastPKK(): BookEntry? {
+        return lastEntry(EntryType.EVENT) { it.event == EventType.EU_KONTROLL_OK }
+    }
+
+    fun setPKK(
+        odometer: Int?,
+        dateTime: LocalDateTime? = LocalDateTime.now(),
+        enteredBy: User? = null,
+        source: String,
+    ): BookEntry {
+        val thisVehicle = this
+        return transaction {
+            BookEntry.new {
+                this.dateTime = dateTime
+                this.type = EntryType.EVENT
+                this.event = EventType.EU_KONTROLL_OK
+                this.enteredBy = enteredBy
+                this.odometer = odometer
+                this.vehicle = thisVehicle
+                this.source = source
+            }
+        }
+    }
+
     fun lastEntry(type: EntryType, extraFilter: ((BookEntry) -> Boolean)? = null): BookEntry? {
         return transaction {
             datedEntries()
