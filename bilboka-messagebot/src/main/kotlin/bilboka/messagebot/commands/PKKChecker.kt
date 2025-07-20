@@ -5,6 +5,7 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.formatAsDate
 import org.slf4j.LoggerFactory
 
 internal class PKKChecker(
@@ -37,9 +38,9 @@ internal class PKKChecker(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "\uD83D\uDE97 \nSiste registrert godkjente EU-kontroll for ${entry.vehicle.name} \n" +
-                    "Dato: ${entry.dateTime ?: "(ukjent)"} \n" +
-                    "Kilometerstand: ${entry.odometer ?: "(ukjent)"}"
+            "📃 \nSiste registrert godkjente EU-kontroll for ${entry.vehicle.name} \n" +
+                    "Dato: ${entry.dateTime.formatAsDate()} \n" +
+                    "Kilometerstand: ${entry.odometer ?: "(ukjent) ${entry.vehicle.odometerUnit}"}"
         )
     }
 }
