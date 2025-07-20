@@ -40,7 +40,7 @@ internal class PKKChecker(
         conversation.sendReply(
             "📃 \nSiste registrert godkjente EU-kontroll for ${entry.vehicle.name} \n" +
                     "Dato: ${entry.dateTime.formatAsDate()} \n" +
-                    "Kilometerstand: ${entry.odometer ?: "(ukjent) ${entry.vehicle.odometerUnit}"}"
+                    "Kilometerstand: ${entry.odometer?.let { "$it ${entry.vehicle.odometerUnit ?: ""}" } ?: "(ukjent)"}"
         )
     }
 }
