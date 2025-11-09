@@ -260,6 +260,14 @@ class CarBookIT : H2Test() {
     }
 
     @Test
+    fun canEnterAndGetPKK() {
+        val pkkDate = LocalDateTime.now().minusDays(7)
+        book.addPKK(vehicle, pkkDate, 12378, null, "places")
+
+        assertThat(vehicle.lastPKK()?.dateTime).isEqualTo(pkkDate)
+    }
+
+    @Test
     fun setTankIsFullAt() {
         book.addFuelForVehicle(
             vehicleName = "XC70",

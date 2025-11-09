@@ -20,6 +20,7 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":bilboka-core"))
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("io.mockk:mockk:1.10.6") // Feilet ved nyere versjon
 }
 

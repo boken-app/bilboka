@@ -26,7 +26,7 @@ class VehicleInfoTest : AbstractMessageBotTest() {
 
     @Test
     fun getInfoAutosys_callsForInfo() {
-        every { vehicleService.getAutosysKjoretoydata(any()) } returns Kjoretoydata()
+        every { vehicleService.getAutosysKjoretoydata(any<String>()) } returns Kjoretoydata()
 
         messagebot.processMessage("autosys-data testbil", registeredSenderID)
 

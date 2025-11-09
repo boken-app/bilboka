@@ -48,3 +48,5 @@ fun LocalDate?.format(): String {
         )
     } ?: UKJENT
 }
+
+fun Int?.orUkjent(): String = this?.toString() ?: UKJENT

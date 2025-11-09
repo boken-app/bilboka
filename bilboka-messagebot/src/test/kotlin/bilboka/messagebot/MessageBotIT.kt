@@ -1,5 +1,8 @@
 package bilboka.messagebot;
 
+import bilboka.integration.autosys.dto.AutosysKjoretoyResponseDto
+import bilboka.integration.autosys.dto.Kjoretoydata
+import io.mockk.every
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -115,9 +118,16 @@ class MessageBotIT : AbstractMessageBotIT() {
 
         @Test
         fun PKKinfo() {
+            every { akfDatautleveringConsumer.hentKjoretoydata(any()) } returns AutosysKjoretoyResponseDto(
+                listOf(
+                    Kjoretoydata(
+                        periodiskKjoretoyKontroll = null
+                    )
+                )
+            )
             processMessagaAndAssertReply(
                 message = "PKK xc70",
-                reply = "Ingen registrert PKK for xc 70"
+                reply = "Ingen registert EU-godkjenning for xc 70"
             )
         }
     }
