@@ -60,6 +60,7 @@ class BookTest : H2Test() {
     @Nested
     inner class ShouldUpdate {
         lateinit var testVehicle: Vehicle
+        lateinit var pkkEntry: BookEntry
         val sistRegistrertGodkjent = LocalDateTime.now().minusYears(2)
         val sistGodkjent = LocalDateTime.now().minusDays(10)
 
@@ -76,7 +77,7 @@ class BookTest : H2Test() {
                     this.odometerUnit = OdometerUnit.KILOMETERS
                 }
             }
-            transaction {
+            pkkEntry = transaction {
                 BookEntry.new {
                     this.dateTime = sistRegistrertGodkjent
                     this.type = EntryType.EVENT
@@ -90,6 +91,18 @@ class BookTest : H2Test() {
 
         @Test
         fun pkkIsNotUpdated_updates() {
+            val refreshed = book.refreshPKK(testVehicle, 3000, null, "test")
+
+            assertThat(refreshed?.dateTime?.toLocalDate()).isEqualTo(sistGodkjent.toLocalDate())
+            assertThat(refreshed?.odometer).isEqualTo(3000)
+            assertThat(testVehicle.lastPKK()?.dateTime).isEqualTo(refreshed?.dateTime)
+        }
+
+        @Test
+        fun pkkIsNotEnteredBefore_updates() {
+            transaction {
+                pkkEntry.delete()
+            }
             val refreshed = book.refreshPKK(testVehicle, 3000, null, "test")
 
             assertThat(refreshed?.dateTime?.toLocalDate()).isEqualTo(sistGodkjent.toLocalDate())

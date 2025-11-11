@@ -182,10 +182,10 @@ class Book(
     }
 
     fun refreshPKK(vehicle: Vehicle, odometer: Int?, enteredBy: User?, source: String): BookEntry? {
-        val lastPKK = vehicle.lastPKK()
+        val lastPKK = vehicle.lastPKK()?.dateTime?.toLocalDate()
 
         vehicleService.getAutosysKjoretoydata(vehicle).periodiskKjoretoyKontroll?.run {
-            if (lastPKK?.dateTime?.toLocalDate()?.plusMonths(1)?.isBefore(sistGodkjent) == true) {
+            if (lastPKK == null || lastPKK.plusMonths(1).isBefore(sistGodkjent)) {
                 return addPKK(vehicle, sistGodkjent?.atStartOfDay(), odometer, enteredBy, source)
             }
         }
