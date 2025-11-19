@@ -6,6 +6,7 @@ import bilboka.core.vehicle.domain.Vehicle
 import bilboka.core.vehicle.domain.normaliserTegnkombinasjon
 import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
 import bilboka.integration.autosys.dto.Kjoretoydata
+import bilboka.integration.autosys.dto.PeriodiskKjoretoyKontroll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -63,8 +64,17 @@ class VehicleService(
         }
     }
 
+    fun getPKKFromAutosys(vehicleName: String): PeriodiskKjoretoyKontroll? {
+        return getAutosysKjoretoydata(vehicleName)
+            .periodiskKjoretoyKontroll
+    }
+
     fun getAutosysKjoretoydata(vehicleName: String): Kjoretoydata {
-        return getVehicle(vehicleName).run {
+        return getAutosysKjoretoydata(getVehicle(vehicleName))
+    }
+
+    fun getAutosysKjoretoydata(vehicle: Vehicle): Kjoretoydata {
+        return vehicle.run {
             getAutosysKjoretoydataByTegnkombinasjon(
                 this.tegnkombinasjonNormalisert()
                     ?: throw VehicleMissingDataException("Mangler registreringsnummer for oppslag mot autosys")

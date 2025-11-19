@@ -5,17 +5,16 @@ import bilboka.core.user.UserService
 import bilboka.core.vehicle.VehicleService
 import bilboka.messagebot.Conversation
 import bilboka.messagebot.commands.common.CarBookCommand
+import bilboka.messagebot.commands.common.VEHICLE_REGEX
+import bilboka.messagebot.format
 import bilboka.messagebot.formatAsDate
-import org.slf4j.LoggerFactory
 
 internal class PKKChecker(
     private val vehicleService: VehicleService,
     userService: UserService
 ) : CarBookCommand(userService) {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     private val matcher = Regex(
-        "(pkk|eu)\\s+([\\wæøå]+([\\s-]+?[\\wæøå]+)?)",
+        "(pkk|eu)\\s+${VEHICLE_REGEX.pattern}",
         RegexOption.IGNORE_CASE
     )
 
@@ -28,9 +27,38 @@ internal class PKKChecker(
         val vehicleName = values[2]
 
         val vehicle = vehicleService.getVehicle(vehicleName)
-        vehicle.lastPKK()?.apply {
-            replyWithInfo(this, conversation)
-        } ?: conversation.sendReply("Ingen registrert PKK for ${vehicle.name}")
+        val lastPKK = vehicle.lastPKK()
+
+        val lastPkkBilboka = lastPKK?.dateTime?.toLocalDate()
+        val lastPkkAutosys = vehicleService.getPKKFromAutosys(vehicleName)?.sistGodkjent
+
+        if (lastPkkBilboka != null && lastPkkAutosys != null) {
+            if (lastPkkAutosys.isAfter(lastPkkBilboka.plusMonths(1))) {
+                conversation.sendReply(
+                    "EU-kontroll registrert i bilboka for ${vehicle.name}: ${lastPkkBilboka.format()}. " +
+                            "Fant nyere i Autosys: ${lastPkkAutosys.format()}"
+                )
+                conversation.replyWithOptions(
+                    "Oppdatere med EU-godkjenning fra Autosys?",
+                    "oppdater-eu-fra-autosys ${vehicle.name}" to "Ja! 🚙"
+                )
+            } else {
+                replyWithInfo(lastPKK, conversation)
+            }
+        } else if (lastPkkAutosys != null) {
+            conversation.sendReply(
+                "Ingen registert EU-godkjenning i bilboka for ${vehicle.name}. " +
+                        "Fant PKK-dato i Autosys: ${lastPkkAutosys.format()}"
+            )
+            conversation.replyWithOptions(
+                "Oppdatere med EU-godkjenning fra Autosys?",
+                "oppdater-eu-fra-autosys ${vehicle.name}" to "Ja! 🚙"
+            )
+        } else {
+            lastPKK?.apply {
+                replyWithInfo(this, conversation)
+            } ?: conversation.sendReply("Ingen registert EU-godkjenning for ${vehicle.name}")
+        }
     }
 
     private fun replyWithInfo(
@@ -38,9 +66,9 @@ internal class PKKChecker(
         conversation: Conversation
     ) {
         conversation.sendReply(
-            "📃 \nSiste registrert godkjente EU-kontroll for ${entry.vehicle.name} \n" +
-                    "Dato: ${entry.dateTime.formatAsDate()} \n" +
-                    "Kilometerstand: ${entry.odometer?.let { "$it ${entry.vehicle.odometerUnit ?: ""}" } ?: "(ukjent)"}"
+            "📃 \nRegistrert siste godkjente EU-kontroll for ${entry.vehicle.name}: \n" +
+                    "${entry.dateTime.formatAsDate()} ved " +
+                    (entry.odometer?.let { "$it ${entry.vehicle.odometerUnit ?: ""}" } ?: "(ukjent)")
         )
     }
 }

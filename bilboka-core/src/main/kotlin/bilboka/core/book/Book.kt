@@ -181,6 +181,45 @@ class Book(
         }
     }
 
+    fun refreshPKK(vehicle: Vehicle, odometer: Int?, enteredBy: User?, source: String): BookEntry? {
+        val lastPKK = vehicle.lastPKK()?.dateTime?.toLocalDate()
+
+        vehicleService.getAutosysKjoretoydata(vehicle).periodiskKjoretoyKontroll?.run {
+            if (lastPKK == null || lastPKK.plusMonths(1).isBefore(sistGodkjent)) {
+                return addPKK(vehicle, sistGodkjent?.atStartOfDay(), odometer, enteredBy, source)
+            }
+        }
+        return null
+    }
+
+    fun addPKK(
+        vehicle: Vehicle,
+        dateTime: LocalDateTime?,
+        odoReading: Int?,
+        enteredBy: User?,
+        source: String
+    ): BookEntry {
+        return transaction {
+            validateTimeAndOrOdo(vehicle.bookEntries, dateTime, odoReading)
+            BookEntry.new {
+                this.dateTime = dateTime
+                odometer = odoReading
+                this.vehicle = vehicle
+                type = EntryType.EVENT
+                event = EventType.EU_KONTROLL_OK
+                this.source = source
+                this.enteredBy = enteredBy
+            }
+        }
+    }
+
+    private fun validateTimeAndOrOdo(entries: SizedIterable<BookEntry>, dateTime: LocalDateTime?, odoReading: Int?) {
+        check(dateTime != null || odoReading != null)
+        if (dateTime != null && odoReading != null) {
+            entries.validateChronologyOf(dateTime, odoReading)
+        }
+    }
+
     fun maintenanceItems(): Set<String> {
         return transaction {
             MaintenanceItem.all().map { it.item }

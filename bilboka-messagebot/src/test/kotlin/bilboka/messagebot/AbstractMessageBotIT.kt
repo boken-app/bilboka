@@ -10,6 +10,7 @@ import bilboka.core.vehicle.VehicleService
 import bilboka.core.vehicle.domain.FuelType
 import bilboka.integration.autosys.AutosysProperties
 import bilboka.integration.autosys.consumer.AkfDatautleveringConsumer
+import com.ninjasquad.springmockk.MockkBean
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -36,6 +37,9 @@ abstract class AbstractMessageBotIT : H2Test() {
 
     @Autowired
     lateinit var userService: UserService
+
+    @MockkBean(relaxed = true)
+    lateinit var akfDatautleveringConsumer: AkfDatautleveringConsumer
 
     val validSender = "2345"
     val keyForNewUser = "some_new_key-lol"

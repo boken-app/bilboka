@@ -14,6 +14,7 @@ internal class SmallTalk : GeneralChatCommand() {
         Pair("yo", "hey"),
         Pair("hmm", "hm?"),
         Pair("meh", "¯\\_(ツ)_/¯"),
+        Pair("shrug", "¯\\_(ツ)_/¯"),
         Pair("driver med", "Ikke noe spes. Der?"),
         Pair("skjer", "Ikke noe spes. Der?"),
         Pair("skjer?", "Ikke noe spes. Der?"),
@@ -28,6 +29,12 @@ internal class SmallTalk : GeneralChatCommand() {
         Pair("lol", "😂"),
         Pair("ok", "👍"),
         Pair("hm", "😐"),
+        Pair("nei", "Neivel"),
+        Pair("nej", "så"),
+        Pair("nei!", "ok"),
+        Pair("niks", "den er god!"),
+        Pair("nope", "ok \uD83D\uDE10"),
+        Pair("neh", "ok whatever ¯\\_(ツ)_/¯"),
     )
 
     override fun isMatch(message: String): Boolean {

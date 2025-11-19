@@ -59,6 +59,7 @@ class MessageBot {
             TripInfo(vehicleService, tripService, userService),
             TripEnder(vehicleService, tripService, userService),
             PKKChecker(vehicleService, userService),
+            PKKUpdater(vehicleService, book, userService),
         )
     }
 

@@ -90,6 +90,15 @@ abstract class AbstractMessageBotTest {
         }
     }
 
+    protected fun verifySentMessageContains(message: String, senderID: String = registeredSenderID) {
+        verify {
+            botMessenger.sendMessage(
+                match { msg -> msg.contains(message) },
+                senderID
+            )
+        }
+    }
+
     protected fun vehicle(
         name: String,
         fuelType: FuelType,

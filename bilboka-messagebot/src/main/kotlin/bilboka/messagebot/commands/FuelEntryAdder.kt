@@ -225,7 +225,3 @@ private fun Int.appendFirstDigitFrom(str: String): Int {
 private fun String.convertToDouble(): Double {
     return this.replace(',', '.').toDouble()
 }
-
-private fun String.extractNumeric(): String {
-    return ""
-}

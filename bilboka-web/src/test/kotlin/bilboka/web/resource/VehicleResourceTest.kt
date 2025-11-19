@@ -62,7 +62,7 @@ class VehicleResourceTest : H2Test() { // TODO burde ikke trenge H2 her.
                 every { value } returns 1
             }
         }
-        every { vehicleService.getAutosysKjoretoydata(any()) } returns mockk(relaxed = true)
+        every { vehicleService.getAutosysKjoretoydata(any<String>()) } returns mockk(relaxed = true)
         mockMvc.perform(get("/vehicles/1"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(1))
