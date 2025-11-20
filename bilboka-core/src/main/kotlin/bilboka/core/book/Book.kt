@@ -186,7 +186,7 @@ class Book(
 
         vehicleService.getAutosysKjoretoydata(vehicle).periodiskKjoretoyKontroll?.run {
             if (lastPKK == null || lastPKK.plusMonths(1).isBefore(sistGodkjent)) {
-                return addPKK(vehicle, sistGodkjent?.atStartOfDay(), odometer, enteredBy, source)
+                return addPKK(vehicle, sistGodkjent?.atStartOfDay(), odometer, enteredBy, "$source|autosys")
             }
         }
         return null
