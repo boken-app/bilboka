@@ -24,7 +24,7 @@ dependencies {
 	implementation(project(":bilboka-autosys-integration"))
 	implementation(project(":bilboka-web"))
 
-	implementation("org.postgresql:postgresql:42.5.4")
+	implementation("org.postgresql:postgresql:42.7.7")
 	implementation("org.flywaydb:flyway-core")
 
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
