@@ -18,9 +18,9 @@ val jUnitPlatformLauncher = "org.junit.platform:junit-platform-launcher:${Versio
 
 val kotlinStandardLibrary = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 
-val slf4jApi = "org.slf4j:slf4j-api:${Versions.slf4j}"
-val logbackClassic = "ch.qos.logback:logback-classic:${Versions.logback}"
-val locbackCore = "ch.qos.logback:logback-core:${Versions.logback}"
+val slf4jApi = "org.slf4j:slf4j-api"
+val logbackClassic = "ch.qos.logback:logback-classic"
+val locbackCore = "ch.qos.logback:logback-core"
 
 internal fun Project.configureDependencies() = dependencies {
     add("implementation", springBootStarter)

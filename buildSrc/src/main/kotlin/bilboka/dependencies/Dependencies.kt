@@ -7,9 +7,6 @@ object Versions {
     const val jUnitJupiter = "5.9.2"
     const val jUnitPlatform = "1.9.2"
 
-    const val slf4j = "1.7.30"
-    const val logback = "1.2.3"
-
     const val exposed = "0.41.1"
     const val okHttp = "4.10.0"
 
