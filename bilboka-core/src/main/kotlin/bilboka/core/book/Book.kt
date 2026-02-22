@@ -213,6 +213,27 @@ class Book(
         }
     }
 
+    fun addService(
+        vehicle: Vehicle,
+        dateTime: LocalDateTime?,
+        odoReading: Int?,
+        enteredBy: User?,
+        source: String
+    ): BookEntry {
+        return transaction {
+            validateTimeAndOrOdo(vehicle.bookEntries, dateTime, odoReading)
+            BookEntry.new {
+                this.dateTime = dateTime
+                odometer = odoReading
+                this.vehicle = vehicle
+                type = EntryType.EVENT
+                event = EventType.SERVICE
+                this.source = source
+                this.enteredBy = enteredBy
+            }
+        }
+    }
+
     private fun validateTimeAndOrOdo(entries: SizedIterable<BookEntry>, dateTime: LocalDateTime?, odoReading: Int?) {
         check(dateTime != null || odoReading != null)
         if (dateTime != null && odoReading != null) {
