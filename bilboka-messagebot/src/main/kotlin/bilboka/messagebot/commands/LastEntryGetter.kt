@@ -42,7 +42,7 @@ internal class LastEntryGetter(
                 extract(maintenanceItemRegex) {
                     it.takeIf { book.maintenanceItems().contains(it.toMaintenanceItem()) }
                 }?.also { maintenanceItem = it.toMaintenanceItem() }
-            }
+            } // TODO få med service og PKK
 
         vehicle?.apply {
             maintenanceItem?.let {
