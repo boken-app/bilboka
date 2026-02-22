@@ -2,7 +2,10 @@ package bilboka.web.resource
 
 import bilboka.client.BilbokaDataPoint
 import bilboka.client.BookEntryDto
+import bilboka.client.DateAndOdometer
 import bilboka.client.VehicleResponse
+import bilboka.core.book.domain.BookEntry
+import bilboka.core.book.domain.EventType
 import bilboka.core.book.entryClosestTo
 import bilboka.core.vehicle.VehicleMissingDataException
 import bilboka.core.vehicle.VehicleService
@@ -85,7 +88,9 @@ class VehicleResource(
             modell = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.generelt?.handelsbetegnelse?.firstOrNull(),
             regStatus = autosysKjoretoydata?.registrering?.registreringsstatus?.kodeVerdi ?: "UKJENT",
             understellsnummer = autosysKjoretoydata?.kjoretoyId?.understellsnummer,
-            sistePKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.sistGodkjent,
+            sisteService = lastEvent(EventType.SERVICE)?.toDateAndOdo(),
+            sistePKK = lastPKK()?.toDateAndOdo(),
+            sistePKKAutosys = autosysKjoretoydata?.periodiskKjoretoyKontroll?.sistGodkjent,
             fristPKK = autosysKjoretoydata?.periodiskKjoretoyKontroll?.kontrollfrist,
             egenvekt = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.egenvekt,
             nyttelast = autosysKjoretoydata?.godkjenning?.tekniskGodkjenning?.tekniskeData?.vekter?.nyttelast,
@@ -168,7 +173,7 @@ class VehicleResource(
             regStatus = "AVREGISTRERT",
             lastOdometer = 123456,
             understellsnummer = "12345678901234567",
-            sistePKK = LocalDate.of(2020, 1, 1),
+            sistePKKAutosys = LocalDate.of(2020, 1, 1),
             fristPKK = LocalDate.of(2021, 1, 1),
             regBevaringsverdig = true,
             egenvekt = 2000,
@@ -231,7 +236,7 @@ class VehicleResource(
             tankVolume = 65,
             regStatus = "REGISTRERT",
             understellsnummer = "12345678901234567",
-            sistePKK = LocalDate.of(2020, 1, 1),
+            sistePKKAutosys = LocalDate.of(2020, 1, 1),
             fristPKK = LocalDate.of(2021, 1, 1),
             regBevaringsverdig = true,
             egenvekt = 2000,
@@ -243,3 +248,5 @@ class VehicleResource(
     )
 
 }
+
+fun BookEntry.toDateAndOdo() = DateAndOdometer(dateTime?.toLocalDate(), odometer)

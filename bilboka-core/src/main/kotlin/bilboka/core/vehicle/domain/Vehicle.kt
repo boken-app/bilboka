@@ -120,7 +120,11 @@ class Vehicle(id: EntityID<Int>) : IntEntity(id) {
     }
 
     fun lastPKK(): BookEntry? {
-        return lastEntry(EntryType.EVENT) { it.event == EventType.EU_KONTROLL_OK }
+        return lastEvent(EventType.EU_KONTROLL_OK)
+    }
+
+    fun lastEvent(eventType: EventType): BookEntry? {
+        return lastEntry(EntryType.EVENT) { it.event == eventType }
     }
 
     fun lastEntry(type: EntryType, extraFilter: ((BookEntry) -> Boolean)? = null): BookEntry? {

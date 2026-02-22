@@ -21,11 +21,18 @@ data class VehicleResponse(
     val entriesCount: Int,
     val understellsnummer: String? = null,
     val regStatus: String? = null,
-    val sistePKK: LocalDate? = null,
+    val sistePKK: DateAndOdometer? = null,
+    val sistePKKAutosys: LocalDate? = null,
     val fristPKK: LocalDate? = null,
+    val sisteService: DateAndOdometer? = null,
     val regBevaringsverdig: Boolean = false,
     val egenvekt: Int? = null,
     val nyttelast: Int? = null,
     val hengervektMBrems: Int? = null,
     val lengde: Int? = null,
+)
+
+data class DateAndOdometer(
+    val date: LocalDate?,
+    val odometer: Int?,
 )
