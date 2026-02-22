@@ -22,11 +22,9 @@ class BookEntriesResource(
     fun entries(@PathVariable id: String): ResponseEntity<List<BookEntryDto>> {
         return try {
             transaction {
-                vehicleService.getVehicleById(id.toInt()).let {
-                    ResponseEntity.ok(it.bookEntries.map { entry ->
-                        entry.toDto(it.odometerUnit)
-                    })
-                }
+                vehicleService.getVehicleById(id.toInt())
+                    .run { bookEntries.map { it.toDto(odometerUnit) } }
+                    .let { ResponseEntity.ok(it) }
             }
         } catch (e: EntityNotFoundException) {
             ResponseEntity.notFound().build()
