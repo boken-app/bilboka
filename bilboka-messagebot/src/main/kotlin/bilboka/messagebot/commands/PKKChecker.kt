@@ -14,7 +14,7 @@ internal class PKKChecker(
     userService: UserService
 ) : CarBookCommand(userService) {
     private val matcher = Regex(
-        "(pkk|eu)\\s+${VEHICLE_REGEX.pattern}",
+        "(pkk|eu|eu kontroll|eu godkjent|eu-godkjent|eu-kontroll)\\s+${VEHICLE_REGEX.pattern}",
         RegexOption.IGNORE_CASE
     )
 
